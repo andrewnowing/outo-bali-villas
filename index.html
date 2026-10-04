@@ -246,7 +246,7 @@ button:disabled{opacity:.5;cursor:not-allowed}
   <div class="panel help"><h3 id="helpT" data-t="helpT">怎麼查房況、怎麼預訂</h3><div id="helpBody"></div><div class="actions"><button type="button" class="ghost" data-close="helpDlg" data-t="close">關閉</button></div></div>
 </div>
 <div class="dlg" id="histDlg" hidden role="dialog" aria-modal="true" aria-labelledby="histT">
-  <div class="panel"><h3 id="histT" data-t="histT">房況更新歷史紀錄</h3><p class="histNote" data-t="histNote">房況每 15 分鐘從 Villa Finder 的 iCal 行事曆同步一次。時間為台灣時間。</p><div class="tw"><table class="histTbl"><thead><tr><th data-t="hTime">更新時間</th><th data-t="hFeeds">同步間數</th><th data-t="hChanged">房況有變動</th><th data-t="hErr">失敗</th></tr></thead><tbody id="histBody"></tbody></table></div><div class="actions"><button type="button" class="ghost" data-close="histDlg" data-t="close">關閉</button></div></div>
+  <div class="panel"><h3 id="histT" data-t="histT">房況更新歷史紀錄</h3><p class="histNote" data-t="histNote">房況每 5 分鐘從 Villa Finder 的 iCal 行事曆同步一次。時間為台灣時間。</p><div class="tw"><table class="histTbl"><thead><tr><th data-t="hTime">更新時間</th><th data-t="hFeeds">同步間數</th><th data-t="hChanged">房況有變動</th><th data-t="hErr">失敗</th></tr></thead><tbody id="histBody"></tbody></table></div><div class="actions"><button type="button" class="ghost" data-close="histDlg" data-t="close">關閉</button></div></div>
 </div>
 <div class="dlg" id="dlg" hidden role="dialog" aria-modal="true" aria-labelledby="dlgT">
   <div class="panel">
@@ -289,7 +289,7 @@ zh:{
   title:'峇里島別墅空房查詢',
   sub:'Villa Finder 同業房源 118 間 · 價格為對外售價（美金、含稅），不是 Outo 成本價',
   loading:'房況資料載入中', langGroup:'語言', helpBtn:'操作說明', histBtn:'房況更新歷史紀錄', close:'關閉',
-  helpT:'怎麼查房況、怎麼預訂', histT:'房況更新歷史紀錄', histNote:'房況每 15 分鐘從 Villa Finder 的 iCal 行事曆同步一次；表格列出每一次同步。時間為台灣時間。', hTime:'更新時間', hFeeds:'同步間數', hChanged:'房況有變動', hErr:'失敗', histEmpty:'還沒有紀錄（下一次同步後會出現）', histNow:'目前頁面使用的版本', hUnk:'—',
+  helpT:'怎麼查房況、怎麼預訂', histT:'房況更新歷史紀錄', histNote:'房況每 5 分鐘從 Villa Finder 的 iCal 行事曆同步一次；表格列出每一次同步。時間為台灣時間。', hTime:'更新時間', hFeeds:'同步間數', hChanged:'房況有變動', hErr:'失敗', histEmpty:'還沒有紀錄（下一次同步後會出現）', histNow:'目前頁面使用的版本', hUnk:'—',
   helpHtml:`<ol>
 <li><b>1. 選日期與房數</b>點「入住日 → 退房日」一次選好入住與退房，再選「至少幾房」（例如客人要 3 房就選 3 房，4 房的別墅也會出現，報價會用符合的最小格局）。入住人數會自動排除容納不下的別墅。</li>
 <li><b>2. 縮小範圍</b>區域、床型膠囊（雙床房／雙人房／四人房／上下舖，可複選，選了就代表「都要有」）、開車到市區幾分鐘、排序方式。知道名字就直接打在「搜尋別墅名稱」。預設只顯示有空房的，取消勾選可看全部。</li>
@@ -354,14 +354,14 @@ zh:{
   eTool:'Gmail 回報寄信失敗，請確認收件地址後再試。',
   eOther:c=>'寄信沒有成功（'+c+'）。信可能沒寄出，請先到 Gmail 寄件備份確認，避免重複寄送。', unknownErr:'未知錯誤',
   statusSent:'已寄出，待 Villa Finder 確認',
-  justNow:'剛剛', minAgo:n=>n+' 分鐘前', hAgo:n=>n+' 小時前', freshAt:w=>'房況更新於 '+w, srcDrive:'（自動同步，每 15 分鐘）', srcDb:'（每小時同步）', srcSnap:'（內建快照）', old2d:'（已超過 2 天）',
+  justNow:'剛剛', minAgo:n=>n+' 分鐘前', hAgo:n=>n+' 小時前', freshAt:w=>'房況更新於 '+w, srcDrive:'（自動同步，每 5 分鐘）', srcDb:'（每小時同步）', srcSnap:'（內建快照）', old2d:'（已超過 2 天）',
   areaOpt:(a,n)=>a+'（'+n+'）', guOpt:n=>n+' 人以上'
 },
 en:{
   title:'Bali Villa Availability',
   sub:"118 Villa Finder partner listings · Prices are public selling prices (USD, tax included), not Outo's cost",
   loading:'Loading availability data', langGroup:'Language', helpBtn:'How to use', histBtn:'Availability update log', close:'Close',
-  helpT:'How to search and book', histT:'Availability update log', histNote:'Availability syncs from Villa Finder\'s iCal calendars every 15 minutes; each sync is listed here. Times are Taiwan time.', hTime:'Updated at', hFeeds:'Feeds synced', hChanged:'Changed', hErr:'Failed', histEmpty:'No entries yet (they appear after the next sync)', histNow:'version this page is using', hUnk:'—',
+  helpT:'How to search and book', histT:'Availability update log', histNote:'Availability syncs from Villa Finder\'s iCal calendars every 5 minutes; each sync is listed here. Times are Taiwan time.', hTime:'Updated at', hFeeds:'Feeds synced', hChanged:'Changed', hErr:'Failed', histEmpty:'No entries yet (they appear after the next sync)', histNow:'version this page is using', hUnk:'—',
   helpHtml:`<ol>
 <li><b>1. Pick dates and bedrooms</b>Click "Check-in → Check-out" to pick both dates in one calendar, then "Min. bedrooms" (choose 3 for a 3-bedroom request; 4-bedroom villas still appear, quoted at the smallest layout that fits). Guest count hides villas that cannot accommodate the group.</li>
 <li><b>2. Narrow down</b>Area, room-type chips (Twin / Double / Quad / Bunk — multi-select means the villa must have all of them), drive time to town, sort order. Know the name? Type it in "Search by villa name". "Available only" is on by default; untick to see everything.</li>
@@ -426,7 +426,7 @@ en:{
   eTool:'Gmail reported a send failure. Check the recipient address and try again.',
   eOther:c=>'Sending failed ('+c+'). The email may not have been sent; check your Gmail Sent folder first to avoid sending it twice.', unknownErr:'unknown error',
   statusSent:'Sent, awaiting Villa Finder confirmation',
-  justNow:'just now', minAgo:n=>n+' min ago', hAgo:n=>n+' h ago', freshAt:w=>'Availability updated '+w, srcDrive:' (auto-sync every 15 min)', srcDb:' (hourly sync)', srcSnap:' (built-in snapshot)', old2d:' (over 2 days old)',
+  justNow:'just now', minAgo:n=>n+' min ago', hAgo:n=>n+' h ago', freshAt:w=>'Availability updated '+w, srcDrive:' (auto-sync every 5 min)', srcDb:' (hourly sync)', srcSnap:' (built-in snapshot)', old2d:' (over 2 days old)',
   areaOpt:(a,n)=>a+' ('+n+')', guOpt:n=>n+'+ guests'
 }};
 let LANG='zh';try{const l=localStorage.getItem('vf-lang');if(l==='en'||l==='zh')LANG=l;}catch(e){}
