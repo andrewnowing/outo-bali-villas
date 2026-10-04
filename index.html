@@ -667,7 +667,7 @@ async function computePOI(){if(!poi)return;const my=++poiReq;const dests=VILLAS.
     if(!r.ok){setPoiMsg(t('poiErr')+' ('+r.status+')',true);return;}const arr=await r.json();if(my!==poiReq)return;
     for(const e of (Array.isArray(arr)?arr:[])){const v=chunk[e.destinationIndex];if(!v)continue;if(e.condition==='ROUTE_EXISTS'&&e.duration){by[v.s]={s:parseInt(e.duration),d:e.distanceMeters||0};}else by[v.s]=null;}}
   if(my!==poiReq)return;poi.by=by;$('poiClr').hidden=false;$('sortPoi').hidden=false;setPoiMsg(t('poiDone',Object.values(by).filter(Boolean).length,poi.name));
-  if(gmap){if(poiMarker)poiMarker.setMap(null);poiMarker=new google.maps.Marker({map:gmap,position:{lat:poi.lat,lng:poi.lng},title:poi.name,icon:{path:google.maps.SymbolPath.CIRCLE,scale:9,fillColor:'#FEA600',fillOpacity:1,strokeColor:'#1B1A14',strokeWeight:2},zIndex:9});}
+  if(gmap){if(poiMarker)poiMarker.setMap(null);poiMarker=new google.maps.Marker({map:gmap,position:{lat:poi.lat,lng:poi.lng},title:poi.name,icon:{path:google.maps.SymbolPath.CIRCLE,scale:9,fillColor:'#FEA600',fillOpacity:1,strokeColor:'#1B1A14',strokeWeight:2},zIndex:9});const bb=new google.maps.LatLngBounds();for(const m of gmarkers.values())if(m.getMap())bb.extend(m.getPosition());bb.extend(poiMarker.getPosition());gmap.fitBounds(bb,40);}
   render();}
 function poiChip(v){if(!poi||!poi.by)return '';const r=poi.by[v.s];if(r===undefined)return '';if(!r)return `<span class="chip c-poi">${esc(t('poiNone',poi.name))}</span>`;return `<span class="chip c-poi">${esc(t('poiChip',poi.name,poi.mode,Math.max(1,Math.round(r.s/60)),(r.d/1000).toFixed(1)))}</span>`;}
 function polOf(s){return (typeof POL!=='undefined'&&POL[s])||null;}
