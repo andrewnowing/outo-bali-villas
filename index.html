@@ -156,7 +156,17 @@ details.v>summary::-webkit-details-marker{display:none}
 .price{grid-row:1/3;grid-column:3;text-align:right}
 .price .tot{font-size:20px;font-weight:600;display:block;color:var(--ink);letter-spacing:-.01em}
 .price .per{font-size:12px;color:var(--muted)}
-.price .was{display:block;font-size:13px;color:var(--muted);text-decoration:line-through;font-weight:400}
+.price .was{display:block;font-size:13px;color:var(--muted);font-weight:400}
+.price .was i,.price .tot i{font-style:normal;font-family:var(--body);font-size:11px;letter-spacing:.04em;color:var(--muted);margin-right:6px;text-decoration:none;display:inline-block}
+.price .was span,.price .was{text-decoration:none}.price .was::after{content:''}
+.price .was b{text-decoration:line-through}
+.price .tot i{color:var(--jade-700)}
+.rowCopy{position:absolute;right:20px;bottom:14px;height:28px;padding:0 10px;font-size:12px;border-radius:999px;background:var(--surface);color:var(--ink2);border:1px solid var(--line-strong);letter-spacing:.02em}
+.rowCopy:hover{background:var(--paper-50);color:var(--ink);border-color:var(--ink-900);transform:none;box-shadow:none}
+.rowCopy.done{background:var(--jade-700);border-color:var(--jade-700);color:#fff}
+details.v>summary{position:relative;padding-bottom:48px}
+@media (max-width:560px){.rowCopy{right:16px;bottom:12px}}
+.feat dd .pay{font-size:11px;color:var(--sun-700);background:var(--sun-50);border-radius:999px;padding:1px 7px;margin-left:2px;white-space:nowrap}
 .price .dl{display:block;font-size:11.5px;color:var(--jade-700);margin-top:2px;letter-spacing:.02em;font-family:var(--body)}
 .c-time{background:var(--paper-200);color:var(--ink-700)}
 .c-bf{background:var(--jade-100);color:var(--jade-700)}.c-bf.no{background:var(--paper-200);color:var(--ink-700)}.c-bf.paid{background:var(--sun-50);color:var(--sun-700)}
@@ -423,12 +433,13 @@ zh:{
   why_min:(n,k)=>`需連住 ${n} 晚（目前 ${k} 晚）`, why_win:'入住日不在活動期間', why_lead:(n,d)=>`需提前 ${n} 天以上預訂（目前距入住 ${d} 天）`, why_late:(n,d)=>`需入住前 ${n} 天內預訂（目前距入住 ${d} 天）`, why_sea:'入住季節不符', why_dyn:'浮動價別墅，請回後台確認',
   dlOff:(lbl)=>`套用「${lbl}」`, dlMore:n=>`另有 ${n} 個適用規則`,
   chTime:(a,b)=>`入住 ${a}｜退房 ${b}`, bf_inc:'每日含早餐', bf_first:'僅第一天含早餐', bf_floatinc:'含漂浮早餐', bf_paid:'早餐另付', bf_req:'早餐可代訂（另付）', bf_floatreq:'漂浮早餐可加購', bf_none:'無早餐資訊',
-  fCi:'入住時間', fCo:'退房時間', fCiV:a=>`${a} 之後`, fCoV:a=>`${a} 之前`, fBf:'早餐', fNA:'Villa Finder 未提供',
+  lblPub:'官網直售價', lblPartner:'同業折扣價', btnShareRow:'複製客人連結', payTag:'另付', featExtra:'其他另付項目',
+  fCi:'🕑 入住時間', fCo:'🕚 退房時間', fCiV:a=>`${a} 之後`, fCoV:a=>`${a} 之前`, fBf:'🍳 早餐', fNA:'未提供',
   secStay:'入住與早餐', secPol:'付款與取消規定', polPay:'付款', polCancel:'取消與退款', polRules:'房規', polIncl:'房費已含', polFees:'需額外付費', polNone:'Villa Finder 未列', polSrc:'來源：Villa Finder 公開頁面（2026/10 擷取），以訂房時 Villa Finder 回覆為準。',
   btnShare:'複製客人連結', shareDone:'已複製', shareTag:'找尋最適合你的峇里島私人泳池別墅', shareFoot:'本頁由 Outo 奧拓提供給旅人參考：照片與設施資料來自別墅方，房況、價格與預訂請洽你的 Outo 旅程規劃師。', shareBack:'回查詢頁', shareMissing:'找不到這間別墅。',
   lkMap:'Google 地圖位置', addrT:'在 Google 地圖開啟', addrVague:'（Google 僅有區域，無門牌）', lkWeb:'別墅官網', lkVf:'Villa Finder 頁面（已帶入日期）', lkAlbum:'完整相簿', lkDs:'房源說明（Villa Finder 提供）',
   lkBooking:'Booking.com 搜尋', lkAgoda:'Agoda 搜尋', lkAirbnb:'Airbnb 搜尋',
-  fMax:'最多入住', fMaxV:n=>n+' 人', fLayouts:'可訂房數', fLayoutsV:b=>b.map(x=>x+' 房').join('／'), fSize:'別墅面積', fGarden:'庭院', fStaff:'駐點員工', fStaffV:n=>n+' 人', fGps:'GPS 座標', fBed:'床型', fBedNone:'說明未寫明',
+  fMax:'👥 最多入住', fMaxV:n=>n+' 人', fLayouts:'🛏️ 可訂房數', fLayoutsV:b=>b.map(x=>x+' 房').join('／'), fSize:'📐 別墅面積', fGarden:'🌿 庭院', fStaff:'🧹 駐點員工', fStaffV:n=>n+' 人', fGps:'📍 GPS 座標', fBed:'🛌 床型', fBedNone:'說明未寫明',
   n1:'Villa Finder 公開頁面已帶入日期與人數；日期符合最少入住晚數時，頁面右側會出現「Book Now」線上付款，不符合時只會有詢問表單。付款連結是送出訂單後才由 Villa Finder 產生，無法在這裡預先顯示。',
   n2:'Booking.com／Agoda／Airbnb 連結是以別墅名稱搜尋的結果，供比價參考；同一棟別墅在不同平台名稱可能不同，點進去請核對地址或照片。',
   nSanook:'Google 地圖上的位置與 Villa Finder 提供的座標相差約 290 公尺，出發前請向 Villa Finder 確認確切位置',
@@ -503,12 +514,13 @@ en:{
   why_min:(n,k)=>`needs ${n} nights (you have ${k})`, why_win:'check-in outside promo period', why_lead:(n,d)=>`needs booking ${n}+ days ahead (now ${d} days)`, why_late:(n,d)=>`needs booking within ${n} days (now ${d} days)`, why_sea:'season does not match', why_dyn:'dynamic-rate villa — check the portal',
   dlOff:(lbl)=>`with "${lbl}"`, dlMore:n=>`+${n} more rule${n>1?'s':''}`,
   chTime:(a,b)=>`In ${a} · Out ${b}`, bf_inc:'Breakfast included daily', bf_first:'Breakfast first day only', bf_floatinc:'Floating breakfast included', bf_paid:'Breakfast extra charge', bf_req:'Breakfast on request (extra)', bf_floatreq:'Floating breakfast on request', bf_none:'No breakfast info',
-  fCi:'Check-in', fCo:'Check-out', fCiV:a=>`after ${a}`, fCoV:a=>`before ${a}`, fBf:'Breakfast', fNA:'Not provided by Villa Finder',
+  lblPub:'Public rate', lblPartner:'Partner rate', btnShareRow:'Copy guest link', payTag:'extra', featExtra:'Other paid extras',
+  fCi:'🕑 Check-in', fCo:'🕚 Check-out', fCiV:a=>`after ${a}`, fCoV:a=>`before ${a}`, fBf:'🍳 Breakfast', fNA:'Not provided',
   secStay:'Check-in and breakfast', secPol:'Payment and cancellation', polPay:'Payment', polCancel:'Cancellation and refund', polRules:'House rules', polIncl:'Included in rate', polFees:'Extra charges', polNone:'Not listed by Villa Finder', polSrc:'Source: Villa Finder public page (captured Oct 2026). Villa Finder\'s reply at booking prevails.',
   btnShare:'Copy guest link', shareDone:'Copied', shareTag:'Find the Bali private pool villa that fits you', shareFoot:'Shared by Outo for travellers: photos and facilities come from the villa; for availability, pricing and booking contact your Outo trip planner.', shareBack:'Back to search', shareMissing:'Villa not found.',
   lkMap:'Google Maps location', addrT:'Open in Google Maps', addrVague:'(area only — no street address on Google)', lkWeb:'Villa website', lkVf:'Villa Finder page (dates pre-filled)', lkAlbum:'Full photo album', lkDs:'Property fact sheet (from Villa Finder)',
   lkBooking:'Search on Booking.com', lkAgoda:'Search on Agoda', lkAirbnb:'Search on Airbnb',
-  fMax:'Max guests', fMaxV:n=>n+' guests', fLayouts:'Layouts', fLayoutsV:b=>b.join(' / ')+' BR', fSize:'Villa size', fGarden:'Garden', fStaff:'On-site staff', fStaffV:n=>n+' staff', fGps:'GPS coordinates', fBed:'Bed types', fBedNone:'Not specified',
+  fMax:'👥 Max guests', fMaxV:n=>n+' guests', fLayouts:'🛏️ Layouts', fLayoutsV:b=>b.join(' / ')+' BR', fSize:'📐 Villa size', fGarden:'🌿 Garden', fStaff:'🧹 On-site staff', fStaffV:n=>n+' staff', fGps:'📍 GPS coordinates', fBed:'🛌 Bed types', fBedNone:'Not specified',
   n1:'The Villa Finder public page opens with your dates and guest count. When the dates meet the minimum stay, a “Book Now” online-payment button appears on the right; otherwise only an enquiry form. The payment link itself is generated by Villa Finder after the order is submitted, so it cannot be shown here in advance.',
   n2:'Booking.com / Agoda / Airbnb links are name searches for price comparison; the same villa may be listed under a different name, so check the address or photos.',
   nSanook:'The Google Maps pin is about 290 m from the GPS coordinates Villa Finder provides; confirm the exact address with Villa Finder before arrival',
@@ -615,6 +627,13 @@ function promoCalc(v,q,ciD,nights){const rules=parsePromo(v.p).filter(r=>!r.bad)
     else if(r.seasons&&r.seasons.length&&!(q.seasons||[]).some(s=>r.seasons.includes(s)))why=t('why_sea');
     const ok=!why;const total=(ok&&q&&!q.missing&&!q.dynamic)?Math.round(q.total*(100-r.pct))/100:null;return {r,label:promoLabel(r),ok,why,total};});
   const best=list.filter(x=>x.ok&&x.total!=null).sort((a,b)=>a.total-b.total)[0]||null;return {list,best,n:list.filter(x=>x.ok).length};}
+
+const FEE_KEY=[['漂浮早餐',/漂浮早餐|floating breakfast/i],['早餐',/早餐|breakfast/i],['晚餐',/晚餐|dinner/i],['午餐',/午餐|lunch/i],['私人廚師',/廚師|chef/i],['嬰兒床',/嬰兒床|baby cot/i],['兒童餐椅',/餐椅|high chair/i],['泳池圍欄',/泳池圍欄|pool fence/i],['泳池玩具',/泳池玩具|pool toys/i],['保母',/保母|babysit/i],['洗衣',/洗衣服務|^laundry$|laundry service/i],['按摩',/按摩|massage/i],['車輛租借',/租車|car available|car rental/i],['機車租借',/機車|scooter/i],['腳踏車租借',/腳踏車|bicycle/i],['司機',/司機|driver/i],['機場接送',/機場接送|airport transfer/i],['園丁',/園丁|gardener/i],['Spa 房',/spa/i],['BBQ 設備',/BBQ/i],['桌遊',/桌遊|board games/i],['租船',/租船|boat/i],['私人管家',/管家|guest assistant|butler/i],['保全',/保全|security/i],['客房服務',/客房服務|room service/i],['泳池維護',/泳池維護|pool maintenance/i]];
+function mergedFeats(v){const F=featsOf(v);const pol=polOf(v.s);const fees=(pol&&pol.fees||[]).map(x=>({zh:x[0],en:x[1],base:x[0].replace(/（.*$/,'').trim(),used:false}));
+  const tag=f=>{const d=(LANG==='en'?f.en:f.zh).match(/[（(](.*)[）)]/);const detail=d&&!SHARE?d[1]:'';return `<span class="pay">${esc(t('payTag'))}${detail?'：'+esc(detail):''}</span>`;};
+  const out=Object.entries(F).map(([c,a])=>{const items=a.map(it=>{const k=FEE_KEY.find(([b,re])=>re.test(it));let h=esc(it);if(k){const f=fees.find(x=>!x.used&&x.base===k[0]);if(f){f.used=true;h+=' '+tag(f);}}return h;});return `<dt>${esc(c)}</dt><dd>${items.join(t('sep'))}</dd>`;});
+  const rest=fees.filter(f=>!f.used);if(rest.length)out.push(`<dt>${esc(t('featExtra'))}</dt><dd>${rest.map(f=>{const nm=(LANG==='en'?f.en:f.zh);return SHARE?esc(nm.replace(/（.*$/,'').replace(/\s*\(.*$/,'')):esc(nm);}).join(t('sep'))}</dd>`);
+  return out.join('');}
 function polOf(s){return (typeof POL!=='undefined'&&POL[s])||null;}
 function bfOf(s){return (typeof BF!=='undefined'&&BF[s])||null;}
 const L2=pair=>LANG==='en'?pair[1]:pair[0];
@@ -764,10 +783,11 @@ function row(x,ciD,coD,nights){
   {const tc=twinChip(v);if(tc)chips.push(tc);}
   let price=`<span class="per">${t('priceCheck')}</span>`;
   const pc=promoCalc(v,q,ciD,nights);
-  if(!q.missing) price=q.dynamic?`<span class="tot">${usd(q.lo)}–${Math.round(q.hi).toLocaleString('en-US')}</span><span class="per">${t('priceRange',q.br)}</span>`:(pc&&pc.best?`<span class="was">${usd(q.total)}</span><span class="tot">${usd(pc.best.total)}</span><span class="per">${t('priceAvg',usd(pc.best.total/nights),q.br)}</span><span class="dl">${esc(t('dlOff',pc.best.label))}${pc.n>1?' · '+esc(t('dlMore',pc.n-1)):''}</span>`:`<span class="tot">${usd(q.total)}</span><span class="per">${t('priceAvg',usd(q.per),q.br)}</span>`);
+  if(!q.missing) price=q.dynamic?`<span class="tot">${usd(q.lo)}–${Math.round(q.hi).toLocaleString('en-US')}</span><span class="per">${t('priceRange',q.br)}</span>`:(pc&&pc.best?`<span class="was"><i>${t('lblPub')}</i><b>${usd(q.total)}</b></span><span class="tot"><i>${t('lblPartner')}</i>${usd(pc.best.total)}</span><span class="per">${t('priceAvg',usd(pc.best.total/nights),q.br)}</span><span class="dl">${esc(t('dlOff',pc.best.label))}${pc.n>1?' · '+esc(t('dlMore',pc.n-1)):''}</span>`:`<span class="tot">${usd(q.total)}</span><span class="per">${t('priceAvg',usd(q.per),q.br)}</span>`);
   const ph=photosOf(v);const g0=gsOf(v.s);const promo=promoOf(v);
-  el.innerHTML=`<summary>${ph[0]?`<img class="thumb" src="${ph[0]}" alt="">`:(g0?`<span class="thumb" style="${tileStyle(g0.k,0,g0.c[0]+g0.c[1]+g0.c[2])}"></span>`:'<span class="thumb" aria-hidden="true"></span>')}<div class="nm">${esc(v.n)}<small>${esc(areaName(v.a))}</small>${rateOf(v)}${addrOf(v)}</div><div class="price">${price}</div><div class="meta">${chips.join('')}<span>${esc(t('layouts',v.b))}</span></div></summary><div class="body"></div>`;
+  el.innerHTML=`<summary>${ph[0]?`<img class="thumb" src="${ph[0]}" alt="">`:(g0?`<span class="thumb" style="${tileStyle(g0.k,0,g0.c[0]+g0.c[1]+g0.c[2])}"></span>`:'<span class="thumb" aria-hidden="true"></span>')}<div class="nm">${esc(v.n)}<small>${esc(areaName(v.a))}</small>${rateOf(v)}${addrOf(v)}</div><div class="price">${price}</div>${SHARE?'':`<button type="button" class="rowCopy" data-s="${esc(v.s)}">${t('btnShareRow')}</button>`}<div class="meta">${chips.join('')}<span>${esc(t('layouts',v.b))}</span></div></summary><div class="body"></div>`;
   el.addEventListener('toggle',()=>{if(el.open&&!el._built){el._built=true;fillBody(el.querySelector('.body'),x,ciD,coD,nights);}});
+  const rc=el.querySelector('.rowCopy');if(rc)rc.addEventListener('click',async e=>{e.preventDefault();e.stopPropagation();const u=shareUrl(v.s);try{await navigator.clipboard.writeText(u);}catch(err){window.prompt('URL',u);}rc.classList.add('done');rc.textContent=t('shareDone')+' ✓';setTimeout(()=>{rc.classList.remove('done');rc.textContent=t('btnShareRow');},1800);});
   return el;
 }
 
@@ -787,7 +807,7 @@ function fillBody(b,x,ciD,coD,nights){
   const facts=[[t('fMax'),X.g?t('fMaxV',X.g):'—'],[t('fLayouts'),t('fLayoutsV',v.b)],[t('fSize'),X.sz||t('fNA')],[t('fGarden'),X.gd||t('fNA')],[t('fCi'),pol&&pol.ci?t('fCiV',pol.ci):t('fNA')],[t('fCo'),pol&&pol.co?t('fCoV',pol.co):t('fNA')],[t('fBf'),bf?(bf[0]==='paid'&&bf[1]?bf[1]:t('bf_'+bf[0]))+(bf[2]?t('sep')+bf[2]:''):t('fNA')],[t('fStaff'),X.st?t('fStaffV',X.st):'—'],[t('fGps'),v.g?v.g.replace(',',', '):'—']];
   {const tw=twinOf(v.s);if(tw)facts.splice(2,0,[t('fBed'),tw[1]||t('fBedNone')]);}
   const rts=routeFacts(v);
-  const feats=Object.entries(featsOf(v)).map(([c,a])=>`<dt>${esc(c)}</dt><dd>${a.map(esc).join(t('sep'))}</dd>`).join('');
+  const feats=mergedFeats(v);
   const notes=[];
   notes.push(['',t('n1')]);
   notes.push(['',t('n2')]);
@@ -809,7 +829,7 @@ function fillBody(b,x,ciD,coD,nights){
     promoSec=`<div class="promoSec"><p class="sec">${t('secPromo')}</p><div class="tw"><table class="promoTbl"><thead><tr><th>${t('prRule')}</th><th>${t('prCond')}</th><th style="text-align:right">${t('prPrice')}${!q.missing&&!q.dynamic?`<span class="why">${t('prOrig')} ${usd(q.total)}</span>`:''}</th></tr></thead><tbody>${rows}</tbody></table></div><p class="histNote" style="margin-top:8px">${esc(t('prNote'))}</p></div>`;}
   else promoSec=`<div class="promoSec"><p class="sec">${t('secPromo')}</p><p class="histNote">${t('prNoPromo')}</p></div>`;
   const box=(title,arr)=>`<div class="box"><h4>${esc(title)}</h4>${arr&&arr.length?`<ul>${arr.map(x=>`<li>${esc(L2(x))}</li>`).join('')}</ul>`:`<ul><li class="na">${esc(t('polNone'))}</li></ul>`}</div>`;
-  const polSec=pol?`<div class="polSec"><p class="sec">${t('secPol')}</p><div class="pol">${box(t('polCancel'),pol.cancel)}${box(t('polPay'),pol.pay)}${box(t('polRules'),pol.rules)}${box(t('polIncl'),pol.incl)}${box(t('polFees'),pol.fees)}</div><p class="histNote" style="margin-top:8px">${esc(t('polSrc'))}</p></div>`:'';
+  const polSec=pol?`<div class="polSec"><p class="sec">${t('secPol')}</p><div class="pol">${box(t('polCancel'),pol.cancel)}${box(t('polPay'),pol.pay)}${box(t('polRules'),pol.rules)}${box(t('polIncl'),pol.incl)}</div><p class="histNote" style="margin-top:8px">${esc(t('polSrc'))}</p></div>`:'';
   const rulesSec=(SHARE&&pol&&pol.rules.length)?`<div><p class="sec">${t('polRules')}</p><ul class="notes">${pol.rules.map(x=>`<li>${esc(L2(x))}</li>`).join('')}</ul></div>`:'';
   const gal=galleryHTML(v);
   b.innerHTML=`${gal||(ph.length?`<div class="photos">${ph.map(s=>`<img src="${s}" alt="${esc(t('photoAlt',v.n))}" loading="lazy">`).join('')}</div>`:'')}
