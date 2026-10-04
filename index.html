@@ -161,11 +161,12 @@ details.v>summary::-webkit-details-marker{display:none}
 .price .was span,.price .was{text-decoration:none}.price .was::after{content:''}
 .price .was b{text-decoration:line-through}
 .price .tot i{color:var(--jade-700)}
-.rowCopy{position:absolute;right:20px;bottom:14px;height:28px;padding:0 10px;font-size:12px;border-radius:999px;background:var(--surface);color:var(--ink2);border:1px solid var(--line-strong);letter-spacing:.02em}
+.rowBtns{position:absolute;right:20px;bottom:14px;display:flex;gap:6px}
+.rowCopy{height:28px;padding:0 10px;font-size:12px;border-radius:999px;background:var(--surface);color:var(--ink2);border:1px solid var(--line-strong);letter-spacing:.02em}
 .rowCopy:hover{background:var(--paper-50);color:var(--ink);border-color:var(--ink-900);transform:none;box-shadow:none}
 .rowCopy.done{background:var(--jade-700);border-color:var(--jade-700);color:#fff}
 details.v>summary{position:relative;padding-bottom:48px}
-@media (max-width:560px){.rowCopy{right:16px;bottom:12px}}
+@media (max-width:560px){.rowBtns{right:16px;bottom:12px}}
 .feat dd .pay{font-size:11px;color:var(--sun-700);background:var(--sun-50);border-radius:999px;padding:1px 7px;margin-left:2px;white-space:nowrap}
 .price .dl{display:block;font-size:11.5px;color:var(--jade-700);margin-top:2px;letter-spacing:.02em;font-family:var(--body)}
 .c-time{background:var(--paper-200);color:var(--ink-700)}
@@ -196,6 +197,9 @@ body.share details.v>summary{padding:0 0 12px}
 body.share .body{border-top:0;padding:0}
 body.share .nm{font-size:24px;line-height:1.3}
 .shareFoot{font-size:12.5px;color:var(--muted);border-top:1px solid var(--line);padding-top:16px;line-height:1.8}
+body.share.quote .price{display:block!important;grid-row:auto;grid-column:1;text-align:left;margin-top:6px;padding:10px 14px;background:var(--surface-warm);border:1px solid var(--line);border-radius:var(--r-md);width:max-content;max-width:100%}
+body.quote .price .tot i{color:var(--muted)}
+body.quote .price .per{display:block}
 .copyBtn.done{background:var(--jade-700);border-color:var(--jade-700);color:#fff}
 .chip{font-size:12px;font-weight:500;padding:3px 10px;border-radius:999px;border:1px solid transparent;white-space:nowrap;letter-spacing:.04em;line-height:1.5}
 .c-ok{background:var(--jade-100);color:var(--jade-700)}
@@ -433,10 +437,10 @@ zh:{
   why_min:(n,k)=>`需連住 ${n} 晚（目前 ${k} 晚）`, why_win:'入住日不在活動期間', why_lead:(n,d)=>`需提前 ${n} 天以上預訂（目前距入住 ${d} 天）`, why_late:(n,d)=>`需入住前 ${n} 天內預訂（目前距入住 ${d} 天）`, why_sea:'入住季節不符', why_dyn:'浮動價別墅，請回後台確認',
   dlOff:(lbl)=>`套用「${lbl}」`, dlMore:n=>`另有 ${n} 個適用規則`,
   chTime:(a,b)=>`入住 ${a}｜退房 ${b}`, bf_inc:'每日含早餐', bf_first:'僅第一天含早餐', bf_floatinc:'含漂浮早餐', bf_paid:'早餐另付', bf_req:'早餐可代訂（另付）', bf_floatreq:'漂浮早餐可加購', bf_none:'無早餐資訊',
-  lblPub:'官網直售價', lblPartner:'同業折扣價', btnShareRow:'複製客人連結', payTag:'另付', featExtra:'其他另付項目',
+  lblPub:'官網直售價', lblPartner:'同業折扣價', btnShareRow:'複製客人連結', btnQuoteRow:'複製客人連結（含官網價）', btnQuote:'複製客人連結（含官網價）', quoteDates:(a,b,n)=>`${a} → ${b}，${n} 晚`, payTag:'另付', featExtra:'其他另付項目',
   fCi:'🕑 入住時間', fCo:'🕚 退房時間', fCiV:a=>`${a} 之後`, fCoV:a=>`${a} 之前`, fBf:'🍳 早餐', fNA:'未提供',
   secStay:'入住與早餐', secPol:'付款與取消規定', polPay:'付款', polCancel:'取消與退款', polRules:'房規', polIncl:'房費已含', polFees:'需額外付費', polNone:'Villa Finder 未列', polSrc:'來源：Villa Finder 公開頁面（2026/10 擷取），以訂房時 Villa Finder 回覆為準。',
-  btnShare:'複製客人連結', shareDone:'已複製', shareTag:'找尋最適合你的峇里島私人泳池別墅', shareFoot:'本頁由 Outo 奧拓提供給旅人參考：照片與設施資料來自別墅方，房況、價格與預訂請洽你的 Outo 旅程規劃師。', shareBack:'回查詢頁', shareMissing:'找不到這間別墅。',
+  btnShare:'複製客人連結', shareDone:'已複製', shareTag:'找尋最適合你的峇里島私人泳池別墅', shareFoot:'本頁由 Outo 奧拓提供給旅人參考：照片與設施資料來自別墅方，房況與預訂請洽你的 Outo 旅程規劃師。', quoteFoot:'本頁由 Outo 奧拓提供給旅人參考：價格為別墅官網公告價（美金、含稅），以確認訂房時為準；房況與預訂請洽你的 Outo 旅程規劃師。', shareBack:'回查詢頁', shareMissing:'找不到這間別墅。',
   lkMap:'Google 地圖位置', addrT:'在 Google 地圖開啟', addrVague:'（Google 僅有區域，無門牌）', lkWeb:'別墅官網', lkVf:'Villa Finder 頁面（已帶入日期）', lkAlbum:'完整相簿', lkDs:'房源說明（Villa Finder 提供）',
   lkBooking:'Booking.com 搜尋', lkAgoda:'Agoda 搜尋', lkAirbnb:'Airbnb 搜尋',
   fMax:'👥 最多入住', fMaxV:n=>n+' 人', fLayouts:'🛏️ 可訂房數', fLayoutsV:b=>b.map(x=>x+' 房').join('／'), fSize:'📐 別墅面積', fGarden:'🌿 庭院', fStaff:'🧹 駐點員工', fStaffV:n=>n+' 人', fGps:'📍 GPS 座標', fBed:'🛌 床型', fBedNone:'說明未寫明',
@@ -514,10 +518,10 @@ en:{
   why_min:(n,k)=>`needs ${n} nights (you have ${k})`, why_win:'check-in outside promo period', why_lead:(n,d)=>`needs booking ${n}+ days ahead (now ${d} days)`, why_late:(n,d)=>`needs booking within ${n} days (now ${d} days)`, why_sea:'season does not match', why_dyn:'dynamic-rate villa — check the portal',
   dlOff:(lbl)=>`with "${lbl}"`, dlMore:n=>`+${n} more rule${n>1?'s':''}`,
   chTime:(a,b)=>`In ${a} · Out ${b}`, bf_inc:'Breakfast included daily', bf_first:'Breakfast first day only', bf_floatinc:'Floating breakfast included', bf_paid:'Breakfast extra charge', bf_req:'Breakfast on request (extra)', bf_floatreq:'Floating breakfast on request', bf_none:'No breakfast info',
-  lblPub:'Public rate', lblPartner:'Partner rate', btnShareRow:'Copy guest link', payTag:'extra', featExtra:'Other paid extras',
+  lblPub:'Public rate', lblPartner:'Partner rate', btnShareRow:'Copy guest link', btnQuoteRow:'Copy guest link (with public rate)', btnQuote:'Copy guest link (with public rate)', quoteDates:(a,b,n)=>`${a} → ${b}, ${n} night${n===1?'':'s'}`, payTag:'extra', featExtra:'Other paid extras',
   fCi:'🕑 Check-in', fCo:'🕚 Check-out', fCiV:a=>`after ${a}`, fCoV:a=>`before ${a}`, fBf:'🍳 Breakfast', fNA:'Not provided',
   secStay:'Check-in and breakfast', secPol:'Payment and cancellation', polPay:'Payment', polCancel:'Cancellation and refund', polRules:'House rules', polIncl:'Included in rate', polFees:'Extra charges', polNone:'Not listed by Villa Finder', polSrc:'Source: Villa Finder public page (captured Oct 2026). Villa Finder\'s reply at booking prevails.',
-  btnShare:'Copy guest link', shareDone:'Copied', shareTag:'Find the Bali private pool villa that fits you', shareFoot:'Shared by Outo for travellers: photos and facilities come from the villa; for availability, pricing and booking contact your Outo trip planner.', shareBack:'Back to search', shareMissing:'Villa not found.',
+  btnShare:'Copy guest link', shareDone:'Copied', shareTag:'Find the Bali private pool villa that fits you', shareFoot:'Shared by Outo for travellers: photos and facilities come from the villa; for availability and booking contact your Outo trip planner.', quoteFoot:'Shared by Outo for travellers: the price is the villa\'s published rate (USD, tax included) and is confirmed at booking; for availability and booking contact your Outo trip planner.', shareBack:'Back to search', shareMissing:'Villa not found.',
   lkMap:'Google Maps location', addrT:'Open in Google Maps', addrVague:'(area only — no street address on Google)', lkWeb:'Villa website', lkVf:'Villa Finder page (dates pre-filled)', lkAlbum:'Full photo album', lkDs:'Property fact sheet (from Villa Finder)',
   lkBooking:'Search on Booking.com', lkAgoda:'Search on Agoda', lkAirbnb:'Search on Airbnb',
   fMax:'👥 Max guests', fMaxV:n=>n+' guests', fLayouts:'🛏️ Layouts', fLayoutsV:b=>b.join(' / ')+' BR', fSize:'📐 Villa size', fGarden:'🌿 Garden', fStaff:'🧹 On-site staff', fStaffV:n=>n+' staff', fGps:'📍 GPS coordinates', fBed:'🛌 Bed types', fBedNone:'Not specified',
@@ -606,7 +610,8 @@ function quote(v,ciD,nights,minBr){
   return {br,total,per:total/nights,minStay,short:nights<minStay,seasons:[...seasons]};
 }
 
-const SHARE=(()=>{try{return new URLSearchParams(location.search).get('share')||'';}catch(e){return '';}})();
+const URLP=(()=>{try{return new URLSearchParams(location.search);}catch(e){return new URLSearchParams();}})();
+const QUOTE=URLP.get('quote')||'';const SHARE=URLP.get('share')||QUOTE;
 const SEA_CODE={'low':'L','mid-high':'M','high':'H','peak':'P','mid-peak':'Q'};
 const ymd8=d=>d.getUTCFullYear()+pad(d.getUTCMonth()+1)+pad(d.getUTCDate());
 const fmt8=s=>s?`${s.slice(0,4)}/${+s.slice(4,6)}/${+s.slice(6,8)}`:'';
@@ -640,6 +645,7 @@ const L2=pair=>LANG==='en'?pair[1]:pair[0];
 function timeChip(v){const p=polOf(v.s);if(!p||!p.ci)return '';return `<span class="chip c-time">${esc(t('chTime',p.ci,p.co||'—'))}</span>`;}
 function bfChip(v){const b=bfOf(v.s);if(!b)return '';const code=b[0];const cls=code==='inc'||code==='floatinc'?'':code==='first'?' paid':code==='none'?' no':' paid';let txt=t('bf_'+code);if(code==='paid'&&b[1])txt=b[1].replace(/^早餐/,'早餐另付').replace(/^Breakfast/,'Breakfast extra');return `<span class="chip c-bf${cls}" title="${esc(b[1]||'')}">${esc(txt)}</span>`;}
 function shareUrl(s){return location.origin+location.pathname.replace(/index\.html$/,'')+'?share='+encodeURIComponent(s);}
+function quoteUrl(s){return location.origin+location.pathname.replace(/index\.html$/,'')+'?quote='+encodeURIComponent(s)+'&ci='+$('ci').value+'&co='+$('co').value+'&br='+$('br').value;}
 function state(){const ciD=fromInput($('ci').value),coD=fromInput($('co').value);return {ciD,coD,nights:Math.round((coD-ciD)/864e5),ci:key(ciD),co:key(coD)};}
 
 // ---- Static map (Google Static Maps images + our own pins) ----
@@ -722,7 +728,7 @@ function render(){
   const wasOpen=new Set([...list.querySelectorAll('details.v[open]')].map(d=>d.dataset.s));
   list.innerHTML='';
   if(!(nights>0)){$('sum').innerHTML='<span>'+t('coAfterCi')+'</span>';return;}
-  const minBr=SHARE?1:+$('br').value,area=$('area').value,gu=+$('gu').value,dt=+$('dt').value;
+  const minBr=QUOTE?(+URLP.get('br')||1):SHARE?1:+$('br').value,area=$('area').value,gu=+$('gu').value,dt=+$('dt').value;
   const qRaw=($('q').value||'').trim();const qn=norm(qRaw);
   const qOk=v=>!qn||norm(v.n).includes(qn)||norm(v.s).includes(qn);
   $('qClr').hidden=!qRaw;
@@ -747,7 +753,7 @@ function render(){
   const frag=document.createDocumentFragment();
   for(const x of items){const el=row(x,ciD,coD,nights);frag.appendChild(el);if(wasOpen.has(x.v.s)||SHARE)el.open=true;}
   list.appendChild(frag);
-  if(SHARE){const f=document.createElement('div');f.className='shareFoot';f.textContent=t('shareFoot');list.appendChild(f);}
+  if(SHARE){const f=document.createElement('div');f.className='shareFoot';f.textContent=t(QUOTE?'quoteFoot':'shareFoot');list.appendChild(f);}
 }
 
 
@@ -783,11 +789,12 @@ function row(x,ciD,coD,nights){
   {const tc=twinChip(v);if(tc)chips.push(tc);}
   let price=`<span class="per">${t('priceCheck')}</span>`;
   const pc=promoCalc(v,q,ciD,nights);
-  if(!q.missing) price=q.dynamic?`<span class="tot">${usd(q.lo)}–${Math.round(q.hi).toLocaleString('en-US')}</span><span class="per">${t('priceRange',q.br)}</span>`:(pc&&pc.best?`<span class="was"><i>${t('lblPub')}</i><b>${usd(q.total)}</b></span><span class="tot"><i>${t('lblPartner')}</i>${usd(pc.best.total)}</span><span class="per">${t('priceAvg',usd(pc.best.total/nights),q.br)}</span><span class="dl">${esc(t('dlOff',pc.best.label))}${pc.n>1?' · '+esc(t('dlMore',pc.n-1)):''}</span>`:`<span class="tot">${usd(q.total)}</span><span class="per">${t('priceAvg',usd(q.per),q.br)}</span>`);
+  if(QUOTE){price=q.missing?`<span class="per">${t('priceCheck')}</span>`:q.dynamic?`<span class="tot">${usd(q.lo)}–${Math.round(q.hi).toLocaleString('en-US')}</span><span class="per">${t('priceRange',q.br)}</span>`:`<span class="tot"><i>${t('lblPub')}</i>${usd(q.total)}</span><span class="per">${t('priceAvg',usd(q.per),q.br)}</span><span class="per">${esc(t('quoteDates',fmt(ciD),fmt(coD),nights))}</span>`;}
+  else if(!q.missing) price=q.dynamic?`<span class="tot">${usd(q.lo)}–${Math.round(q.hi).toLocaleString('en-US')}</span><span class="per">${t('priceRange',q.br)}</span>`:(pc&&pc.best?`<span class="was"><i>${t('lblPub')}</i><b>${usd(q.total)}</b></span><span class="tot"><i>${t('lblPartner')}</i>${usd(pc.best.total)}</span><span class="per">${t('priceAvg',usd(pc.best.total/nights),q.br)}</span><span class="dl">${esc(t('dlOff',pc.best.label))}${pc.n>1?' · '+esc(t('dlMore',pc.n-1)):''}</span>`:`<span class="tot">${usd(q.total)}</span><span class="per">${t('priceAvg',usd(q.per),q.br)}</span>`);
   const ph=photosOf(v);const g0=gsOf(v.s);const promo=promoOf(v);
-  el.innerHTML=`<summary>${ph[0]?`<img class="thumb" src="${ph[0]}" alt="">`:(g0?`<span class="thumb" style="${tileStyle(g0.k,0,g0.c[0]+g0.c[1]+g0.c[2])}"></span>`:'<span class="thumb" aria-hidden="true"></span>')}<div class="nm">${esc(v.n)}<small>${esc(areaName(v.a))}</small>${rateOf(v)}${addrOf(v)}</div><div class="price">${price}</div>${SHARE?'':`<button type="button" class="rowCopy" data-s="${esc(v.s)}">${t('btnShareRow')}</button>`}<div class="meta">${chips.join('')}<span>${esc(t('layouts',v.b))}</span></div></summary><div class="body"></div>`;
+  el.innerHTML=`<summary>${ph[0]?`<img class="thumb" src="${ph[0]}" alt="">`:(g0?`<span class="thumb" style="${tileStyle(g0.k,0,g0.c[0]+g0.c[1]+g0.c[2])}"></span>`:'<span class="thumb" aria-hidden="true"></span>')}<div class="nm">${esc(v.n)}<small>${esc(areaName(v.a))}</small>${rateOf(v)}${addrOf(v)}</div><div class="price">${price}</div>${SHARE?'':`<span class="rowBtns"><button type="button" class="rowCopy" data-s="${esc(v.s)}">${t('btnShareRow')}</button><button type="button" class="rowCopy rowQuote" data-s="${esc(v.s)}">${t('btnQuoteRow')}</button></span>`}<div class="meta">${chips.join('')}<span>${esc(t('layouts',v.b))}</span></div></summary><div class="body"></div>`;
   el.addEventListener('toggle',()=>{if(el.open&&!el._built){el._built=true;fillBody(el.querySelector('.body'),x,ciD,coD,nights);}});
-  const rc=el.querySelector('.rowCopy');if(rc)rc.addEventListener('click',async e=>{e.preventDefault();e.stopPropagation();const u=shareUrl(v.s);try{await navigator.clipboard.writeText(u);}catch(err){window.prompt('URL',u);}rc.classList.add('done');rc.textContent=t('shareDone')+' ✓';setTimeout(()=>{rc.classList.remove('done');rc.textContent=t('btnShareRow');},1800);});
+  el.querySelectorAll('.rowCopy').forEach(rc=>rc.addEventListener('click',async e=>{e.preventDefault();e.stopPropagation();const isQ=rc.classList.contains('rowQuote');const u=isQ?quoteUrl(v.s):shareUrl(v.s);try{await navigator.clipboard.writeText(u);}catch(err){window.prompt('URL',u);}rc.classList.add('done');rc.textContent=t('shareDone')+' ✓';setTimeout(()=>{rc.classList.remove('done');rc.textContent=t(isQ?'btnQuoteRow':'btnShareRow');},1800);}));
   return el;
 }
 
@@ -840,9 +847,9 @@ function fillBody(b,x,ciD,coD,nights){
   ${promoSec}
   ${polSec}${rulesSec}
   <div class="secNotes"><p class="sec">${t('secNotes')}</p><ul class="notes">${notes.map(([c,x])=>`<li class="${c}">${esc(x)}</li>`).join('')}</ul></div>
-  <div class="actions"><a class="btnlink" href="${vfReq(v,ciD,coD)}" target="_blank" rel="noopener">${t('btnVf')}</a><button type="button" class="book ghost">${t('btnEmail')}</button><button type="button" class="ghost copyBtn">${t('btnShare')}</button><p class="acthint">${t('actHint')}</p></div>`;
+  <div class="actions"><a class="btnlink" href="${vfReq(v,ciD,coD)}" target="_blank" rel="noopener">${t('btnVf')}</a><button type="button" class="book ghost">${t('btnEmail')}</button><button type="button" class="ghost copyBtn">${t('btnShare')}</button><button type="button" class="ghost copyBtn quoteBtn">${t('btnQuote')}</button><p class="acthint">${t('actHint')}</p></div>`;
   b.querySelector('.book').addEventListener('click',()=>openBooking(x,ciD,coD,nights));
-  b.querySelector('.copyBtn').addEventListener('click',async e=>{const btn=e.currentTarget;const u=shareUrl(v.s);try{await navigator.clipboard.writeText(u);}catch(err){window.prompt('URL',u);}btn.classList.add('done');btn.textContent=t('shareDone')+' ✓';setTimeout(()=>{btn.classList.remove('done');btn.textContent=t('btnShare');},1800);});
+  b.querySelectorAll('.copyBtn').forEach(btn=>btn.addEventListener('click',async e=>{const isQ=btn.classList.contains('quoteBtn');const u=isQ?quoteUrl(v.s):shareUrl(v.s);try{await navigator.clipboard.writeText(u);}catch(err){window.prompt('URL',u);}btn.classList.add('done');btn.textContent=t('shareDone')+' ✓';setTimeout(()=>{btn.classList.remove('done');btn.textContent=t(isQ?'btnQuote':'btnShare');},1800);}));
 }
 
 // ---- booking ----
@@ -966,6 +973,7 @@ $('lang').addEventListener('click',e=>{const b=e.target.closest('button[data-lan
   applyStatic();
   const t0=new Date(),base=new Date(Date.UTC(t0.getUTCFullYear(),t0.getUTCMonth(),t0.getUTCDate()));
   let saved={};try{saved=JSON.parse(localStorage.getItem('vf-search')||'{}');}catch(e){}
+  if(QUOTE&&/^\d{4}-\d{2}-\d{2}$/.test(URLP.get('ci')||'')&&/^\d{4}-\d{2}-\d{2}$/.test(URLP.get('co')||'')){saved={ci:URLP.get('ci'),co:URLP.get('co'),br:URLP.get('br')||saved.br};}
   $('ci').value=saved.ci&&saved.ci>=toInput(base)?saved.ci:toInput(addDays(base,30));
   $('co').value=saved.co&&saved.co>$('ci').value?saved.co:toInput(addDays(fromInput($('ci').value),4));
   for(const k of ['br','gu','area','sort','dt']) if(saved[k]!=null) $(k).value=saved[k];
@@ -975,6 +983,7 @@ $('lang').addEventListener('click',e=>{const b=e.target.closest('button[data-lan
   initZoom();if(useDyn()){$('gmap').hidden=false;$('mapTabs').hidden=true;$('smap').hidden=true;document.querySelector('.mapfoot').hidden=true;}
   $('mapWrap').addEventListener('toggle',()=>{if($('mapWrap').open){if(useDyn()){if(gState==='idle')loadGMaps();else drawGMap(true);}else drawMap();}});
   if(HOSTED){$('rec').hidden=true;if(!SHARE)pollAvail();}
+  if(QUOTE)document.body.classList.add('quote');
   if(SHARE){document.body.classList.add('share');$('mapWrap').open=false;$('fresh').hidden=true;$('helpBtn').hidden=true;$('histBtn').hidden=true;document.querySelector('.hdr-r').style.display='flex';}
   applyShare();
   $('mapWrap').addEventListener('toggle',()=>{try{localStorage.setItem('vf-map-open',$('mapWrap').open?'1':'0');}catch(e){}});
