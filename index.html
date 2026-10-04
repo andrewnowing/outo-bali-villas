@@ -122,6 +122,16 @@ details.mapwrap>summary::-webkit-details-marker{display:none}
 .pinTip{position:absolute;background:var(--ink-900);color:var(--paper-50);font-size:12px;padding:4px 10px;border-radius:var(--r-sm);pointer-events:none;white-space:nowrap;transform:translate(-50%,-150%) scale(var(--inv,1));z-index:6}
 .mapfoot{padding:10px 20px 14px;font-size:12px;color:var(--muted)}
 .gmap{height:520px;border-top:1px solid var(--line)}
+.poiBox{padding:0 20px 14px;border-top:1px solid var(--line-subtle)}
+.poiRow{display:flex;flex-wrap:wrap;gap:10px;align-items:center;padding-top:12px}
+.poiLbl{font-family:var(--sans);font-weight:600;font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--sun-deep);flex-basis:100%}
+.poiIn{flex:1 1 320px;min-width:0}
+.poiIn gmp-place-autocomplete{width:100%;--gmp-mat-color-surface:var(--surface);--gmp-mat-color-on-surface:var(--ink);--gmp-mat-color-outline:var(--line-strong);border-radius:var(--r-md);font-family:var(--body)}
+#poiMode{width:auto;min-width:96px}
+#poiClr{height:44px;padding:0 14px;font-size:13px}
+.poiMsg{font-size:12.5px;color:var(--muted);margin-top:8px;min-height:1em}
+.poiMsg.err{color:var(--clay-600)}
+.chip.c-poi{background:var(--sun-50);color:var(--sun-700)}
 .gmap[hidden]{display:none}
 .gm-iw{font:13px/1.5 "JinXuanNaTi","Noto Sans TC",system-ui,sans-serif;color:var(--ink-900);max-width:240px}.gm-iw b{font-size:14px;font-weight:600}.gm-iw .p{margin-top:4px}.gm-iw a{color:var(--sun-deep);font-weight:600;text-decoration:none}
 details.v.hl{border-color:var(--ink-900);box-shadow:var(--ring)}
@@ -165,7 +175,6 @@ details.v>summary::-webkit-details-marker{display:none}
 .rowCopy{height:28px;padding:0 10px;font-size:12px;border-radius:999px;background:var(--surface);color:var(--ink2);border:1px solid var(--line-strong);letter-spacing:.02em}
 .rowCopy:hover{background:var(--paper-50);color:var(--ink);border-color:var(--ink-900);transform:none;box-shadow:none}
 .rowCopy.done{background:var(--jade-700);border-color:var(--jade-700);color:#fff}
-details.v>summary{position:relative;padding-bottom:48px}
 @media (max-width:560px){.rowBtns{right:16px;bottom:12px}}
 .feat dd .pay{font-size:11px;color:var(--sun-700);background:var(--sun-50);border-radius:999px;padding:1px 7px;margin-left:2px;white-space:nowrap}
 .price .dl{display:block;font-size:11.5px;color:var(--jade-700);margin-top:2px;letter-spacing:.02em;font-family:var(--body)}
@@ -200,6 +209,8 @@ body.share .nm{font-size:24px;line-height:1.3}
 body.share.quote .price{display:block!important;grid-row:auto;grid-column:1;text-align:left;margin-top:6px;padding:10px 14px;background:var(--surface-warm);border:1px solid var(--line);border-radius:var(--r-md);width:max-content;max-width:100%}
 body.quote .price .tot i{color:var(--muted)}
 body.quote .price .per{display:block}
+body.public #rec,body.public .promoSec,body.public .polSec,body.public .secNotes,body.public .actions,body.public .links a.int,body.public .chip.c-warn:not(.st),body.public .price .was,body.public .price .dl,body.public .poiBox{display:none!important}
+body.public .price .tot i{color:var(--muted)}
 .copyBtn.done{background:var(--jade-700);border-color:var(--jade-700);color:#fff}
 .chip{font-size:12px;font-weight:500;padding:3px 10px;border-radius:999px;border:1px solid transparent;white-space:nowrap;letter-spacing:.04em;line-height:1.5}
 .c-ok{background:var(--jade-100);color:var(--jade-700)}
@@ -318,7 +329,7 @@ button:disabled{opacity:.45;cursor:not-allowed;transform:none;box-shadow:none}
     <label class="f"><span data-t="area">區域</span><select id="area"><option value="" data-t="areaAll">全部區域</option></select></label>
     <label class="f"><span data-t="dt">開車到市區</span><select id="dt"><option value="0" data-t="any">不限</option><option value="10" data-t="dt10">10 分鐘內</option><option value="15" data-t="dt15">15 分鐘內</option><option value="20" data-t="dt20">20 分鐘內</option><option value="30" data-t="dt30">30 分鐘內</option></select></label>
     <label class="f"><span data-t="sort">排序</span>
-      <select id="sort"><option value="price" data-t="sortPrice">總價低到高</option><option value="pricedesc" data-t="sortPriceDesc">總價高到低</option><option value="dist" data-t="sortDist">離市區最近</option><option value="rate" data-t="sortRate">Google 評分高到低</option><option value="name" data-t="sortName">名稱</option></select>
+      <select id="sort"><option value="price" data-t="sortPrice">總價低到高</option><option value="pricedesc" data-t="sortPriceDesc">總價高到低</option><option value="dist" data-t="sortDist">離市區最近</option><option value="rate" data-t="sortRate">Google 評分高到低</option><option value="poi" id="sortPoi" data-t="sortPoi" hidden>離景點最近</option><option value="name" data-t="sortName">名稱</option></select>
     </label>
     <label class="chk"><input type="checkbox" id="onlyFree" checked><span data-t="onlyFree">只看有空房</span></label>
     <div class="f chips" role="group" aria-labelledby="bedL"><span id="bedL" data-t="bed">房型（可複選，全部都要有）</span><div class="chipbar">
@@ -336,6 +347,7 @@ button:disabled{opacity:.45;cursor:not-allowed;transform:none;box-shadow:none}
 
   <div class="summary" id="sum"></div>
   <details class="mapwrap" id="mapWrap" open><summary><span data-t="mapT">地圖</span><span id="mapN" class="mapn"></span><span class="maplegend"><i class="lg ok"></i><span data-t="chAvail">有空房</span><i class="lg busy"></i><span data-t="chBooked">已被訂</span><i class="lg unk"></i><span data-t="chNoData">無房況資料</span></span></summary>
+    <div class="poiBox" id="poiBox" hidden><div class="poiRow"><span class="poiLbl" data-t="poiL">輸入景點，算每間別墅到那裡的車程</span><div class="poiIn" id="poiIn"></div><select id="poiMode" aria-label="mode"><option value="DRIVE" data-t="poiDrive">開車</option><option value="WALK" data-t="poiWalk">步行</option></select><button type="button" id="poiClr" class="ghost" hidden data-t="poiClr">清除</button></div><div class="poiMsg" id="poiMsg"></div></div>
     <div id="gmap" class="gmap" hidden></div>
     <div class="maptabs" id="mapTabs" role="tablist"></div>
     <div class="smap" id="smap"><div class="smapInner" id="smapInner"><img id="smapImg" alt="" draggable="false"><div class="pins" id="pins"></div><div class="pinTip" id="pinTip" hidden></div></div><div class="zoomctl"><button type="button" id="zIn" aria-label="zoom in">＋</button><button type="button" id="zOut" aria-label="zoom out">－</button><button type="button" id="zReset" aria-label="reset">⟲</button></div></div>
@@ -437,7 +449,8 @@ zh:{
   why_min:(n,k)=>`需連住 ${n} 晚（目前 ${k} 晚）`, why_win:'入住日不在活動期間', why_lead:(n,d)=>`需提前 ${n} 天以上預訂（目前距入住 ${d} 天）`, why_late:(n,d)=>`需入住前 ${n} 天內預訂（目前距入住 ${d} 天）`, why_sea:'入住季節不符', why_dyn:'浮動價別墅，請回後台確認',
   dlOff:(lbl)=>`套用「${lbl}」`, dlMore:n=>`另有 ${n} 個適用規則`,
   chTime:(a,b)=>`入住 ${a}｜退房 ${b}`, bf_inc:'每日含早餐', bf_first:'僅第一天含早餐', bf_floatinc:'含漂浮早餐', bf_paid:'早餐另付', bf_req:'早餐可代訂（另付）', bf_floatreq:'漂浮早餐可加購', bf_none:'無早餐資訊',
-  lblPub:'官網直售價', lblPartner:'同業折扣價', btnShareRow:'複製客人連結', btnQuoteRow:'複製客人連結（含官網價）', btnQuote:'複製客人連結（含官網價）', quoteDates:(a,b,n)=>`${a} → ${b}，${n} 晚`, payTag:'另付', featExtra:'其他另付項目',
+  poiL:'輸入景點，算每間別墅到那裡的車程', poiDrive:'開車', poiWalk:'步行', poiClr:'清除景點', poiPh:'例：Potato Head、Uluwatu Temple、Ubud 市場', poiCalc:n=>`計算中…（${n} 間）`, poiDone:(n,m)=>`已算出 ${n} 間到「${m}」的距離，可用「離景點最近」排序`, poiErr:'Google 路線服務目前無法使用，請稍後再試', poiNoGeo:'這個地點沒有座標', poiChip:(m,mode,min,km)=>`到 ${m} ${mode==='WALK'?'步行':'車程'} ${min} 分 · ${km} km`, poiNone:(m)=>`到 ${m}：無法計算`, sortPoi:'離景點最近',
+  lblPub:'官網直售價', lblPartner:'同業折扣價', pubTitle:'Outo 峇里島私人泳池別墅', pubSub:'找尋最適合你的峇里島私人泳池別墅 · 118 間 · 價格為別墅官網公告價（美金、含稅）', pubNote:'房況每 5 分鐘自動同步，仍可能與別墅實際狀況有時間差；價格為別墅官網公告價，以確認訂房時為準。想預訂或想了解更多，請聯絡你的 Outo 旅程規劃師。', quoteDates:(a,b,n)=>`${a} → ${b}，${n} 晚`, payTag:'另付', featExtra:'其他另付項目',
   fCi:'🕑 入住時間', fCo:'🕚 退房時間', fCiV:a=>`${a} 之後`, fCoV:a=>`${a} 之前`, fBf:'🍳 早餐', fNA:'未提供',
   secStay:'入住與早餐', secPol:'付款與取消規定', polPay:'付款', polCancel:'取消與退款', polRules:'房規', polIncl:'房費已含', polFees:'需額外付費', polNone:'Villa Finder 未列', polSrc:'來源：Villa Finder 公開頁面（2026/10 擷取），以訂房時 Villa Finder 回覆為準。',
   btnShare:'複製客人連結', shareDone:'已複製', shareTag:'找尋最適合你的峇里島私人泳池別墅', shareFoot:'本頁由 Outo 奧拓提供給旅人參考：照片與設施資料來自別墅方，房況與預訂請洽你的 Outo 旅程規劃師。', quoteFoot:'本頁由 Outo 奧拓提供給旅人參考：價格為別墅官網公告價（美金、含稅），以確認訂房時為準；房況與預訂請洽你的 Outo 旅程規劃師。', shareBack:'回查詢頁', shareMissing:'找不到這間別墅。',
@@ -518,7 +531,8 @@ en:{
   why_min:(n,k)=>`needs ${n} nights (you have ${k})`, why_win:'check-in outside promo period', why_lead:(n,d)=>`needs booking ${n}+ days ahead (now ${d} days)`, why_late:(n,d)=>`needs booking within ${n} days (now ${d} days)`, why_sea:'season does not match', why_dyn:'dynamic-rate villa — check the portal',
   dlOff:(lbl)=>`with "${lbl}"`, dlMore:n=>`+${n} more rule${n>1?'s':''}`,
   chTime:(a,b)=>`In ${a} · Out ${b}`, bf_inc:'Breakfast included daily', bf_first:'Breakfast first day only', bf_floatinc:'Floating breakfast included', bf_paid:'Breakfast extra charge', bf_req:'Breakfast on request (extra)', bf_floatreq:'Floating breakfast on request', bf_none:'No breakfast info',
-  lblPub:'Public rate', lblPartner:'Partner rate', btnShareRow:'Copy guest link', btnQuoteRow:'Copy guest link (with public rate)', btnQuote:'Copy guest link (with public rate)', quoteDates:(a,b,n)=>`${a} → ${b}, ${n} night${n===1?'':'s'}`, payTag:'extra', featExtra:'Other paid extras',
+  poiL:'Enter a place to get travel time from every villa', poiDrive:'Drive', poiWalk:'Walk', poiClr:'Clear place', poiPh:'e.g. Potato Head, Uluwatu Temple, Ubud market', poiCalc:n=>`Calculating… (${n} villas)`, poiDone:(n,m)=>`Travel time to "${m}" ready for ${n} villas — sort by "Closest to place"`, poiErr:'Google routing is unavailable right now, try again later', poiNoGeo:'This place has no coordinates', poiChip:(m,mode,min,km)=>`${mode==='WALK'?'Walk':'Drive'} to ${m}: ${min} min · ${km} km`, poiNone:(m)=>`To ${m}: n/a`, sortPoi:'Closest to place',
+  lblPub:'Public rate', lblPartner:'Partner rate', pubTitle:'Outo Bali Private Pool Villas', pubSub:'Find the Bali private pool villa that fits you · 118 villas · prices are the villas\' published rates (USD, tax included)', pubNote:'Availability syncs every 5 minutes and may lag the villa\'s live status; prices are published rates and are confirmed at booking. To book or ask anything, contact your Outo trip planner.', quoteDates:(a,b,n)=>`${a} → ${b}, ${n} night${n===1?'':'s'}`, payTag:'extra', featExtra:'Other paid extras',
   fCi:'🕑 Check-in', fCo:'🕚 Check-out', fCiV:a=>`after ${a}`, fCoV:a=>`before ${a}`, fBf:'🍳 Breakfast', fNA:'Not provided',
   secStay:'Check-in and breakfast', secPol:'Payment and cancellation', polPay:'Payment', polCancel:'Cancellation and refund', polRules:'House rules', polIncl:'Included in rate', polFees:'Extra charges', polNone:'Not listed by Villa Finder', polSrc:'Source: Villa Finder public page (captured Oct 2026). Villa Finder\'s reply at booking prevails.',
   btnShare:'Copy guest link', shareDone:'Copied', shareTag:'Find the Bali private pool villa that fits you', shareFoot:'Shared by Outo for travellers: photos and facilities come from the villa; for availability and booking contact your Outo trip planner.', quoteFoot:'Shared by Outo for travellers: the price is the villa\'s published rate (USD, tax included) and is confirmed at booking; for availability and booking contact your Outo trip planner.', shareBack:'Back to search', shareMissing:'Villa not found.',
@@ -611,7 +625,7 @@ function quote(v,ciD,nights,minBr){
 }
 
 const URLP=(()=>{try{return new URLSearchParams(location.search);}catch(e){return new URLSearchParams();}})();
-const QUOTE=URLP.get('quote')||'';const SHARE=URLP.get('share')||QUOTE;
+const QUOTE=URLP.get('quote')||'';const SHARE=URLP.get('share')||QUOTE;const PUBLIC=URLP.get('mode')==='public'||/\/guest\/?$/.test(location.pathname);const PUB=!!(QUOTE||PUBLIC);
 const SEA_CODE={'low':'L','mid-high':'M','high':'H','peak':'P','mid-peak':'Q'};
 const ymd8=d=>d.getUTCFullYear()+pad(d.getUTCMonth()+1)+pad(d.getUTCDate());
 const fmt8=s=>s?`${s.slice(0,4)}/${+s.slice(4,6)}/${+s.slice(6,8)}`:'';
@@ -639,6 +653,23 @@ function mergedFeats(v){const F=featsOf(v);const pol=polOf(v.s);const fees=(pol&
   const out=Object.entries(F).map(([c,a])=>{const items=a.map(it=>{const k=FEE_KEY.find(([b,re])=>re.test(it));let h=esc(it);if(k){const f=fees.find(x=>!x.used&&x.base===k[0]);if(f){f.used=true;h+=' '+tag(f);}}return h;});return `<dt>${esc(c)}</dt><dd>${items.join(t('sep'))}</dd>`;});
   const rest=fees.filter(f=>!f.used);if(rest.length)out.push(`<dt>${esc(t('featExtra'))}</dt><dd>${rest.map(f=>{const nm=(LANG==='en'?f.en:f.zh);return SHARE?esc(nm.replace(/（.*$/,'').replace(/\s*\(.*$/,'')):esc(nm);}).join(t('sep'))}</dd>`);
   return out.join('');}
+
+let poi=null,poiMarker=null,poiReq=0;
+async function initPOI(){if(!useDyn()||PUB||SHARE)return;try{const {PlaceAutocompleteElement}=await google.maps.importLibrary('places');const el=new PlaceAutocompleteElement({includedRegionCodes:['id'],locationBias:{north:-8.0,south:-8.9,east:115.8,west:114.4}});el.setAttribute('placeholder',t('poiPh'));$('poiIn').innerHTML='';$('poiIn').appendChild(el);$('poiBox').hidden=false;
+  el.addEventListener('gmp-select',async ev=>{try{const place=ev.placePrediction.toPlace();await place.fetchFields({fields:['displayName','location','formattedAddress']});if(!place.location){setPoiMsg(t('poiNoGeo'),true);return;}poi={name:place.displayName||'',lat:place.location.lat(),lng:place.location.lng(),mode:$('poiMode').value,by:{}};await computePOI();}catch(e){setPoiMsg(t('poiErr'),true);}});
+  $('poiMode').addEventListener('change',()=>{if(poi){poi.mode=$('poiMode').value;computePOI();}});
+  $('poiClr').addEventListener('click',()=>{poi=null;if(poiMarker){poiMarker.setMap(null);poiMarker=null;}$('poiClr').hidden=true;$('sortPoi').hidden=true;if($('sort').value==='poi')$('sort').value='price';setPoiMsg('');render();});
+ }catch(e){/* places unavailable */}}
+function setPoiMsg(m,err){const el=$('poiMsg');el.textContent=m;el.classList.toggle('err',!!err);}
+async function computePOI(){if(!poi)return;const my=++poiReq;const dests=VILLAS.filter(v=>v.g);setPoiMsg(t('poiCalc',dests.length));const by={};
+  for(let i=0;i<dests.length;i+=50){const chunk=dests.slice(i,i+50);const body={origins:[{waypoint:{location:{latLng:{latitude:poi.lat,longitude:poi.lng}}}}],destinations:chunk.map(v=>{const [la,ln]=v.g.split(',').map(Number);return {waypoint:{location:{latLng:{latitude:la,longitude:ln}}}};}),travelMode:poi.mode};if(poi.mode==='DRIVE'){body.routingPreference='TRAFFIC_UNAWARE';}
+    let r;try{r=await fetch('https://routes.googleapis.com/distanceMatrix/v2:computeRouteMatrix',{method:'POST',headers:{'Content-Type':'application/json','X-Goog-Api-Key':MAPS_KEY,'X-Goog-FieldMask':'originIndex,destinationIndex,duration,distanceMeters,condition'},body:JSON.stringify(body)});}catch(e){setPoiMsg(t('poiErr'),true);return;}
+    if(!r.ok){setPoiMsg(t('poiErr')+' ('+r.status+')',true);return;}const arr=await r.json();if(my!==poiReq)return;
+    for(const e of (Array.isArray(arr)?arr:[])){const v=chunk[e.destinationIndex];if(!v)continue;if(e.condition==='ROUTE_EXISTS'&&e.duration){by[v.s]={s:parseInt(e.duration),d:e.distanceMeters||0};}else by[v.s]=null;}}
+  if(my!==poiReq)return;poi.by=by;$('poiClr').hidden=false;$('sortPoi').hidden=false;setPoiMsg(t('poiDone',Object.values(by).filter(Boolean).length,poi.name));
+  if(gmap){if(poiMarker)poiMarker.setMap(null);poiMarker=new google.maps.Marker({map:gmap,position:{lat:poi.lat,lng:poi.lng},title:poi.name,icon:{path:google.maps.SymbolPath.CIRCLE,scale:9,fillColor:'#FEA600',fillOpacity:1,strokeColor:'#1B1A14',strokeWeight:2},zIndex:9});}
+  render();}
+function poiChip(v){if(!poi||!poi.by)return '';const r=poi.by[v.s];if(r===undefined)return '';if(!r)return `<span class="chip c-poi">${esc(t('poiNone',poi.name))}</span>`;return `<span class="chip c-poi">${esc(t('poiChip',poi.name,poi.mode,Math.max(1,Math.round(r.s/60)),(r.d/1000).toFixed(1)))}</span>`;}
 function polOf(s){return (typeof POL!=='undefined'&&POL[s])||null;}
 function bfOf(s){return (typeof BF!=='undefined'&&BF[s])||null;}
 const L2=pair=>LANG==='en'?pair[1]:pair[0];
@@ -673,7 +704,7 @@ let gmap=null,gmarkers=new Map(),gInfo=null,gState='idle';
 function useDyn(){return HOSTED&&MAPS_KEY;}
 function loadGMaps(){if(gState!=='idle')return;gState='loading';window.__gmReady=()=>{gState='ready';initGMap();};const sc=document.createElement('script');sc.src='https://maps.googleapis.com/maps/api/js?key='+encodeURIComponent(MAPS_KEY)+'&v=weekly&loading=async&callback=__gmReady';sc.async=true;sc.onerror=()=>{gState='fail';$('gmap').hidden=true;$('mapTabs').hidden=false;$('smap').hidden=false;};document.head.appendChild(sc);}
 function gpin(c){return {path:google.maps.SymbolPath.CIRCLE,scale:8,fillColor:c,fillOpacity:1,strokeColor:'#fff',strokeWeight:2};}
-function initGMap(){gmap=new google.maps.Map($('gmap'),{center:{lat:-8.69,lng:115.17},zoom:11,mapTypeControl:false,streetViewControl:false,fullscreenControl:true,gestureHandling:'greedy'});gInfo=new google.maps.InfoWindow();
+function initGMap(){gmap=new google.maps.Map($('gmap'),{center:{lat:-8.69,lng:115.17},zoom:11,mapTypeControl:false,streetViewControl:false,fullscreenControl:true,gestureHandling:'greedy'});gInfo=new google.maps.InfoWindow();initPOI();
   new google.maps.Marker({map:gmap,position:{lat:-8.7467,lng:115.1668},title:'DPS Airport',icon:{path:google.maps.SymbolPath.CIRCLE,scale:5,fillColor:'#1B1A14',fillOpacity:1,strokeColor:'#fff',strokeWeight:1},zIndex:1});drawGMap(true);}
 function drawGMap(fit){if(!gmap)return;const keep=new Set();const b=new google.maps.LatLngBounds();let n=0;
   for(const x of lastItems){const v=x.v;if(!v.g)continue;n++;keep.add(v.s);const [la,ln]=v.g.split(',').map(Number);const col=x.free===true?'#2F8466':x.free===false?'#C9BCA1':'#B85C3B';let m=gmarkers.get(v.s);
@@ -746,8 +777,9 @@ function render(){
   if($('onlyFree').checked&&!SHARE) items=items.filter(x=>x.free!==false);
   const val=x=>x.q.missing?Infinity:x.q.total, s=$('sort').value;
   const dv=x=>{const r=(typeof ROUTE!=='undefined')&&ROUTE[x.v.s];return r?r[0]:999;};
+  const pv=x=>{const r=poi&&poi.by&&poi.by[x.v.s];return r?r.s:1e9;};
   const rv=x=>{const r=(typeof RATE!=='undefined')&&RATE[x.v.s];return r&&r[0]!=null?r[0]*1000+Math.min(r[1]||0,999):-1;};
-  items.sort((a,b)=>s==='rate'?(rv(b)-rv(a))||(val(a)-val(b)):s==='dist'?(dv(a)-dv(b))||(val(a)-val(b)):s==='name'?a.v.n.localeCompare(b.v.n):s==='pricedesc'?((val(b)===Infinity?-1:val(b))-(val(a)===Infinity?-1:val(a))):val(a)-val(b));
+  items.sort((a,b)=>s==='poi'?(pv(a)-pv(b))||(val(a)-val(b)):s==='rate'?(rv(b)-rv(a))||(val(a)-val(b)):s==='dist'?(dv(a)-dv(b))||(val(a)-val(b)):s==='name'?a.v.n.localeCompare(b.v.n):s==='pricedesc'?((val(b)===Infinity?-1:val(b))-(val(a)===Infinity?-1:val(a))):val(a)-val(b));
   updateMarkers(items);
   if(!items.length){list.innerHTML='<div class="empty">'+t(SHARE?'shareMissing':'empty')+'</div>';return;}
   const frag=document.createDocumentFragment();
@@ -786,15 +818,15 @@ function row(x,ciD,coD,nights){
   if(q.short) chips.push(`<span class="chip c-bad">${t('chMin',q.minStay)}</span>`);
   if(v.x&&v.x.g) chips.push(`<span class="chip c-plain">${t('chMax',v.x.g)}</span>`);
   {const r=(typeof ROUTE!=='undefined')&&ROUTE[v.s];if(r){const an=ANCHOR_OF(v.a)||t('town');chips.push(`<span class="chip c-plain" title="${esc(t('chRouteTitle',an))}">${esc(t('chRoute',an,rng(r[0],r[4]),(r[1]/1000).toFixed(1)))}</span>`);}}
+  {const pcp=poiChip(v);if(pcp)chips.push(pcp);}
   {const tc=twinChip(v);if(tc)chips.push(tc);}
   let price=`<span class="per">${t('priceCheck')}</span>`;
   const pc=promoCalc(v,q,ciD,nights);
-  if(QUOTE){price=q.missing?`<span class="per">${t('priceCheck')}</span>`:q.dynamic?`<span class="tot">${usd(q.lo)}–${Math.round(q.hi).toLocaleString('en-US')}</span><span class="per">${t('priceRange',q.br)}</span>`:`<span class="tot"><i>${t('lblPub')}</i>${usd(q.total)}</span><span class="per">${t('priceAvg',usd(q.per),q.br)}</span><span class="per">${esc(t('quoteDates',fmt(ciD),fmt(coD),nights))}</span>`;}
+  if(PUB){price=q.missing?`<span class="per">${t('priceCheck')}</span>`:q.dynamic?`<span class="tot">${usd(q.lo)}–${Math.round(q.hi).toLocaleString('en-US')}</span><span class="per">${t('priceRange',q.br)}</span>`:`<span class="tot"><i>${t('lblPub')}</i>${usd(q.total)}</span><span class="per">${t('priceAvg',usd(q.per),q.br)}</span>${QUOTE?`<span class="per">${esc(t('quoteDates',fmt(ciD),fmt(coD),nights))}</span>`:''}`;}
   else if(!q.missing) price=q.dynamic?`<span class="tot">${usd(q.lo)}–${Math.round(q.hi).toLocaleString('en-US')}</span><span class="per">${t('priceRange',q.br)}</span>`:(pc&&pc.best?`<span class="was"><i>${t('lblPub')}</i><b>${usd(q.total)}</b></span><span class="tot"><i>${t('lblPartner')}</i>${usd(pc.best.total)}</span><span class="per">${t('priceAvg',usd(pc.best.total/nights),q.br)}</span><span class="dl">${esc(t('dlOff',pc.best.label))}${pc.n>1?' · '+esc(t('dlMore',pc.n-1)):''}</span>`:`<span class="tot">${usd(q.total)}</span><span class="per">${t('priceAvg',usd(q.per),q.br)}</span>`);
   const ph=photosOf(v);const g0=gsOf(v.s);const promo=promoOf(v);
-  el.innerHTML=`<summary>${ph[0]?`<img class="thumb" src="${ph[0]}" alt="">`:(g0?`<span class="thumb" style="${tileStyle(g0.k,0,g0.c[0]+g0.c[1]+g0.c[2])}"></span>`:'<span class="thumb" aria-hidden="true"></span>')}<div class="nm">${esc(v.n)}<small>${esc(areaName(v.a))}</small>${rateOf(v)}${addrOf(v)}</div><div class="price">${price}</div>${SHARE?'':`<span class="rowBtns"><button type="button" class="rowCopy" data-s="${esc(v.s)}">${t('btnShareRow')}</button><button type="button" class="rowCopy rowQuote" data-s="${esc(v.s)}">${t('btnQuoteRow')}</button></span>`}<div class="meta">${chips.join('')}<span>${esc(t('layouts',v.b))}</span></div></summary><div class="body"></div>`;
+  el.innerHTML=`<summary>${ph[0]?`<img class="thumb" src="${ph[0]}" alt="">`:(g0?`<span class="thumb" style="${tileStyle(g0.k,0,g0.c[0]+g0.c[1]+g0.c[2])}"></span>`:'<span class="thumb" aria-hidden="true"></span>')}<div class="nm">${esc(v.n)}<small>${esc(areaName(v.a))}</small>${rateOf(v)}${addrOf(v)}</div><div class="price">${price}</div><div class="meta">${chips.join('')}<span>${esc(t('layouts',v.b))}</span></div></summary><div class="body"></div>`;
   el.addEventListener('toggle',()=>{if(el.open&&!el._built){el._built=true;fillBody(el.querySelector('.body'),x,ciD,coD,nights);}});
-  el.querySelectorAll('.rowCopy').forEach(rc=>rc.addEventListener('click',async e=>{e.preventDefault();e.stopPropagation();const isQ=rc.classList.contains('rowQuote');const u=isQ?quoteUrl(v.s):shareUrl(v.s);try{await navigator.clipboard.writeText(u);}catch(err){window.prompt('URL',u);}rc.classList.add('done');rc.textContent=t('shareDone')+' ✓';setTimeout(()=>{rc.classList.remove('done');rc.textContent=t(isQ?'btnQuoteRow':'btnShareRow');},1800);}));
   return el;
 }
 
@@ -806,10 +838,10 @@ function fillBody(b,x,ciD,coD,nights){
   const links=[];
   {const mu=mapUrlOf(v);if(mu)links.push(`<a href="${mu}" target="_blank" rel="noopener">${t('lkMap')}</a>`);}
   if(v.ws) links.push(`<a href="${esc(v.ws)}" target="_blank" rel="noopener">${t('lkWeb')}</a>`);
-  {const gu=Math.min(Math.max(+($('gu').value||0),2),20);const q=`checkin=${toInput(ciD)}&checkout=${toInput(coD)}&adults=${gu}`;links.push(`<a href="https://www.villa-finder.com/en/villa/${esc(v.s)}?${q}" target="_blank" rel="noopener">${t('lkVf')}</a>`);}
+  {const gu=Math.min(Math.max(+($('gu').value||0),2),20);const q=`checkin=${toInput(ciD)}&checkout=${toInput(coD)}&adults=${gu}`;links.push(`<a class="int" href="https://www.villa-finder.com/en/villa/${esc(v.s)}?${q}" target="_blank" rel="noopener">${t('lkVf')}</a>`);}
   if(v.ph) links.push(`<a href="${esc(v.ph)}" target="_blank" rel="noopener">${t('lkAlbum')}</a>`);
-  if(v.ds) links.push(`<a href="${esc(v.ds)}" target="_blank" rel="noopener">${t('lkDs')}</a>`);
-  {const qn=encodeURIComponent(v.n+' Bali');links.push(`<a href="https://www.booking.com/searchresults.html?ss=${qn}" target="_blank" rel="noopener">${t('lkBooking')}</a>`,`<a href="https://www.google.com/search?q=site:agoda.com+${qn}" target="_blank" rel="noopener">${t('lkAgoda')}</a>`,`<a href="https://www.airbnb.com/s/${encodeURIComponent(v.n.replace(/\s+/g,'-'))}-Bali/homes?query=${qn}" target="_blank" rel="noopener">${t('lkAirbnb')}</a>`);}
+  if(v.ds) links.push(`<a class="int" href="${esc(v.ds)}" target="_blank" rel="noopener">${t('lkDs')}</a>`);
+  {const qn=encodeURIComponent(v.n+' Bali');links.push(`<a class="int" href="https://www.booking.com/searchresults.html?ss=${qn}" target="_blank" rel="noopener">${t('lkBooking')}</a>`,`<a class="int" href="https://www.google.com/search?q=site:agoda.com+${qn}" target="_blank" rel="noopener">${t('lkAgoda')}</a>`,`<a class="int" href="https://www.airbnb.com/s/${encodeURIComponent(v.n.replace(/\s+/g,'-'))}-Bali/homes?query=${qn}" target="_blank" rel="noopener">${t('lkAirbnb')}</a>`);}
   const pol=polOf(v.s),bf=bfOf(v.s);
   const facts=[[t('fMax'),X.g?t('fMaxV',X.g):'—'],[t('fLayouts'),t('fLayoutsV',v.b)],[t('fSize'),X.sz||t('fNA')],[t('fGarden'),X.gd||t('fNA')],[t('fCi'),pol&&pol.ci?t('fCiV',pol.ci):t('fNA')],[t('fCo'),pol&&pol.co?t('fCoV',pol.co):t('fNA')],[t('fBf'),bf?(bf[0]==='paid'&&bf[1]?bf[1]:t('bf_'+bf[0]))+(bf[2]?t('sep')+bf[2]:''):t('fNA')],[t('fStaff'),X.st?t('fStaffV',X.st):'—'],[t('fGps'),v.g?v.g.replace(',',', '):'—']];
   {const tw=twinOf(v.s);if(tw)facts.splice(2,0,[t('fBed'),tw[1]||t('fBedNone')]);}
@@ -847,9 +879,8 @@ function fillBody(b,x,ciD,coD,nights){
   ${promoSec}
   ${polSec}${rulesSec}
   <div class="secNotes"><p class="sec">${t('secNotes')}</p><ul class="notes">${notes.map(([c,x])=>`<li class="${c}">${esc(x)}</li>`).join('')}</ul></div>
-  <div class="actions"><a class="btnlink" href="${vfReq(v,ciD,coD)}" target="_blank" rel="noopener">${t('btnVf')}</a><button type="button" class="book ghost">${t('btnEmail')}</button><button type="button" class="ghost copyBtn">${t('btnShare')}</button><button type="button" class="ghost copyBtn quoteBtn">${t('btnQuote')}</button><p class="acthint">${t('actHint')}</p></div>`;
+  <div class="actions"><a class="btnlink" href="${vfReq(v,ciD,coD)}" target="_blank" rel="noopener">${t('btnVf')}</a><button type="button" class="book ghost">${t('btnEmail')}</button><p class="acthint">${t('actHint')}</p></div>`;
   b.querySelector('.book').addEventListener('click',()=>openBooking(x,ciD,coD,nights));
-  b.querySelectorAll('.copyBtn').forEach(btn=>btn.addEventListener('click',async e=>{const isQ=btn.classList.contains('quoteBtn');const u=isQ?quoteUrl(v.s):shareUrl(v.s);try{await navigator.clipboard.writeText(u);}catch(err){window.prompt('URL',u);}btn.classList.add('done');btn.textContent=t('shareDone')+' ✓';setTimeout(()=>{btn.classList.remove('done');btn.textContent=t(isQ?'btnQuote':'btnShare');},1800);}));
 }
 
 // ---- booking ----
@@ -956,7 +987,7 @@ function applyStatic(){
   for(const o of $('gu').options) if(+o.value) o.textContent=+o.value>20?t('guMax'):t('guN',+o.value);
   document.querySelectorAll('#lang button').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.lang===LANG)));
 }
-function applyShare(){if(!SHARE)return;$('eyebrow').textContent='Outo 奧拓';document.querySelector('h1').textContent=t('shareTag');document.querySelector('.sub').hidden=true;document.title='Outo · '+((VILLAS.find(v=>v.s===SHARE)||{}).n||'')}
+function applyShare(){if(PUBLIC){document.querySelector('.sub').textContent=t('pubSub');document.querySelector('.note').textContent=t('pubNote');document.querySelector('h1').textContent=t('pubTitle');document.title=t('pubTitle');}if(!SHARE)return;$('eyebrow').textContent='Outo 奧拓';document.querySelector('h1').textContent=t('shareTag');document.querySelector('.sub').hidden=true;document.title='Outo · '+((VILLAS.find(v=>v.s===SHARE)||{}).n||'')}
 function setLang(l){
   if(l!=='zh'&&l!=='en') return; LANG=l;
   try{localStorage.setItem('vf-lang',l);}catch(e){}
@@ -984,6 +1015,7 @@ $('lang').addEventListener('click',e=>{const b=e.target.closest('button[data-lan
   $('mapWrap').addEventListener('toggle',()=>{if($('mapWrap').open){if(useDyn()){if(gState==='idle')loadGMaps();else drawGMap(true);}else drawMap();}});
   if(HOSTED){$('rec').hidden=true;if(!SHARE)pollAvail();}
   if(QUOTE)document.body.classList.add('quote');
+  if(PUBLIC){document.body.classList.add('public');$('helpBtn').hidden=true;$('histBtn').hidden=true;$('eyebrow').textContent='Outo 奧拓';}
   if(SHARE){document.body.classList.add('share');$('mapWrap').open=false;$('fresh').hidden=true;$('helpBtn').hidden=true;$('histBtn').hidden=true;document.querySelector('.hdr-r').style.display='flex';}
   applyShare();
   $('mapWrap').addEventListener('toggle',()=>{try{localStorage.setItem('vf-map-open',$('mapWrap').open?'1':'0');}catch(e){}});
