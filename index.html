@@ -40,6 +40,11 @@
 }
 *{box-sizing:border-box}
 [hidden]{display:none!important}
+.waBox{margin-top:14px;padding-top:12px;border-top:1px dashed var(--line,#D9D2C3)}
+.waBox .preview.wa{max-height:220px}
+.waBox button.wa{background:#25D366;color:#0B3D22;border-color:#25D366}
+.waBox button.wa:hover{background:#1EBE5A;border-color:#1EBE5A}
+.waNote{font-size:12px;color:var(--ink-500,#6B6757);margin:6px 0 0}
 html{-webkit-font-smoothing:antialiased}
 body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--body);font-weight:500;font-size:15px;line-height:1.75;letter-spacing:.02em;padding-inline:24px;padding-block:28px 64px}
 .num,.price,.summary b,.fact b,.drn,.histTbl td,.rec td,.gm-iw .p{font-family:var(--sans);letter-spacing:0;font-variant-numeric:tabular-nums}
@@ -391,6 +396,9 @@ button:disabled{opacity:.45;cursor:not-allowed;transform:none;box-shadow:none}
     <div><p class="sec" data-t="prevSec">信件預覽（寄到 bookings@villa-finder.com，從你自己的 Gmail 寄出）</p><pre class="preview" id="bPrev"></pre></div>
     <div id="bMsg"></div>
     <div class="actions"><button type="button" id="bSend">寄出訂房信</button><button type="button" class="ghost" id="bCopy" data-t="bCopy">只複製信件內容</button><button type="button" class="ghost" id="bClose" data-t="bClose">取消</button></div>
+    <div class="waBox"><p class="sec" data-t="waSec">WhatsApp 訊息（同一份資料的精簡版）</p><pre class="preview wa" id="waPrev"></pre>
+    <div class="actions"><button type="button" class="wa" id="waSend" data-t="waSend">傳 WhatsApp 給 Villa Finder</button><button type="button" class="ghost" id="waGroup" data-t="waGroup">複製訊息並開啟群組</button><button type="button" class="ghost" id="waCopy" data-t="waCopy">只複製訊息</button></div>
+    <div id="waMsg"></div><p class="waNote" id="waNote"></p></div>
   </div>
 </div>
 
@@ -436,7 +444,7 @@ zh:{
   dlgT:'確認預訂並寄信給 Villa Finder', bNameL:'主要旅客姓名（英文，同護照）', bNamePh:'例：CHEN MEI LING', bNatL:'國籍', bAdL:'大人', bChL:'小孩',
   bAgesL:'小孩年齡（用逗號分隔）', bAgesPh:'例：7, 10', bRefL:'Outo 訂單編號', bRefPh:'例：OUTO-2026-1234', bArrL:'預計抵達（航班／時間）', bArrPh:'例：BR255 15:10',
   bCcL:'副本給（逗號分隔）', bCcPh:'例：andrew@outo.co', bReqL:'特殊需求（英文）', bReqPh:'例：baby cot, airport pick-up for 4 pax, early check-in if possible',
-  prevSec:'信件預覽（寄到 bookings@villa-finder.com，從你自己的 Gmail 寄出）', bSend:'寄出訂房信', bCopy:'只複製信件內容', bClose:'取消', lbAria:'放大照片',
+  prevSec:'信件預覽（寄到 bookings@villa-finder.com，從你自己的 Gmail 寄出）', bSend:'寄出訂房信', bCopy:'只複製信件內容', bClose:'取消', waSec:'WhatsApp 訊息（同一份資料的精簡版）', waSend:'傳 WhatsApp 給 Villa Finder', waGroup:'複製訊息並開啟群組', waCopy:'只複製訊息', waCopied:'訊息已複製，貼到 WhatsApp 對話框送出即可。', waGroupCopied:'訊息已複製，群組已在新分頁開啟，貼上後送出。', waNoNum:'尚未設定 Villa Finder 的 WhatsApp 號碼（config.js 的 WA_NUMBER）。', waNoGroup:'尚未設定群組連結（config.js 的 WA_GROUP）。', waNote:'WhatsApp 只能把寫好的訊息帶進「個人對話」；群組沒有這種連結，所以群組是先複製、開啟後貼上送出。', lbAria:'放大照片',
   season:{L:'淡季',M:'中旺季',H:'旺季',P:'尖峰',Q:'次尖峰'},
   anchor:{'Seminyak':'水明漾 Eat Street','Kerobokan':'水明漾 Eat Street','Umalas':'水明漾 Eat Street','Legian':'雷吉安大街','Canggu':'倉古 Batu Bolong','Berawa':'貝拉瓦海灘路','Pererenan':'佩雷雷南中心','Seseh':'佩雷雷南中心','Ubud':'烏布皇宮','Bingin':'賓金海灘路','Uluwatu & Bingin':'賓金海灘路','Candidasa':'坎迪達薩主街','Lovina':'羅威那海豚像'},
   localCenter:'生活圈中心', town:'市區', sep:'、',
@@ -521,7 +529,7 @@ en:{
   dlgT:'Confirm booking & email Villa Finder', bNameL:'Lead guest name (English, as in passport)', bNamePh:'e.g. CHEN MEI LING', bNatL:'Nationality', bAdL:'Adults', bChL:'Children',
   bAgesL:"Children's ages (comma-separated)", bAgesPh:'e.g. 7, 10', bRefL:'Outo booking reference', bRefPh:'e.g. OUTO-2026-1234', bArrL:'Expected arrival (flight / time)', bArrPh:'e.g. BR255 15:10',
   bCcL:'CC (comma-separated)', bCcPh:'e.g. andrew@outo.co', bReqL:'Special requests (English)', bReqPh:'e.g. baby cot, airport pick-up for 4 pax, early check-in if possible',
-  prevSec:'Email preview (to bookings@villa-finder.com, sent from your own Gmail)', bSend:'Send booking email', bCopy:'Copy email text only', bClose:'Cancel', lbAria:'Enlarged photo',
+  prevSec:'Email preview (to bookings@villa-finder.com, sent from your own Gmail)', bSend:'Send booking email', bCopy:'Copy email text only', bClose:'Cancel', waSec:'WhatsApp message (short version of the same request)', waSend:'WhatsApp Villa Finder', waGroup:'Copy & open group', waCopy:'Copy message only', waCopied:'Copied. Paste it into WhatsApp and send.', waGroupCopied:'Copied. The group opened in a new tab; paste and send.', waNoNum:'Villa Finder WhatsApp number not set (WA_NUMBER in config.js).', waNoGroup:'Group link not set (WA_GROUP in config.js).', waNote:'WhatsApp can prefill a message only into a 1:1 chat; groups have no such link, so for the group it copies the text and opens the group for you to paste.', lbAria:'Enlarged photo',
   season:{L:'Low season',M:'Mid season',H:'High season',P:'Peak season',Q:'Sub-peak season'},
   anchor:{'Seminyak':'Seminyak Eat Street','Kerobokan':'Seminyak Eat Street','Umalas':'Seminyak Eat Street','Legian':'Legian Street','Canggu':'Canggu Batu Bolong','Berawa':'Berawa Beach Road','Pererenan':'Pererenan center','Seseh':'Pererenan center','Ubud':'Ubud Palace','Bingin':'Bingin Beach Road','Uluwatu & Bingin':'Bingin Beach Road','Candidasa':'Candidasa main street','Lovina':'Lovina dolphin statue'},
   localCenter:'local center', town:'town', sep:', ',
@@ -591,6 +599,7 @@ const AREA_ZH={'Seminyak':'水明漾','Ubud':'烏布','Kerobokan':'克羅柏坎'
 const AREA_EN={'Uluwatu & Bingin':'Uluwatu / Bingin'};
 const VF_TO='bookings@villa-finder.com';
 const HOSTED=true, MAPS_KEY=(window.OUTO_CFG&&window.OUTO_CFG.MAPS_KEY)||'', AVAIL_URL='https://script.google.com/macros/s/AKfycbzvqcI0xCpSHgDeUvMmwzP0DNryB8XdpdxAd1QmvB2arWUp_QeEdwPnP-2D-W2TIUGd0w/exec';
+const WA_NUMBER=(window.OUTO_CFG&&window.OUTO_CFG.WA_NUMBER)||'', WA_GROUP=(window.OUTO_CFG&&window.OUTO_CFG.WA_GROUP)||'';
 const $=id=>document.getElementById(id);
 const areaName=a=>LANG==='zh'?(AREA_ZH[a]?AREA_ZH[a]+' '+a:a):(AREA_EN[a]||a);
 // language-dependent data accessors
@@ -932,14 +941,31 @@ function mailText(){
   return lines.join('\n');
 }
 function subject(){const {v}=cur.x;return `Booking confirmation request - ${v.n} - ${enDate(cur.ciD)} to ${enDate(cur.coD)}`+($('bRef').value.trim()?` - ${$('bRef').value.trim()}`:'');}
-function refreshPrev(){$('bPrev').textContent='Subject: '+subject()+'\n\n'+mailText();}
+function waText(){
+  const {v,q}=cur.x;const ad=+$('bAd').value||0,ch=+$('bCh').value||0;
+  const L=[`*Booking confirmation request – Outo Travel*`,``,`🏡 ${v.n}`,`🛏 ${q.br} BR`,`📅 ${enDate(cur.ciD)} → ${enDate(cur.coD)} (${cur.nights} nights)`,
+  `👥 ${ad} adult(s)`+(ch?`, ${ch} child(ren)`+($('bAges').value.trim()?` aged ${$('bAges').value.trim()}`:''):''),
+  `👤 Lead guest: ${$('bName').value.trim()||'[name as in passport]'}`+($('bNat').value.trim()?` (${$('bNat').value.trim()})`:'')];
+  if($('bArr').value.trim()) L.push(`✈️ Arrival: ${$('bArr').value.trim()}`);
+  if(!q.missing&&!q.dynamic) L.push(`💵 Portal rate: ${usd(q.total)} total (${usd(q.per)}/night incl. tax)`);
+  if($('bReq').value.trim()) L.push(`📝 Requests: ${$('bReq').value.trim()}`);
+  if($('bRef').value.trim()) L.push(`🔖 Our ref: ${$('bRef').value.trim()}`);
+  L.push(``,`Please confirm availability, applicable promotion, deposit amount/due date and cancellation terms. Full details are in our email to bookings@villa-finder.com. Thank you!`);
+  return L.join('\n');
+}
+function refreshPrev(){$('bPrev').textContent='Subject: '+subject()+'\n\n'+mailText();$('waPrev').textContent=waText();$('waNote').textContent=t('waNote');}
+function waCopyTo(msgKey){return navigator.clipboard.writeText(waText()).then(()=>{$('waMsg').innerHTML='<div class="msg ok">'+t(msgKey)+'</div>';},()=>sel($('waPrev')));}
+function waValid(){const name=$('bName').value.trim();if(!name){$('waMsg').innerHTML='<div class="msg err">'+t('errName')+'</div>';$('bName').focus();return false;}return true;}
+$('waSend').addEventListener('click',()=>{if(!waValid())return;const num=WA_NUMBER.replace(/\D/g,'');if(!num){$('waMsg').innerHTML='<div class="msg err">'+t('waNoNum')+'</div>';return;}window.open('https://wa.me/'+num+'?text='+encodeURIComponent(waText()),'_blank','noopener');});
+$('waGroup').addEventListener('click',()=>{if(!waValid())return;if(!WA_GROUP){$('waMsg').innerHTML='<div class="msg err">'+t('waNoGroup')+'</div>';return;}waCopyTo('waGroupCopied');window.open(WA_GROUP,'_blank','noopener');});
+$('waCopy').addEventListener('click',()=>{if(!waValid())return;waCopyTo('waCopied');});
 function dlgInfoHTML(){
   const {x,ciD,coD,nights}=cur,{v,q}=x;
   const dup=bookings.filter(b=>b.slug===v.s&&b.ci<key(coD)&&b.co>key(ciD));
   return `${esc(v.n)} · ${esc(areaName(v.a))} · ${t('dlgInfo',fmt(ciD),fmt(coD),nights,q.br)}`+(x.free===false?`<div class="msg warn" style="margin-top:8px">${t('dlgBusy')}</div>`:'')+(dup.length?`<div class="msg warn" style="margin-top:8px">${t('dlgDup',dup.length)}</div>`:'');
 }
 function openBooking(x,ciD,coD,nights){
-  cur={x,ciD,coD,nights};$('bMsg').innerHTML='';$('bSend').disabled=false;$('bSend').textContent=t('bSend');
+  cur={x,ciD,coD,nights};$('bMsg').innerHTML='';$('waMsg').innerHTML='';$('bSend').disabled=false;$('bSend').textContent=t('bSend');
   const {v}=x;
   $('dlgInfo').innerHTML=dlgInfoHTML();
   if(v.x&&v.x.g) $('bAd').max=v.x.g;
