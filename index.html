@@ -132,6 +132,8 @@ details.mapwrap>summary::-webkit-details-marker{display:none}
 .poiMsg{font-size:12.5px;color:var(--muted);margin-top:8px;min-height:1em}
 .poiMsg.err{color:var(--clay-600)}
 .chip.c-poi{background:var(--sun-50);color:var(--sun-700)}
+button.chip.c-poi{height:auto;padding:3px 10px;border:1px solid transparent;font-size:12px;letter-spacing:.04em;line-height:1.5;cursor:pointer}
+button.chip.c-poi:hover{background:var(--sun-100);color:var(--sun-700);border-color:var(--sun-500);transform:none;box-shadow:none}
 .gmap[hidden]{display:none}
 .gm-iw{font:13px/1.5 "JinXuanNaTi","Noto Sans TC",system-ui,sans-serif;color:var(--ink-900);max-width:240px}.gm-iw b{font-size:14px;font-weight:600}.gm-iw .p{margin-top:4px}.gm-iw a{color:var(--sun-deep);font-weight:600;text-decoration:none}
 details.v.hl{border-color:var(--ink-900);box-shadow:var(--ring)}
@@ -449,6 +451,7 @@ zh:{
   why_min:(n,k)=>`需連住 ${n} 晚（目前 ${k} 晚）`, why_win:'入住日不在活動期間', why_lead:(n,d)=>`需提前 ${n} 天以上預訂（目前距入住 ${d} 天）`, why_late:(n,d)=>`需入住前 ${n} 天內預訂（目前距入住 ${d} 天）`, why_sea:'入住季節不符', why_dyn:'浮動價別墅，請回後台確認',
   dlOff:(lbl)=>`套用「${lbl}」`, dlMore:n=>`另有 ${n} 個適用規則`,
   chTime:(a,b)=>`入住 ${a}｜退房 ${b}`, bf_inc:'每日含早餐', bf_first:'僅第一天含早餐', bf_floatinc:'含漂浮早餐', bf_paid:'早餐另付', bf_req:'早餐可代訂（另付）', bf_floatreq:'漂浮早餐可加購', bf_none:'無早餐資訊',
+  routeT:'在地圖上顯示路線', routeCalc:n=>`正在畫 ${n} 到景點的路線…`, routeDone:(n,m,min,km)=>`${n} → ${m}：${min} 分 · ${km} km，路線已標在地圖上`, routeNone:'找不到路線', routeOpen:'在 Google 地圖開啟路線',
   poiL:'輸入景點，算每間別墅到那裡的車程', poiDrive:'開車', poiWalk:'步行', poiClr:'清除景點', poiPh:'例：Potato Head、Uluwatu Temple、Ubud 市場', poiCalc:n=>`計算中…（${n} 間）`, poiDone:(n,m)=>`已算出 ${n} 間到「${m}」的距離，可用「離景點最近」排序`, poiErr:'Google 路線服務目前無法使用，請稍後再試', poiNoGeo:'這個地點沒有座標', poiChip:(m,mode,min,km)=>`到 ${m} ${mode==='WALK'?'步行':'車程'} ${min} 分 · ${km} km`, poiNone:(m)=>`到 ${m}：無法計算`, sortPoi:'離景點最近',
   lblPub:'官網直售價', lblPartner:'同業折扣價', pubTitle:'Outo 峇里島私人泳池別墅', pubSub:'找尋最適合你的峇里島私人泳池別墅 · 118 間 · 價格為別墅官網公告價（美金、含稅）', pubNote:'房況每 5 分鐘自動同步，仍可能與別墅實際狀況有時間差；價格為別墅官網公告價，以確認訂房時為準。想預訂或想了解更多，請聯絡你的 Outo 旅程規劃師。', quoteDates:(a,b,n)=>`${a} → ${b}，${n} 晚`, payTag:'另付', featExtra:'其他另付項目',
   fCi:'🕑 入住時間', fCo:'🕚 退房時間', fCiV:a=>`${a} 之後`, fCoV:a=>`${a} 之前`, fBf:'🍳 早餐', fNA:'未提供',
@@ -531,6 +534,7 @@ en:{
   why_min:(n,k)=>`needs ${n} nights (you have ${k})`, why_win:'check-in outside promo period', why_lead:(n,d)=>`needs booking ${n}+ days ahead (now ${d} days)`, why_late:(n,d)=>`needs booking within ${n} days (now ${d} days)`, why_sea:'season does not match', why_dyn:'dynamic-rate villa — check the portal',
   dlOff:(lbl)=>`with "${lbl}"`, dlMore:n=>`+${n} more rule${n>1?'s':''}`,
   chTime:(a,b)=>`In ${a} · Out ${b}`, bf_inc:'Breakfast included daily', bf_first:'Breakfast first day only', bf_floatinc:'Floating breakfast included', bf_paid:'Breakfast extra charge', bf_req:'Breakfast on request (extra)', bf_floatreq:'Floating breakfast on request', bf_none:'No breakfast info',
+  routeT:'Show route on map', routeCalc:n=>`Drawing route from ${n}…`, routeDone:(n,m,min,km)=>`${n} → ${m}: ${min} min · ${km} km, route shown on the map`, routeNone:'No route found', routeOpen:'Open route in Google Maps',
   poiL:'Enter a place to get travel time from every villa', poiDrive:'Drive', poiWalk:'Walk', poiClr:'Clear place', poiPh:'e.g. Potato Head, Uluwatu Temple, Ubud market', poiCalc:n=>`Calculating… (${n} villas)`, poiDone:(n,m)=>`Travel time to "${m}" ready for ${n} villas — sort by "Closest to place"`, poiErr:'Google routing is unavailable right now, try again later', poiNoGeo:'This place has no coordinates', poiChip:(m,mode,min,km)=>`${mode==='WALK'?'Walk':'Drive'} to ${m}: ${min} min · ${km} km`, poiNone:(m)=>`To ${m}: n/a`, sortPoi:'Closest to place',
   lblPub:'Public rate', lblPartner:'Partner rate', pubTitle:'Outo Bali Private Pool Villas', pubSub:'Find the Bali private pool villa that fits you · 118 villas · prices are the villas\' published rates (USD, tax included)', pubNote:'Availability syncs every 5 minutes and may lag the villa\'s live status; prices are published rates and are confirmed at booking. To book or ask anything, contact your Outo trip planner.', quoteDates:(a,b,n)=>`${a} → ${b}, ${n} night${n===1?'':'s'}`, payTag:'extra', featExtra:'Other paid extras',
   fCi:'🕑 Check-in', fCo:'🕚 Check-out', fCiV:a=>`after ${a}`, fCoV:a=>`before ${a}`, fBf:'🍳 Breakfast', fNA:'Not provided',
@@ -658,10 +662,10 @@ let poi=null,poiMarker=null,poiReq=0;
 async function initPOI(){if(!useDyn()||PUB||SHARE)return;try{const {PlaceAutocompleteElement}=await google.maps.importLibrary('places');const el=new PlaceAutocompleteElement({includedRegionCodes:['id'],locationBias:{north:-8.0,south:-8.9,east:115.8,west:114.4}});el.setAttribute('placeholder',t('poiPh'));$('poiIn').innerHTML='';$('poiIn').appendChild(el);$('poiBox').hidden=false;
   el.addEventListener('gmp-select',async ev=>{try{const place=ev.placePrediction.toPlace();await place.fetchFields({fields:['displayName','location','formattedAddress']});if(!place.location){setPoiMsg(t('poiNoGeo'),true);return;}poi={name:place.displayName||'',lat:place.location.lat(),lng:place.location.lng(),mode:$('poiMode').value,by:{}};await computePOI();}catch(e){setPoiMsg(t('poiErr'),true);}});
   $('poiMode').addEventListener('change',()=>{if(poi){poi.mode=$('poiMode').value;computePOI();}});
-  $('poiClr').addEventListener('click',()=>{poi=null;if(poiMarker){poiMarker.setMap(null);poiMarker=null;}$('poiClr').hidden=true;$('sortPoi').hidden=true;if($('sort').value==='poi')$('sort').value='price';setPoiMsg('');render();});
+  $('poiClr').addEventListener('click',()=>{poi=null;clearRoute();if(poiMarker){poiMarker.setMap(null);poiMarker=null;}$('poiClr').hidden=true;$('sortPoi').hidden=true;if($('sort').value==='poi')$('sort').value='price';setPoiMsg('');render();});
  }catch(e){/* places unavailable */}}
 function setPoiMsg(m,err){const el=$('poiMsg');el.textContent=m;el.classList.toggle('err',!!err);}
-async function computePOI(){if(!poi)return;const my=++poiReq;const dests=VILLAS.filter(v=>v.g);setPoiMsg(t('poiCalc',dests.length));const by={};
+async function computePOI(){if(!poi)return;clearRoute();const my=++poiReq;const dests=VILLAS.filter(v=>v.g);setPoiMsg(t('poiCalc',dests.length));const by={};
   for(let i=0;i<dests.length;i+=50){const chunk=dests.slice(i,i+50);const body={origins:[{waypoint:{location:{latLng:{latitude:poi.lat,longitude:poi.lng}}}}],destinations:chunk.map(v=>{const [la,ln]=v.g.split(',').map(Number);return {waypoint:{location:{latLng:{latitude:la,longitude:ln}}}};}),travelMode:poi.mode};if(poi.mode==='DRIVE'){body.routingPreference='TRAFFIC_UNAWARE';}
     let r;try{r=await fetch('https://routes.googleapis.com/distanceMatrix/v2:computeRouteMatrix',{method:'POST',headers:{'Content-Type':'application/json','X-Goog-Api-Key':MAPS_KEY,'X-Goog-FieldMask':'originIndex,destinationIndex,duration,distanceMeters,condition'},body:JSON.stringify(body)});}catch(e){setPoiMsg(t('poiErr'),true);return;}
     if(!r.ok){setPoiMsg(t('poiErr')+' ('+r.status+')',true);return;}const arr=await r.json();if(my!==poiReq)return;
@@ -669,7 +673,22 @@ async function computePOI(){if(!poi)return;const my=++poiReq;const dests=VILLAS.
   if(my!==poiReq)return;poi.by=by;$('poiClr').hidden=false;$('sortPoi').hidden=false;setPoiMsg(t('poiDone',Object.values(by).filter(Boolean).length,poi.name));
   if(gmap){if(poiMarker)poiMarker.setMap(null);poiMarker=new google.maps.Marker({map:gmap,position:{lat:poi.lat,lng:poi.lng},title:poi.name,icon:{path:google.maps.SymbolPath.CIRCLE,scale:9,fillColor:'#FEA600',fillOpacity:1,strokeColor:'#1B1A14',strokeWeight:2},zIndex:9});const bb=new google.maps.LatLngBounds();for(const m of gmarkers.values())if(m.getMap())bb.extend(m.getPosition());bb.extend(poiMarker.getPosition());gmap.fitBounds(bb,40);}
   render();}
-function poiChip(v){if(!poi||!poi.by)return '';const r=poi.by[v.s];if(r===undefined)return '';if(!r)return `<span class="chip c-poi">${esc(t('poiNone',poi.name))}</span>`;return `<span class="chip c-poi">${esc(t('poiChip',poi.name,poi.mode,Math.max(1,Math.round(r.s/60)),(r.d/1000).toFixed(1)))}</span>`;}
+function poiChip(v){if(!poi||!poi.by)return '';const r=poi.by[v.s];if(r===undefined)return '';if(!r)return `<span class="chip c-poi">${esc(t('poiNone',poi.name))}</span>`;return `<button type="button" class="chip c-poi routeBtn" data-s="${esc(v.s)}" title="${esc(t('routeT'))}">${esc(t('poiChip',poi.name,poi.mode,Math.max(1,Math.round(r.s/60)),(r.d/1000).toFixed(1)))} →</button>`;}
+let routeLine=null,routeInfo=null;
+function clearRoute(){if(routeLine){routeLine.setMap(null);routeLine=null;}if(routeInfo){routeInfo.close();routeInfo=null;}}
+function gmapsDirUrl(v){const [la,ln]=v.g.split(',');return `https://www.google.com/maps/dir/?api=1&origin=${la},${ln}&destination=${poi.lat},${poi.lng}&travelmode=${poi.mode==='WALK'?'walking':'driving'}`;}
+async function showRoute(slug){const v=VILLAS.find(x=>x.s===slug);if(!v||!v.g||!poi||!gmap)return;const [la,ln]=v.g.split(',').map(Number);
+  $('mapWrap').open=true;$('mapWrap').scrollIntoView({behavior:'smooth',block:'start'});setPoiMsg(t('routeCalc',v.n));
+  const body={origin:{location:{latLng:{latitude:la,longitude:ln}}},destination:{location:{latLng:{latitude:poi.lat,longitude:poi.lng}}},travelMode:poi.mode};if(poi.mode==='DRIVE')body.routingPreference='TRAFFIC_UNAWARE';
+  let r;try{r=await fetch('https://routes.googleapis.com/directions/v2:computeRoutes',{method:'POST',headers:{'Content-Type':'application/json','X-Goog-Api-Key':MAPS_KEY,'X-Goog-FieldMask':'routes.duration,routes.distanceMeters,routes.polyline.encodedPolyline'},body:JSON.stringify(body)});}catch(e){setPoiMsg(t('poiErr'),true);return;}
+  if(!r.ok){setPoiMsg(t('poiErr')+' ('+r.status+')',true);return;}const j=await r.json();const rt=j.routes&&j.routes[0];if(!rt){setPoiMsg(t('routeNone'),true);return;}
+  const {encoding}=await google.maps.importLibrary('geometry');const path=encoding.decodePath(rt.polyline.encodedPolyline);
+  clearRoute();routeLine=new google.maps.Polyline({map:gmap,path,strokeColor:'#1B1A14',strokeOpacity:.9,strokeWeight:5});
+  const bb=new google.maps.LatLngBounds();path.forEach(p=>bb.extend(p));gmap.fitBounds(bb,60);
+  const mins=Math.max(1,Math.round(parseInt(rt.duration)/60)),km=((rt.distanceMeters||0)/1000).toFixed(1);
+  routeInfo=new google.maps.InfoWindow({position:{lat:la,lng:ln},content:`<div class="gm-iw"><b>${esc(v.n)}</b><div>${esc(t('poiChip',poi.name,poi.mode,mins,km))}</div><div class="p"><a href="${gmapsDirUrl(v)}" target="_blank" rel="noopener">${t('routeOpen')} →</a></div></div>`});routeInfo.open({map:gmap});
+  const m=gmarkers.get(v.s);if(m)m.setZIndex(10);setPoiMsg(t('routeDone',v.n,poi.name,mins,km));}
+document.addEventListener('click',e=>{const b=e.target.closest('.routeBtn');if(!b)return;e.preventDefault();e.stopPropagation();showRoute(b.dataset.s);},true);
 function polOf(s){return (typeof POL!=='undefined'&&POL[s])||null;}
 function bfOf(s){return (typeof BF!=='undefined'&&BF[s])||null;}
 const L2=pair=>LANG==='en'?pair[1]:pair[0];
