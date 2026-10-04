@@ -26,4 +26,4 @@ jobs:
           if git diff --quiet -- pubav.js; then echo "no change"; exit 0; fi
           git add pubav.js
           git commit -m "pubav: daily refresh $(date -u +%Y-%m-%dT%H:%MZ)"
-          git push
+          for i in 1 2 3; do git pull --rebase -X theirs origin main && git push && break || sleep 20; done
