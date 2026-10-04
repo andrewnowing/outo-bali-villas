@@ -2,7 +2,7 @@
 """Refresh pubav.js: booked date ranges for Villa Finder public-site villas.
 Reads the villa list from pub.js, fetches each public page, extracts the
 `:unavailabilities` attribute of #request-form, writes pubav.js.
-Run daily by GitHub Actions. Gentle on the site: sequential, ~0.6 s between requests.
+Runs every 4 hours on GitHub Actions. 4 parallel workers with a short pause each; backs off on HTTP 429.
 """
 import json, re, sys, time, datetime, html, os, urllib.request, urllib.error
 
@@ -48,22 +48,28 @@ def to_ranges(unav):
 by = {}
 ok = err = 0
 t0 = time.time()
-for i, v in enumerate(villas):
+import threading
+from concurrent.futures import ThreadPoolExecutor
+lock = threading.Lock()
+def work(v):
+    global ok, err
     status, body = fetch(v['url'])
     if status != 200 or not body:
-        err += 1
-        if v['s'] in old: by[v['s']] = old[v['s']]  # keep yesterday's data rather than dropping the villa
-        continue
+        with lock:
+            err += 1
+            if v['s'] in old: by[v['s']] = old[v['s']]  # keep last good data rather than dropping the villa
+        return
     m = ATTR.search(body)
     unav = []
     if m:
         try: unav = json.loads(html.unescape(m.group(1)))
         except Exception: unav = []
-    by[v['s']] = to_ranges(unav)
-    ok += 1
-    if i % 100 == 0:
-        print(f'{i}/{len(villas)} ok={ok} err={err} {int(time.time()-t0)}s', flush=True)
-    time.sleep(0.6)
+    with lock:
+        by[v['s']] = to_ranges(unav); ok += 1
+        if (ok + err) % 100 == 0: print(f'{ok+err}/{len(villas)} ok={ok} err={err} {int(time.time()-t0)}s', flush=True)
+    time.sleep(0.3)
+with ThreadPoolExecutor(max_workers=4) as ex:
+    list(ex.map(work, villas))
 
 if ok < len(villas) * 0.7:
     print(f'too many failures ({ok}/{len(villas)}), keeping previous pubav.js', file=sys.stderr)
