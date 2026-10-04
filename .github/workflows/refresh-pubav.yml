@@ -1,7 +1,7 @@
 name: Refresh public-site availability
 on:
   schedule:
-    - cron: '17 */4 * * *'   # every 4 hours (02:17, 06:17, 10:17, 14:17, 18:17, 22:17 Asia/Taipei)
+    - cron: '7,37 * * * *'   # every 30 minutes
   workflow_dispatch:
 permissions:
   contents: write
@@ -11,12 +11,9 @@ concurrency:
 jobs:
   refresh:
     runs-on: ubuntu-latest
-    timeout-minutes: 60
+    timeout-minutes: 15
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
-        with:
-          python-version: '3.12'
       - name: Fetch booked dates from Villa Finder public pages
         run: python3 scripts/refresh_pubav.py
       - name: Commit if changed

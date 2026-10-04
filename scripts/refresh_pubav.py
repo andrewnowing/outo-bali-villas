@@ -67,8 +67,8 @@ def work(v):
     with lock:
         by[v['s']] = to_ranges(unav); ok += 1
         if (ok + err) % 100 == 0: print(f'{ok+err}/{len(villas)} ok={ok} err={err} {int(time.time()-t0)}s', flush=True)
-    time.sleep(0.15)
-with ThreadPoolExecutor(max_workers=10) as ex:
+    time.sleep(0.1)
+with ThreadPoolExecutor(max_workers=12) as ex:
     list(ex.map(work, villas))
 
 if ok < len(villas) * 0.7:
