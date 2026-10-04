@@ -32,13 +32,35 @@ h3{font-size:15px;margin:0}
 .fresh{font-size:13px;padding:5px 10px;border-radius:999px;background:var(--accent-soft);color:var(--ink);white-space:nowrap}
 .fresh.old{background:var(--warn-soft);color:var(--warn)}
 form.search{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:14px;display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:12px;align-items:end}
-label.f{display:grid;gap:4px;font-size:12px;color:var(--muted);letter-spacing:.04em;min-width:0}
+label.f,div.f{display:grid;gap:4px;font-size:12px;color:var(--muted);letter-spacing:.04em;min-width:0}
 input,select,textarea{font:inherit;color:var(--ink);background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:8px 10px;min-width:0;width:100%}
 textarea{min-height:70px;resize:vertical}
 input:focus-visible,select:focus-visible,textarea:focus-visible,button:focus-visible,summary:focus-visible,a:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
 .chk{display:flex;gap:8px;align-items:center;font-size:14px;color:var(--ink);padding-bottom:8px}
 .chk input{width:auto}
 label.q{grid-column:1/-1}
+.f.dr{position:relative;grid-column:span 2}
+.drbtn{font:inherit;color:var(--ink);background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:8px 10px;width:100%;text-align:left;cursor:pointer;display:flex;justify-content:space-between;gap:8px;align-items:center}
+.drbtn:hover{border-color:var(--accent)}
+.drn{font-size:12px;color:var(--muted);white-space:nowrap}
+.drpop{position:absolute;z-index:30;top:calc(100% + 6px);left:0;background:var(--surface);border:1px solid var(--line);border-radius:12px;box-shadow:0 12px 32px rgba(0,0,0,.14);padding:12px;width:min(620px,calc(100vw - 48px));color:var(--ink);letter-spacing:0}
+.drhead{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:8px}
+.drhint{font-size:13px;color:var(--muted)}
+.drnav{font:inherit;font-size:18px;line-height:1;padding:4px 10px;border:1px solid var(--line);border-radius:8px;background:var(--bg);color:var(--ink);cursor:pointer}
+.drmonths{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:16px}
+.drm h4{margin:0 0 6px;font-size:14px;text-align:center}
+.drg{display:grid;grid-template-columns:repeat(7,1fr);gap:2px;text-align:center;font-size:13px}
+.drg .wd{color:var(--muted);font-size:11px;padding:2px 0}
+.drg button{font:inherit;font-size:13px;border:0;background:transparent;color:var(--ink);padding:7px 0;border-radius:6px;cursor:pointer}
+.drg button:hover:not(:disabled){background:var(--accent-soft)}
+.drg button:disabled{color:#c3c8cf;cursor:default}
+.drg button.in{background:var(--accent-soft);border-radius:0}
+.drg button.s,.drg button.e{background:var(--accent);color:#fff}
+.drg button.s{border-radius:6px 0 0 6px}.drg button.e{border-radius:0 6px 6px 0}.drg button.s.e{border-radius:6px}
+.drfoot{display:flex;justify-content:space-between;gap:8px;margin-top:10px}
+.drclr,.drok{font:inherit;font-size:13px;padding:6px 14px;border-radius:8px;border:1px solid var(--line);background:var(--bg);color:var(--ink);cursor:pointer}
+.drok{background:var(--accent);color:#fff;border-color:var(--accent)}
+@media (max-width:520px){.f.dr{grid-column:1/-1}}
 .chips{grid-column:1/-1}
 .chipbar{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
 .fchip{font:inherit;font-size:13px;padding:6px 12px;border-radius:999px;border:1px solid var(--line);background:var(--bg);color:var(--ink);cursor:pointer;line-height:1.2}
@@ -181,8 +203,8 @@ button:disabled{opacity:.5;cursor:not-allowed}
   </header>
 
   <form class="search" id="f" autocomplete="off">
-    <label class="f"><span data-t="ci">入住日</span><input type="date" id="ci" required></label>
-    <label class="f"><span data-t="co">退房日</span><input type="date" id="co" required></label>
+    <div class="f dr"><span data-t="dr">入住日 → 退房日</span><button type="button" id="drBtn" class="drbtn" aria-haspopup="dialog"><span id="drTxt"></span><span class="drn" id="drN"></span></button><input type="hidden" id="ci"><input type="hidden" id="co">
+      <div class="drpop" id="drPop" hidden role="dialog"><div class="drhead"><button type="button" class="drnav" id="drPrev" aria-label="prev">‹</button><span class="drhint" id="drHint"></span><button type="button" class="drnav" id="drNext" aria-label="next">›</button></div><div class="drmonths" id="drMonths"></div><div class="drfoot"><button type="button" class="drclr" id="drClr"></button><button type="button" class="drok" id="drOk"></button></div></div></div>
     <label class="f"><span data-t="br">至少幾房</span>
       <select id="br"><option value="1" data-t="br1">1 房</option><option value="2" data-t="br2">2 房</option><option value="3" selected data-t="br3">3 房</option><option value="4" data-t="br4">4 房</option><option value="5" data-t="br5">5 房</option><option value="6" data-t="br6">6 房以上</option></select>
     </label>
@@ -207,7 +229,7 @@ button:disabled{opacity:.5;cursor:not-allowed}
   <details class="rec" id="rec"><summary><span data-t="recPre">訂房紀錄（</span><span id="recN">0</span><span data-t="recPost">）</span></summary><div class="tw"><table><thead><tr><th data-t="recSent">寄出時間</th><th data-t="recVilla">別墅</th><th data-t="ci">入住</th><th data-t="co">退房</th><th data-t="recBr">房數</th><th data-t="recGu">人數</th><th data-t="recLead">主要旅客</th><th data-t="recRef">Outo 訂單</th><th data-t="recStatus">狀態</th></tr></thead><tbody id="recBody"><tr><td colspan="9" data-t="recEmpty">還沒有訂房紀錄。在別墅細節按「確認預訂並寄信」後會出現在這裡。</td></tr></tbody></table></div></details>
 
   <div class="summary" id="sum"></div>
-  <details class="mapwrap" id="mapWrap"><summary><span data-t="mapT">🗺️ 地圖</span><span id="mapN" class="mapn"></span><span class="maplegend"><i class="lg ok"></i><span data-t="chAvail">有空房</span><i class="lg busy"></i><span data-t="chBooked">已被訂</span><i class="lg unk"></i><span data-t="chNoData">無房況資料</span></span></summary>
+  <details class="mapwrap" id="mapWrap" open><summary><span data-t="mapT">🗺️ 地圖</span><span id="mapN" class="mapn"></span><span class="maplegend"><i class="lg ok"></i><span data-t="chAvail">有空房</span><i class="lg busy"></i><span data-t="chBooked">已被訂</span><i class="lg unk"></i><span data-t="chNoData">無房況資料</span></span></summary>
     <div id="gmap" class="gmap" hidden></div>
     <div class="maptabs" id="mapTabs" role="tablist"></div>
     <div class="smap" id="smap"><div class="smapInner" id="smapInner"><img id="smapImg" alt="" draggable="false"><div class="pins" id="pins"></div><div class="pinTip" id="pinTip" hidden></div></div><div class="zoomctl"><button type="button" id="zIn" aria-label="zoom in">＋</button><button type="button" id="zOut" aria-label="zoom out">－</button><button type="button" id="zReset" aria-label="reset">⟲</button></div></div>
@@ -269,14 +291,14 @@ zh:{
   loading:'房況資料載入中', langGroup:'語言', helpBtn:'操作說明', histBtn:'房況更新歷史紀錄', close:'關閉',
   helpT:'怎麼查房況、怎麼預訂', histT:'房況更新歷史紀錄', histNote:'房況每 15 分鐘從 Villa Finder 的 iCal 行事曆同步一次；表格列出每一次同步。時間為台灣時間。', hTime:'更新時間', hFeeds:'同步間數', hChanged:'房況有變動', hErr:'失敗', histEmpty:'還沒有紀錄（下一次同步後會出現）', histNow:'目前頁面使用的版本', hUnk:'—',
   helpHtml:`<ol>
-<li><b>1. 選日期與房數</b>先填入住日、退房日，再選「至少幾房」（例如客人要 3 房就選 3 房，4 房的別墅也會出現，報價會用符合的最小格局）。入住人數會自動排除容納不下的別墅。</li>
+<li><b>1. 選日期與房數</b>點「入住日 → 退房日」一次選好入住與退房，再選「至少幾房」（例如客人要 3 房就選 3 房，4 房的別墅也會出現，報價會用符合的最小格局）。入住人數會自動排除容納不下的別墅。</li>
 <li><b>2. 縮小範圍</b>區域、床型膠囊（雙床房／雙人房／四人房／上下舖，可複選，選了就代表「都要有」）、開車到市區幾分鐘、排序方式。知道名字就直接打在「搜尋別墅名稱」。預設只顯示有空房的，取消勾選可看全部。</li>
 <li><b>3. 看結果</b>每一列有：房況標籤（綠＝有空房、灰＝已被訂、黃＝無房況資料）、Google 評價、地址（點了開 Google 地圖）、到市區車程、該日期的總價與每晚均價、促銷。點整列展開看臥室／室內／戶外照片、設施、床型說明、所有外部連結。</li>
-<li><b>4. 用地圖比位置</b>打開「🗺️ 地圖」，圖釘只顯示目前篩選結果，切換區域分頁、滾輪放大、點圖釘跳到該筆。</li>
+<li><b>4. 用地圖比位置</b>「🗺️ 地圖」預設展開（點標題可收合），圖釘只顯示目前篩選結果，切換區域分頁、滾輪放大、點圖釘跳到該筆。</li>
 <li><b>5. 預訂</b>展開別墅後有兩個按鈕：「到 Villa Finder 送出請求」會帶著日期開啟 Villa Finder 表單，在那邊填客人資料送出（若符合最少入住天數，Villa Finder 會直接出現線上付款）；「確認預訂並寄信」是在本頁填表後寄訂房信給 Villa Finder，寄出後會記錄在下方「訂房紀錄」。兩種都會建立真實請求，確認客人要訂了再按。</li>
 <li><b>6. 房況多新</b>右上角顯示最後更新時間；「房況更新歷史紀錄」列出每一次同步。房況是 Villa Finder 的 iCal 行事曆，可能比他們後台慢幾分鐘，送出前以 Villa Finder 回覆為準。</li>
 </ol><div class="tip">價格是 Villa Finder 的公告價（Published Rate），不是淨價。床型、評價、地址是定期整理的資料，不會即時變動；床型未確認的別墅請在送單前向 Villa Finder 確認。</div>`,
-  ci:'入住日', co:'退房日', br:'至少幾房', br1:'1 房', br2:'2 房', br3:'3 房', br4:'4 房', br5:'5 房', br6:'6 房以上',
+  ci:'入住日', co:'退房日', dr:'入住日 → 退房日', drPickCi:'點選入住日', drPickCo:'再點選退房日', drClr:'清除', drOk:'完成', drNights:n=>n+' 晚', wd:['日','一','二','三','四','五','六'], ym:(y,m)=>y+' 年 '+m+' 月', guN:n=>n+' 人', guMax:'20 人以上', br:'至少幾房', br1:'1 房', br2:'2 房', br3:'3 房', br4:'4 房', br5:'5 房', br6:'6 房以上',
   gu:'入住人數', any:'不限', area:'區域', areaAll:'全部區域',
   bed:'房型（可複選，全部都要有）', chipTw:'雙床房', chipDb:'雙人房', chipQd:'四人房', chipBk:'上下舖', chipUnk:'含床型未確認',
   dt:'開車到市區', dt10:'10 分鐘內', dt15:'15 分鐘內', dt20:'20 分鐘內', dt30:'30 分鐘內',
@@ -341,14 +363,14 @@ en:{
   loading:'Loading availability data', langGroup:'Language', helpBtn:'How to use', histBtn:'Availability update log', close:'Close',
   helpT:'How to search and book', histT:'Availability update log', histNote:'Availability syncs from Villa Finder\'s iCal calendars every 15 minutes; each sync is listed here. Times are Taiwan time.', hTime:'Updated at', hFeeds:'Feeds synced', hChanged:'Changed', hErr:'Failed', histEmpty:'No entries yet (they appear after the next sync)', histNow:'version this page is using', hUnk:'—',
   helpHtml:`<ol>
-<li><b>1. Pick dates and bedrooms</b>Enter check-in and check-out, then "Min. bedrooms" (choose 3 for a 3-bedroom request; 4-bedroom villas still appear, quoted at the smallest layout that fits). Guest count hides villas that cannot accommodate the group.</li>
+<li><b>1. Pick dates and bedrooms</b>Click "Check-in → Check-out" to pick both dates in one calendar, then "Min. bedrooms" (choose 3 for a 3-bedroom request; 4-bedroom villas still appear, quoted at the smallest layout that fits). Guest count hides villas that cannot accommodate the group.</li>
 <li><b>2. Narrow down</b>Area, room-type chips (Twin / Double / Quad / Bunk — multi-select means the villa must have all of them), drive time to town, sort order. Know the name? Type it in "Search by villa name". "Available only" is on by default; untick to see everything.</li>
 <li><b>3. Read the results</b>Each row shows the availability tag (green = available, grey = booked, yellow = no data), Google rating, address (opens Google Maps), drive time, total and per-night price for the dates, promotions. Click the row to see bedroom / indoor / outdoor photos, facilities, bed notes and all external links.</li>
-<li><b>4. Compare on the map</b>Open "🗺️ Map": pins show the current results only; switch regions, scroll to zoom, click a pin to jump to the listing.</li>
+<li><b>4. Compare on the map</b>"🗺️ Map" is open by default (click the title to collapse); pins show the current results only; switch regions, scroll to zoom, click a pin to jump to the listing.</li>
 <li><b>5. Book</b>Inside a villa there are two buttons: "Send request on Villa Finder" opens their form with the dates pre-filled — complete it there (online payment appears when the minimum stay is met); "Confirm & email" sends a booking email to Villa Finder from this page and logs it under "Booking records". Both create real requests — use them only when the client has decided.</li>
 <li><b>6. How fresh is the data</b>The top-right badge shows the last update; "Availability update log" lists every sync. Availability comes from Villa Finder's iCal and can lag their back office by minutes — treat Villa Finder's reply as final.</li>
 </ol><div class="tip">Prices are Villa Finder's Published Rates, not net. Bed types, ratings and addresses are compiled periodically and do not update live; confirm unconfirmed bed types with Villa Finder before sending.</div>`,
-  ci:'Check-in', co:'Check-out', br:'Min. bedrooms', br1:'1 BR', br2:'2 BR', br3:'3 BR', br4:'4 BR', br5:'5 BR', br6:'6+ BR',
+  ci:'Check-in', co:'Check-out', dr:'Check-in → Check-out', drPickCi:'Pick check-in date', drPickCo:'Now pick check-out date', drClr:'Clear', drOk:'Done', drNights:n=>n+(n===1?' night':' nights'), wd:['Su','Mo','Tu','We','Th','Fr','Sa'], ym:(y,m)=>['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'][m-1]+' '+y, guN:n=>n+(n===1?' guest':' guests'), guMax:'20+ guests', br:'Min. bedrooms', br1:'1 BR', br2:'2 BR', br3:'3 BR', br4:'4 BR', br5:'5 BR', br6:'6+ BR',
   gu:'Guests', any:'Any', area:'Area', areaAll:'All areas',
   bed:'Room types (multi-select, villa must have all)', chipTw:'Twin room', chipDb:'Double room', chipQd:'Quad room (sleeps 4)', chipBk:'Bunk beds', chipUnk:'Include unconfirmed',
   dt:'Drive to town', dt10:'Within 10 min', dt15:'Within 15 min', dt20:'Within 20 min', dt30:'Within 30 min',
@@ -513,6 +535,30 @@ function initZoom(){const box=$('smap');$('zIn').onclick=()=>zoomBy(1.5);$('zOut
   box.addEventListener('dblclick',e=>{const r=box.getBoundingClientRect();zoomBy(1.6,e.clientX-r.left,e.clientY-r.top);});}
 function highlightRow(slug){const el=document.querySelector(`details.v[data-s="${CSS.escape(slug)}"]`);if(!el)return;document.querySelectorAll('details.v.hl').forEach(e=>e.classList.remove('hl'));el.classList.add('hl');el.open=true;el.scrollIntoView({behavior:'smooth',block:'start'});}
 document.addEventListener('click',e=>{if(e.target.closest('a.addr,a.grate')){e.stopPropagation();return;}});
+let drState={ci:null,co:null,view:null,picking:'ci'};
+const drToday=()=>{const t0=new Date();return new Date(Date.UTC(t0.getUTCFullYear(),t0.getUTCMonth(),t0.getUTCDate()));};
+function drSync(){const ci=$('ci').value,co=$('co').value;if(!ci||!co){$('drTxt').textContent='—';$('drN').textContent='';return;}const a=fromInput(ci),b=fromInput(co);const f=d=>d.getUTCFullYear()+'/'+pad(d.getUTCMonth()+1)+'/'+pad(d.getUTCDate());$('drTxt').textContent=f(a)+' → '+f(b);const n=Math.round((b-a)/864e5);$('drN').textContent=n>0?t('drNights',n):'';}
+function drRender(){const box=$('drMonths');box.innerHTML='';const today=drToday();const v=drState.view;const {ci,co}=drState;
+  $('drHint').textContent=drState.picking==='ci'?t('drPickCi'):t('drPickCo');$('drClr').textContent=t('drClr');$('drOk').textContent=t('drOk');
+  for(let k=0;k<2;k++){const y=v.getUTCFullYear(),m=v.getUTCMonth()+k;const first=new Date(Date.UTC(y,m,1));const Y=first.getUTCFullYear(),M=first.getUTCMonth();const days=new Date(Date.UTC(Y,M+1,0)).getUTCDate();
+    const el=document.createElement('div');el.className='drm';el.innerHTML='<h4>'+t('ym',Y,M+1)+'</h4>';const g=document.createElement('div');g.className='drg';
+    for(const w of t('wd')){const s=document.createElement('span');s.className='wd';s.textContent=w;g.appendChild(s);}
+    for(let i=0;i<first.getUTCDay();i++)g.appendChild(document.createElement('span'));
+    for(let d=1;d<=days;d++){const dt=new Date(Date.UTC(Y,M,d));const b=document.createElement('button');b.type='button';b.textContent=d;b.dataset.d=toInput(dt);
+      if(dt<today||(drState.picking==='co'&&ci&&dt<=ci))b.disabled=true;
+      if(ci&&dt.getTime()===ci.getTime())b.classList.add('s');if(co&&dt.getTime()===co.getTime())b.classList.add('e');if(ci&&co&&dt>ci&&dt<co)b.classList.add('in');
+      b.addEventListener('click',()=>drPick(dt));g.appendChild(b);}
+    el.appendChild(g);box.appendChild(el);}}
+function drPick(dt){if(drState.picking==='ci'||!drState.ci||dt<=drState.ci){drState.ci=dt;drState.co=null;drState.picking='co';}else{drState.co=dt;drState.picking='ci';drCommit();return;}drRender();}
+function drCommit(){if(!drState.ci||!drState.co)return;$('ci').value=toInput(drState.ci);$('co').value=toInput(drState.co);$('drPop').hidden=true;$('ci').dispatchEvent(new Event('change',{bubbles:true}));}
+function drOpen(){const ci=$('ci').value?fromInput($('ci').value):null,co=$('co').value?fromInput($('co').value):null;drState={ci,co,picking:'ci',view:ci?new Date(Date.UTC(ci.getUTCFullYear(),ci.getUTCMonth(),1)):(()=>{const d=drToday();return new Date(Date.UTC(d.getUTCFullYear(),d.getUTCMonth(),1));})()};drRender();$('drPop').hidden=false;}
+function initDR(){drSync();$('drBtn').addEventListener('click',()=>{if($('drPop').hidden)drOpen();else $('drPop').hidden=true;});
+  $('drPrev').addEventListener('click',()=>{drState.view=new Date(Date.UTC(drState.view.getUTCFullYear(),drState.view.getUTCMonth()-1,1));drRender();});
+  $('drNext').addEventListener('click',()=>{drState.view=new Date(Date.UTC(drState.view.getUTCFullYear(),drState.view.getUTCMonth()+1,1));drRender();});
+  $('drClr').addEventListener('click',()=>{drState.ci=null;drState.co=null;drState.picking='ci';drRender();});
+  $('drOk').addEventListener('click',()=>{if(drState.ci&&drState.co)drCommit();else if(drState.ci){drState.co=addDays(drState.ci,4);drCommit();}else $('drPop').hidden=true;});
+  document.addEventListener('pointerdown',e=>{if(!$('drPop').hidden&&!e.target.closest('.f.dr'))$('drPop').hidden=true;});
+  document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!$('drPop').hidden){$('drPop').hidden=true;$('drBtn').focus();}});}
 function norm(x){return String(x||'').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^a-z0-9\u4e00-\u9fff]/g,'');}
 function render(){
   const {ciD,coD,nights,ci,co}=state();
@@ -593,7 +639,7 @@ function fillBody(b,x,ciD,coD,nights){
   const links=[];
   {const mu=mapUrlOf(v);if(mu)links.push(`<a href="${mu}" target="_blank" rel="noopener">${t('lkMap')}</a>`);}
   if(v.ws) links.push(`<a href="${esc(v.ws)}" target="_blank" rel="noopener">${t('lkWeb')}</a>`);
-  {const gu=Math.max(+($('gu').value||0),2);const q=`checkin=${toInput(ciD)}&checkout=${toInput(coD)}&adults=${gu}`;links.push(`<a href="https://www.villa-finder.com/en/villa/${esc(v.s)}?${q}" target="_blank" rel="noopener">${t('lkVf')}</a>`);}
+  {const gu=Math.min(Math.max(+($('gu').value||0),2),20);const q=`checkin=${toInput(ciD)}&checkout=${toInput(coD)}&adults=${gu}`;links.push(`<a href="https://www.villa-finder.com/en/villa/${esc(v.s)}?${q}" target="_blank" rel="noopener">${t('lkVf')}</a>`);}
   if(v.ph) links.push(`<a href="${esc(v.ph)}" target="_blank" rel="noopener">${t('lkAlbum')}</a>`);
   if(v.ds) links.push(`<a href="${esc(v.ds)}" target="_blank" rel="noopener">${t('lkDs')}</a>`);
   {const qn=encodeURIComponent(v.n+' Bali');links.push(`<a href="https://www.booking.com/searchresults.html?ss=${qn}" target="_blank" rel="noopener">${t('lkBooking')}</a>`,`<a href="https://www.google.com/search?q=site:agoda.com+${qn}" target="_blank" rel="noopener">${t('lkAgoda')}</a>`,`<a href="https://www.airbnb.com/s/${encodeURIComponent(v.n.replace(/\s+/g,'-'))}-Bali/homes?query=${qn}" target="_blank" rel="noopener">${t('lkAirbnb')}</a>`);}
@@ -728,13 +774,13 @@ function applyStatic(){
   document.querySelectorAll('[data-t-label]').forEach(el=>{el.label=t(el.dataset.tLabel);});
   document.querySelectorAll('[data-t-aria]').forEach(el=>{el.setAttribute('aria-label',t(el.dataset.tAria));});
   for(const o of $('area').options) if(o.value) o.textContent=t('areaOpt',areaName(o.value),VILLAS.filter(v=>v.a===o.value).length);
-  for(const o of $('gu').options) if(+o.value) o.textContent=t('guOpt',+o.value);
+  for(const o of $('gu').options) if(+o.value) o.textContent=+o.value>20?t('guMax'):t('guN',+o.value);
   document.querySelectorAll('#lang button').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.lang===LANG)));
 }
 function setLang(l){
   if(l!=='zh'&&l!=='en') return; LANG=l;
   try{localStorage.setItem('vf-lang',l);}catch(e){}
-  applyStatic(); showFresh(); render(); renderRecords();
+  applyStatic(); showFresh(); render(); renderRecords(); if(typeof drSync==='function'){drSync();if(!$('drPop').hidden)drRender();}
   if(cur){ $('dlgInfo').innerHTML=dlgInfoHTML(); if(!$('bSend').disabled) $('bSend').textContent=t('bSend'); }
 }
 $('lang').addEventListener('click',e=>{const b=e.target.closest('button[data-lang]');if(b)setLang(b.dataset.lang);});
@@ -742,7 +788,7 @@ $('lang').addEventListener('click',e=>{const b=e.target.closest('button[data-lan
 (function init(){
   const areas=[...new Set(VILLAS.map(v=>v.a))].sort((a,b)=>VILLAS.filter(v=>v.a===b).length-VILLAS.filter(v=>v.a===a).length);
   for(const a of areas){const o=document.createElement('option');o.value=a;$('area').appendChild(o);}
-  for(const n of [2,4,6,8,10,12,16,20]){const o=document.createElement('option');o.value=n;$('gu').appendChild(o);}
+  for(let n=1;n<=21;n++){const o=document.createElement('option');o.value=n;$('gu').appendChild(o);}
   $('bSend').textContent=t('bSend');
   applyStatic();
   const t0=new Date(),base=new Date(Date.UTC(t0.getUTCFullYear(),t0.getUTCMonth(),t0.getUTCDate()));
@@ -750,8 +796,9 @@ $('lang').addEventListener('click',e=>{const b=e.target.closest('button[data-lan
   $('ci').value=saved.ci&&saved.ci>=toInput(base)?saved.ci:toInput(addDays(base,30));
   $('co').value=saved.co&&saved.co>$('ci').value?saved.co:toInput(addDays(fromInput($('ci').value),4));
   for(const k of ['br','gu','area','sort','dt']) if(saved[k]!=null) $(k).value=saved[k];
+  initDR();
   $('f').addEventListener('submit',e=>e.preventDefault());
-  try{const r=localStorage.getItem('vf-map-reg');if(r&&MAPR[r])mapRegion=r;if(localStorage.getItem('vf-map-open')==='1')$('mapWrap').open=true;}catch(e){}
+  try{const r=localStorage.getItem('vf-map-reg');if(r&&MAPR[r])mapRegion=r;if(localStorage.getItem('vf-map-open')==='0')$('mapWrap').open=false;}catch(e){}
   initZoom();if(useDyn()){$('gmap').hidden=false;$('mapTabs').hidden=true;$('smap').hidden=true;document.querySelector('.mapfoot').hidden=true;}
   $('mapWrap').addEventListener('toggle',()=>{if($('mapWrap').open){if(useDyn()){if(gState==='idle')loadGMaps();else drawGMap(true);}else drawMap();}});
   if(HOSTED){$('rec').hidden=true;pollAvail();}
@@ -763,6 +810,7 @@ $('lang').addEventListener('click',e=>{const b=e.target.closest('button[data-lan
   $('qClr').addEventListener('click',()=>{$('q').value='';$('q').focus();render();});
   $('f').addEventListener('change',e=>{
     if(e.target.id==='ci'&&$('co').value<=$('ci').value)$('co').value=toInput(addDays(fromInput($('ci').value),4));
+    drSync();
     try{localStorage.setItem('vf-search',JSON.stringify({ci:$('ci').value,co:$('co').value,br:$('br').value,gu:$('gu').value,area:$('area').value,sort:$('sort').value,dt:$('dt').value,beds:[...document.querySelectorAll('.fchip[aria-pressed="true"]')].map(b=>b.id||b.dataset.bed)}));}catch(e){}
     render();});
   noteUpdate();showFresh();render();
