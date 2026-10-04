@@ -18,7 +18,7 @@ only_missing = '--missing' in sys.argv
 UA = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0 Safari/537.36 OutoGallerySync/1.0'
 SEC = {'Bedrooms': 'bed', 'Outdoor areas': 'out', 'Indoor areas': 'in', 'More pictures': 'more'}
 TAG = re.compile(r'<[^>]+>')
-CF = 'https://cf-img.villa-finder.com/cf/m/villas/'
+CF = 'https://cf-img.villa-finder.com/cf/m/'
 
 def fetch(url, tries=3):
     for i in range(tries):
@@ -47,7 +47,8 @@ def parse(page, name):
         items = []
         for t in tiles:
             imgs = re.findall(r'data-src="([^"]+)"', t)
-            imgs = [u.replace(CF, '') for u in imgs if u.startswith(CF)][:6]
+            imgs = [u.replace(CF, '') for u in imgs if u.startswith(CF) and re.search(r'\.(jpe?g|webp|png)$', u, re.I)][:6]
+            imgs = [re.sub(r'^villas/', '', u) for u in imgs]
             if not imgs: continue
             alt = re.search(r'alt="([^"]*)"', t)
             tt = html.unescape(alt.group(1)) if alt else ''
