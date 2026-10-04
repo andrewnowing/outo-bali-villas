@@ -1,0 +1,29 @@
+name: Build photo galleries
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '41 3 * * 1'   # weekly Monday 11:41 Asia/Taipei
+permissions:
+  contents: write
+concurrency:
+  group: build-gal
+  cancel-in-progress: false
+jobs:
+  gal:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Fetch gallery tiles from Villa Finder public pages
+        run: python3 scripts/build_gal.py
+      - name: Commit if changed
+        run: |
+          git config user.name "outo-bot"
+          git config user.email "andrew@outo.co"
+          git add gal
+          if git diff --cached --quiet; then echo "no change"; exit 0; fi
+          git commit -m "gal: refresh photo tiles $(date -u +%Y-%m-%dT%H:%MZ)"
+          for i in 1 2 3; do git pull --rebase -X theirs origin main && git push && break || sleep 20; done
