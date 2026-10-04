@@ -1178,6 +1178,9 @@ $('lang').addEventListener('click',e=>{const b=e.target.closest('button[data-lan
 $('cur').addEventListener('click',e=>{const b=e.target.closest('button[data-cur]');if(b)setCur(b.dataset.cur);});
 document.querySelectorAll('#cur button[data-cur]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.cur===CUR)));
 loadFx().then(()=>{if(CUR==='TWD')render();});
+const PUBAV_URL='https://raw.githubusercontent.com/andrewnowing/outo-bali-villas/main/pubav.js';
+async function refreshPubav(){if(!HOSTED||typeof PUBAV==='undefined')return;try{const r=await fetch(PUBAV_URL+'?t='+Math.floor(Date.now()/60000),{cache:'no-store'});if(!r.ok)return;const txt=await r.text();const m=txt.match(/^const PUBAV=(\{[\s\S]*\});\s*$/);if(!m)return;const j=JSON.parse(m[1]);if(j&&j.by&&j.updatedAt&&new Date(j.updatedAt)>new Date(PUBAV.updatedAt)){PUBAV.by=j.by;PUBAV.updatedAt=j.updatedAt;PUBAV.ok=j.ok;PUBAV.err=j.err;PUBAV.history=j.history;showFresh();render();}}catch(e){}}
+refreshPubav();setInterval(refreshPubav,120000);
 
 (function init(){
   const areas=[...new Set(VILLAS.map(v=>v.a))].sort((a,b)=>VILLAS.filter(v=>v.a===b).length-VILLAS.filter(v=>v.a===a).length);
