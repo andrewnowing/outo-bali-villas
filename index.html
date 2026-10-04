@@ -1,201 +1,256 @@
-<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="robots" content="noindex,nofollow"><script src="config.js"></script></head><body><title>峇里島別墅空房查詢</title>
+<!doctype html><html lang="zh-Hant-TW"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="robots" content="noindex,nofollow"><script src="config.js"></script></head><body><title>峇里島別墅空房查詢</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&family=Noto+Serif+TC:wght@600;700&family=IBM+Plex+Mono:wght@500&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@500;600&display=swap">
 <style>
-/* Layout: single-column working tool — search bar, result list; each villa expands into photos, details, notes and a booking form */
+/* Outo Design System — paper, ink, one sun. Tokens from colors_and_type.css */
+@font-face{font-family:"Fields Display";src:url("fonts/Fields-Display-Semi-Bold.woff2") format("woff2");font-weight:600;font-display:swap}
+@font-face{font-family:"Fields";src:url("fonts/Fields-Regular.woff2") format("woff2");font-weight:400;font-display:swap}
+@font-face{font-family:"Fields";src:url("fonts/Fields-Medium.woff2") format("woff2");font-weight:500;font-display:swap}
+@font-face{font-family:"Fields";src:url("fonts/Fields-Semi-Bold.woff2") format("woff2");font-weight:600;font-display:swap}
+@font-face{font-family:"JinXuanNaTi";src:url("fonts/JinXuanNaTi-Medium.sub.woff2") format("woff2");font-weight:500;font-display:swap}
+@font-face{font-family:"JinXuanNaTi";src:url("fonts/JinXuanNaTi-Semibold.sub.woff2") format("woff2");font-weight:600;font-display:swap}
 :root{
-  --bg:#F3F6F4; --surface:#FFFFFF; --ink:#16231F; --muted:#5B6B65; --line:#D8E1DD;
-  --accent:#0B6B63; --accent-ink:#FFFFFF; --accent-soft:#DDEEEA;
-  --ok:#1E7B4E; --ok-soft:#DFF2E7; --busy-soft:#E6EBE9;
-  --warn:#9A5B00; --warn-soft:#FBEBD2; --bad:#A23B2A; --bad-soft:#F7E1DC; --shade:rgba(10,20,18,.45);
-  --display:"Noto Serif TC",Georgia,serif; --body:"Noto Sans TC","PingFang TC","Microsoft JhengHei",system-ui,sans-serif; --mono:"IBM Plex Mono",ui-monospace,Menlo,monospace;
+  --paper-50:#FBF8F2;--paper-100:#F6F1E7;--paper-200:#EFE7D6;--paper-300:#E5DAC3;--paper-400:#C9BCA1;
+  --ink-900:#1B1A14;--ink-800:#2A2820;--ink-700:#4A453A;--ink-600:#6B6557;--ink-500:#8C8674;--ink-400:#B5AE9B;
+  --sun-500:#FEA600;--sun-600:#E18C00;--sun-700:#A16A1B;--sun-100:#FCEFCF;--sun-50:#FDF7E6;
+  --clay-500:#B85C3B;--clay-600:#963A24;--clay-100:#F2DBCD;
+  --jade-700:#1F5A47;--jade-500:#2F8466;--jade-100:#DCEDE3;
+  --temple-700:#23445E;--temple-500:#3E6B8B;--temple-100:#DCE6EE;
+  --bg:var(--paper-100);--surface:#FFFFFF;--surface-warm:#FCF8F0;--line:#E5DDCB;--line-strong:var(--paper-400);--line-subtle:#EFE9DD;
+  --ink:var(--ink-900);--ink2:var(--ink-700);--muted:var(--ink-500);
+  --accent:var(--ink-900);--accent-ink:var(--paper-50);--accent-soft:var(--paper-200);
+  --sun:var(--sun-500);--sun-deep:var(--sun-700);--sun-tint:var(--sun-100);
+  --ok:var(--jade-700);--ok-dot:var(--jade-500);--ok-soft:var(--jade-100);
+  --busy:var(--ink-600);--busy-dot:var(--paper-400);--busy-soft:var(--paper-200);
+  --warn:var(--clay-600);--warn-dot:var(--clay-500);--warn-soft:var(--clay-100);
+  --bad:var(--clay-600);--bad-soft:var(--clay-100);--shade:rgba(27,26,20,.45);
+  --display:"Fields Display","JinXuanNaTi","Noto Sans TC",Georgia,serif;
+  --sans:"Fields","JinXuanNaTi","Noto Sans TC",-apple-system,BlinkMacSystemFont,"Helvetica Neue",Arial,sans-serif;
+  --body:"JinXuanNaTi","Fields","Noto Sans TC","PingFang TC","Microsoft JhengHei",sans-serif;
+  --mono:"Fields",ui-monospace,Menlo,monospace;
+  --shadow-sm:0 1px 2px rgba(27,26,20,.04),0 1px 1px rgba(27,26,20,.03);
+  --shadow-md:0 6px 16px rgba(27,26,20,.06),0 2px 4px rgba(27,26,20,.04);
+  --shadow-lg:0 18px 40px rgba(27,26,20,.10),0 4px 10px rgba(27,26,20,.05);
+  --ring:0 0 0 3px rgba(254,166,0,.18);
+  --ease:cubic-bezier(.2,.7,.2,1);--dur:180ms;
+  --r-sm:8px;--r-md:10px;--r-lg:12px;--r-xl:16px;
   color-scheme:light;
 }
-@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
-  --bg:#0F1614; --surface:#17211E; --ink:#E4ECE8; --muted:#97A8A1; --line:#2A3833;
-  --accent:#4FB3A8; --accent-ink:#06201D; --accent-soft:#163A35;
-  --ok:#6CCB97; --ok-soft:#173326; --busy-soft:#25302D;
-  --warn:#E6AE5C; --warn-soft:#3A2B14; --bad:#E58B7B; --bad-soft:#3B201B; --shade:rgba(0,0,0,.6); color-scheme:dark}}
-:root[data-theme="dark"]{
-  --bg:#0F1614; --surface:#17211E; --ink:#E4ECE8; --muted:#97A8A1; --line:#2A3833;
-  --accent:#4FB3A8; --accent-ink:#06201D; --accent-soft:#163A35;
-  --ok:#6CCB97; --ok-soft:#173326; --busy-soft:#25302D;
-  --warn:#E6AE5C; --warn-soft:#3A2B14; --bad:#E58B7B; --bad-soft:#3B201B; --shade:rgba(0,0,0,.6); color-scheme:dark}
 *{box-sizing:border-box}
-body{background:var(--bg);color:var(--ink);font-family:var(--body);font-size:15px;line-height:1.55;padding-inline:16px;padding-block:20px 48px}
-.wrap{max-width:1040px;margin:0 auto;display:grid;gap:18px}
-header{display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:10px 20px}
-h1{font-family:var(--display);font-size:28px;line-height:1.2;margin:0;text-wrap:balance;letter-spacing:.02em}
-h3{font-size:15px;margin:0}
-.sub{color:var(--muted);font-size:13px;margin-top:4px}
+html{-webkit-font-smoothing:antialiased}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--body);font-weight:500;font-size:15px;line-height:1.75;letter-spacing:.02em;padding-inline:24px;padding-block:28px 64px}
+.num,.price,.summary b,.fact b,.drn,.histTbl td,.rec td,.gm-iw .p{font-family:var(--sans);letter-spacing:0;font-variant-numeric:tabular-nums}
+.wrap{max-width:1080px;margin:0 auto;display:grid;gap:20px}
+header{display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:12px 24px;padding-bottom:4px}
+.eyebrow{font-family:var(--sans);font-weight:600;font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--sun-deep);margin-bottom:6px}
+h1{font-family:var(--body);font-weight:600;font-size:clamp(24px,3.2vw,30px);line-height:1.4;margin:0;text-wrap:balance;letter-spacing:.02em;color:var(--ink)}
+h3{font-family:var(--body);font-weight:600;font-size:17px;line-height:1.45;margin:0;letter-spacing:.02em}
+.sub{color:var(--ink2);font-size:13.5px;margin-top:6px;line-height:1.7}
 .hdr-r{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
-.fresh{font-size:13px;padding:5px 10px;border-radius:999px;background:var(--accent-soft);color:var(--ink);white-space:nowrap}
-.fresh.old{background:var(--warn-soft);color:var(--warn)}
-form.search{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:14px;display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:12px;align-items:end}
-label.f,div.f{display:grid;gap:4px;font-size:12px;color:var(--muted);letter-spacing:.04em;min-width:0}
-input,select,textarea{font:inherit;color:var(--ink);background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:8px 10px;min-width:0;width:100%}
-textarea{min-height:70px;resize:vertical}
-input:focus-visible,select:focus-visible,textarea:focus-visible,button:focus-visible,summary:focus-visible,a:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
-.chk{display:flex;gap:8px;align-items:center;font-size:14px;color:var(--ink);padding-bottom:8px}
-.chk input{width:auto}
+.fresh{font-family:var(--body);font-size:12px;padding:6px 12px;border-radius:999px;background:var(--paper-200);color:var(--ink-700);border:1px solid var(--paper-300);white-space:nowrap;letter-spacing:.04em}
+.fresh.old{background:var(--clay-100);color:var(--clay-600);border-color:transparent}
+form.search{background:var(--surface);border:1px solid var(--line);border-radius:var(--r-lg);padding:20px;display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:16px;align-items:end;box-shadow:var(--shadow-sm)}
+label.f,div.f{display:grid;gap:8px;min-width:0}
+label.f>span:first-child,div.f>span:first-child,.sec,.gal .grow p{font-family:var(--sans);font-weight:600;font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--sun-deep);line-height:1.4}
+label.f>span:first-child:lang(zh-Hant),div.f>span:first-child:lang(zh-Hant){letter-spacing:.14em}
+input,select,textarea{font:inherit;font-weight:500;color:var(--ink);background:var(--surface);border:1px solid var(--line-strong);border-radius:var(--r-md);padding:0 14px;height:44px;min-width:0;width:100%;transition:border-color var(--dur) var(--ease),box-shadow var(--dur) var(--ease)}
+select{appearance:none;-webkit-appearance:none;background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%234A453A' stroke-width='1.75' stroke-linecap='round' stroke-linejoin='round'><path d='m6 9 6 6 6-6'/></svg>");background-repeat:no-repeat;background-position:right 12px center;padding-right:36px}
+textarea{min-height:88px;height:auto;padding:10px 14px;resize:vertical;line-height:1.7}
+input:focus,select:focus,textarea:focus,.drbtn:focus{outline:none;border-color:var(--ink-900);box-shadow:var(--ring)}
+button:focus-visible,summary:focus-visible,a:focus-visible{outline:none;box-shadow:var(--ring)}
+.chk{display:flex;gap:10px;align-items:center;font-size:14px;color:var(--ink);height:44px}
+.chk input{width:18px;height:18px;accent-color:var(--ink-900);margin:0}
 label.q{grid-column:1/-1}
 .f.dr{position:relative;grid-column:span 2}
-.drbtn{font:inherit;color:var(--ink);background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:8px 10px;width:100%;text-align:left;cursor:pointer;display:flex;justify-content:space-between;gap:8px;align-items:center}
-.drbtn:hover{border-color:var(--accent)}
+.drbtn{font:inherit;font-weight:500;color:var(--ink);background:var(--surface);border:1px solid var(--line-strong);border-radius:var(--r-md);padding:0 14px;height:44px;width:100%;text-align:left;cursor:pointer;display:flex;justify-content:space-between;gap:8px;align-items:center;transition:border-color var(--dur) var(--ease)}
+.drbtn:hover{border-color:var(--ink-900)}
+#drTxt{font-family:var(--sans);letter-spacing:0;font-variant-numeric:tabular-nums}
 .drn{font-size:12px;color:var(--muted);white-space:nowrap}
-.drpop{position:absolute;z-index:30;top:calc(100% + 6px);left:0;background:var(--surface);border:1px solid var(--line);border-radius:12px;box-shadow:0 12px 32px rgba(0,0,0,.14);padding:12px;width:min(620px,calc(100vw - 48px));color:var(--ink);letter-spacing:0}
-.drhead{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:8px}
-.drhint{font-size:13px;color:var(--muted)}
-.drnav{font:inherit;font-size:18px;line-height:1;padding:4px 10px;border:1px solid var(--line);border-radius:8px;background:var(--bg);color:var(--ink);cursor:pointer}
-.drmonths{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:16px}
-.drm h4{margin:0 0 6px;font-size:14px;text-align:center}
+.drpop{position:absolute;z-index:30;top:calc(100% + 8px);left:0;background:var(--surface);border:1px solid var(--line);border-radius:var(--r-lg);box-shadow:var(--shadow-lg);padding:16px;width:min(640px,calc(100vw - 48px));color:var(--ink);letter-spacing:0}
+.drhead{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:10px}
+.drhint{font-size:13px;color:var(--ink2);letter-spacing:.02em}
+.drnav{font:inherit;font-size:18px;line-height:1;width:32px;height:32px;padding:0;border:1px solid var(--line-strong);border-radius:var(--r-sm);background:var(--surface);color:var(--ink);cursor:pointer}
+.drnav:hover{border-color:var(--ink-900);background:var(--paper-50)}
+.drmonths{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:20px}
+.drm h4{margin:0 0 8px;font-family:var(--sans);font-weight:600;font-size:13px;letter-spacing:.06em;text-align:center;color:var(--ink)}
 .drg{display:grid;grid-template-columns:repeat(7,1fr);gap:2px;text-align:center;font-size:13px}
-.drg .wd{color:var(--muted);font-size:11px;padding:2px 0}
-.drg button{font:inherit;font-size:13px;border:0;background:transparent;color:var(--ink);padding:7px 0;border-radius:6px;cursor:pointer}
-.drg button:hover:not(:disabled){background:var(--accent-soft)}
-.drg button:disabled{color:#c3c8cf;cursor:default}
-.drg button.in{background:var(--accent-soft);border-radius:0}
-.drg button.s,.drg button.e{background:var(--accent);color:#fff}
-.drg button.s{border-radius:6px 0 0 6px}.drg button.e{border-radius:0 6px 6px 0}.drg button.s.e{border-radius:6px}
-.drfoot{display:flex;justify-content:space-between;gap:8px;margin-top:10px}
-.drclr,.drok{font:inherit;font-size:13px;padding:6px 14px;border-radius:8px;border:1px solid var(--line);background:var(--bg);color:var(--ink);cursor:pointer}
-.drok{background:var(--accent);color:#fff;border-color:var(--accent)}
+.drg .wd{color:var(--muted);font-family:var(--sans);font-size:11px;padding:2px 0;letter-spacing:.06em}
+.drg button{font-family:var(--sans);font-weight:500;font-size:13px;border:0;background:transparent;color:var(--ink);padding:8px 0;border-radius:var(--r-sm);cursor:pointer;box-shadow:none;transition:background var(--dur) var(--ease)}
+.drg button:hover:not(:disabled){background:var(--paper-200)}
+.drg button:disabled{color:var(--ink-400);cursor:default;opacity:1}
+.drg button.in{background:var(--paper-200);border-radius:0}
+.drg button.s,.drg button.e{background:var(--ink-900);color:var(--paper-50)}
+.drg button.s{border-radius:var(--r-sm) 0 0 var(--r-sm)}.drg button.e{border-radius:0 var(--r-sm) var(--r-sm) 0}.drg button.s.e{border-radius:var(--r-sm)}
+.drfoot{display:flex;justify-content:space-between;gap:8px;margin-top:12px}
+.drclr{font:inherit;font-size:13px;padding:0 14px;height:36px;border-radius:var(--r-md);border:1px solid var(--line-strong);background:var(--surface);color:var(--ink);cursor:pointer}
+.drclr:hover{border-color:var(--ink-900);background:var(--paper-50)}
+.drok{font:inherit;font-size:13px;padding:0 18px;height:36px;border-radius:var(--r-md);border:1px solid var(--ink-900);background:var(--ink-900);color:var(--paper-50);cursor:pointer}
 @media (max-width:520px){.f.dr{grid-column:1/-1}}
 .chips{grid-column:1/-1}
 .chipbar{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
-.fchip{font:inherit;font-size:13px;padding:6px 12px;border-radius:999px;border:1px solid var(--line);background:var(--bg);color:var(--ink);cursor:pointer;line-height:1.2}
-.fchip:hover{border-color:var(--accent)}
-.fchip[aria-pressed="true"]{background:var(--accent);border-color:var(--accent);color:#fff}
-.fchip.soft[aria-pressed="true"]{background:var(--warn-soft);border-color:var(--warn);color:var(--warn)}
-.chipsep{width:1px;height:20px;background:var(--line);margin:0 4px}
-details.mapwrap{background:var(--surface);border:1px solid var(--line);border-radius:12px;overflow:hidden}
-details.mapwrap>summary{list-style:none;cursor:pointer;display:flex;flex-wrap:wrap;gap:6px 14px;align-items:center;padding:12px 14px;font-weight:600}
+.fchip{font:inherit;font-weight:500;font-size:13px;padding:0 16px;height:38px;border-radius:var(--r-md);border:1.5px solid var(--line-strong);background:var(--surface);color:var(--ink2);cursor:pointer;line-height:1;letter-spacing:.02em;box-shadow:none;transition:all var(--dur) var(--ease)}
+.fchip:hover{border-color:var(--ink-900);background:var(--paper-50);color:var(--ink)}
+.fchip[aria-pressed="true"]{background:var(--ink-900);border-color:var(--ink-900);color:var(--paper-50)}
+.fchip.soft[aria-pressed="true"]{background:var(--clay-100);border-color:var(--clay-500);color:var(--clay-600)}
+.chipsep{width:1px;height:24px;background:var(--line);margin:0 4px}
+details.mapwrap{background:var(--surface);border:1px solid var(--line);border-radius:var(--r-lg);overflow:hidden;box-shadow:var(--shadow-sm)}
+details.mapwrap>summary{list-style:none;cursor:pointer;display:flex;flex-wrap:wrap;gap:6px 16px;align-items:center;padding:14px 20px;font-weight:600;letter-spacing:.02em}
 details.mapwrap>summary::-webkit-details-marker{display:none}
-.mapn{color:var(--muted);font-weight:400;font-size:13px}
-.maplegend{margin-left:auto;display:flex;gap:4px 10px;align-items:center;font-weight:400;font-size:12px;color:var(--muted);flex-wrap:wrap}
-.lg{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:4px}.lg.ok{background:#1a9c6b}.lg.busy{background:#9aa3ad}.lg.unk{background:#d99a1c}
-.maptabs{display:flex;flex-wrap:wrap;gap:6px;padding:0 14px 10px}
-.maptabs button{font:inherit;font-size:13px;padding:5px 11px;border-radius:999px;border:1px solid var(--line);background:var(--bg);color:var(--ink);cursor:pointer}
-.maptabs button[aria-selected="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
-.maptabs button small{color:inherit;opacity:.7;margin-left:4px}
-.smap{position:relative;width:100%;max-width:760px;margin:0 auto;aspect-ratio:1/1;background:var(--bg);overflow:hidden;border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+.mapn{color:var(--muted);font-weight:500;font-size:13px}
+.maplegend{margin-left:auto;display:flex;gap:4px 14px;align-items:center;font-weight:500;font-size:12px;color:var(--ink2);flex-wrap:wrap}
+.lg{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:6px}.lg.ok{background:var(--ok-dot)}.lg.busy{background:var(--busy-dot)}.lg.unk{background:var(--warn-dot)}
+.maptabs{display:flex;flex-wrap:wrap;gap:6px;padding:0 20px 12px}
+.maptabs button{font:inherit;font-size:13px;padding:0 12px;height:32px;border-radius:999px;border:1px solid var(--line-strong);background:var(--surface);color:var(--ink2);cursor:pointer;box-shadow:none}
+.maptabs button[aria-selected="true"]{background:var(--ink-900);color:var(--paper-50);border-color:var(--ink-900)}
+.maptabs button small{color:inherit;opacity:.7;margin-left:4px;font-family:var(--sans)}
+.smap{position:relative;width:100%;max-width:760px;margin:0 auto;aspect-ratio:1/1;background:var(--paper-200);overflow:hidden;border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
 .smapInner{position:absolute;inset:0;transform-origin:0 0;will-change:transform;cursor:grab}
 .smapInner.drag{cursor:grabbing}
 .smap img{position:absolute;inset:0;width:100%;height:100%;display:block;user-select:none;pointer-events:none}
-.zoomctl{position:absolute;right:10px;top:10px;display:flex;flex-direction:column;gap:4px;z-index:7}
-.zoomctl button{width:32px;height:32px;border-radius:8px;border:1px solid var(--line);background:#fff;color:#1b1b1b;font-size:18px;line-height:1;cursor:pointer;box-shadow:0 1px 3px rgba(0,0,0,.2)}
+.zoomctl{position:absolute;right:12px;top:12px;display:flex;flex-direction:column;gap:4px;z-index:7}
+.zoomctl button{width:34px;height:34px;padding:0;border-radius:var(--r-sm);border:1px solid var(--line);background:#fff;color:var(--ink);font-size:18px;line-height:1;cursor:pointer;box-shadow:var(--shadow-sm)}
 .pins{position:absolute;inset:0}
-.pin{position:absolute;box-sizing:border-box;padding:0;font-size:0;line-height:0;min-width:0;width:13px;height:13px;margin:-6.5px 0 0 -6.5px;transform:scale(var(--inv,1));border-radius:50%;border:2px solid #fff;box-shadow:0 1px 3px rgba(0,0,0,.4);cursor:pointer;background:#d99a1c}
-.pin.ok{background:#1a9c6b}.pin.busy{background:#9aa3ad}
+.pin{position:absolute;box-sizing:border-box;padding:0;font-size:0;line-height:0;min-width:0;width:13px;height:13px;margin:-6.5px 0 0 -6.5px;transform:scale(var(--inv,1));border-radius:50%;border:2px solid #fff;box-shadow:0 1px 3px rgba(27,26,20,.4);cursor:pointer;background:var(--warn-dot)}
+.pin.ok{background:var(--ok-dot)}.pin.busy{background:var(--busy-dot)}
 .pin:hover,.pin.hl{transform:scale(calc(var(--inv,1)*1.5));z-index:5}
-.pinTip{transform:translate(-50%,-150%) scale(var(--inv,1))}
-.pinTip{position:absolute;background:#1b1b1b;color:#fff;font-size:12px;padding:4px 8px;border-radius:6px;pointer-events:none;white-space:nowrap;transform:translate(-50%,-150%);z-index:6}
-.mapfoot{padding:8px 14px 12px;font-size:12px;color:var(--muted)}
+.pinTip{position:absolute;background:var(--ink-900);color:var(--paper-50);font-size:12px;padding:4px 10px;border-radius:var(--r-sm);pointer-events:none;white-space:nowrap;transform:translate(-50%,-150%) scale(var(--inv,1));z-index:6}
+.mapfoot{padding:10px 20px 14px;font-size:12px;color:var(--muted)}
 .gmap{height:520px;border-top:1px solid var(--line)}
 .gmap[hidden]{display:none}
-.gm-iw{font:13px/1.4 system-ui,sans-serif;color:#1b1b1b;max-width:240px}.gm-iw b{font-size:14px}.gm-iw .p{margin-top:4px}.gm-iw a{color:#0b6}
-details.v.hl{outline:2px solid var(--accent)}
+.gm-iw{font:13px/1.5 "JinXuanNaTi","Noto Sans TC",system-ui,sans-serif;color:var(--ink-900);max-width:240px}.gm-iw b{font-size:14px;font-weight:600}.gm-iw .p{margin-top:4px}.gm-iw a{color:var(--sun-deep);font-weight:600;text-decoration:none}
+details.v.hl{border-color:var(--ink-900);box-shadow:var(--ring)}
 .qbox{position:relative;display:block}
-.qbox input{padding-right:34px}
-.qclr{position:absolute;right:6px;top:50%;transform:translateY(-50%);border:0;background:transparent;color:var(--muted);font-size:18px;line-height:1;padding:2px 6px;cursor:pointer;border-radius:6px}
-.qclr:hover{background:var(--line)}
+.qbox input{padding-right:40px}
+.qclr{position:absolute;right:8px;top:50%;transform:translateY(-50%);border:0;background:transparent;color:var(--muted);font-size:18px;line-height:1;padding:2px 8px;cursor:pointer;border-radius:var(--r-sm);box-shadow:none}
+.qclr:hover{background:var(--paper-200);color:var(--ink)}
 .qhint{font-size:12px;color:var(--muted);min-height:0}
-mark.q{background:var(--accent-soft);color:inherit;border-radius:3px;padding:0 1px}
-.summary{display:flex;flex-wrap:wrap;gap:8px 16px;align-items:baseline;font-size:14px;color:var(--muted)}
-.summary b{color:var(--ink);font-size:18px;font-variant-numeric:tabular-nums}
-.list{display:grid;gap:10px}
-details.v{background:var(--surface);border:1px solid var(--line);border-radius:12px;overflow:hidden}
-details.v.busy{background:transparent}
-details.v>summary{list-style:none;cursor:pointer;display:grid;grid-template-columns:auto 1fr auto;gap:6px 14px;padding:12px 14px;align-items:center}
+mark.q{background:var(--sun-100);color:inherit;border-radius:3px;padding:0 1px}
+.summary{display:flex;flex-wrap:wrap;gap:8px 20px;align-items:baseline;font-size:14px;color:var(--ink2);padding:0 4px}
+.summary b{color:var(--ink);font-size:20px;font-weight:600}
+.list{display:grid;gap:12px}
+details.v{background:var(--surface);border:1px solid var(--line);border-radius:var(--r-lg);overflow:hidden;box-shadow:var(--shadow-sm);transition:border-color var(--dur) var(--ease),box-shadow var(--dur) var(--ease),transform var(--dur) var(--ease)}
+details.v:hover{border-color:var(--paper-400);box-shadow:var(--shadow-md)}
+details.v.busy{background:var(--surface-warm);box-shadow:none}
+details.v>summary{list-style:none;cursor:pointer;display:grid;grid-template-columns:auto 1fr auto;gap:8px 16px;padding:16px 20px;align-items:center}
 details.v>summary::-webkit-details-marker{display:none}
-.thumb{grid-row:1/3;width:96px;aspect-ratio:3/2;max-width:100%;border-radius:8px;object-fit:cover;background:var(--busy-soft)}
-.nm{font-weight:700;font-size:16px;min-width:0}
-.nm small{font-weight:400;color:var(--muted);font-size:13px;margin-left:6px}
-.nm .grate{display:inline-block;font-weight:600;font-size:13px;color:#b8860b;margin-left:8px;text-decoration:none;white-space:nowrap}
+.thumb{grid-row:1/3;width:104px;aspect-ratio:3/2;max-width:100%;border-radius:var(--r-sm);object-fit:cover;background:var(--paper-200)}
+.nm{font-weight:600;font-size:17px;min-width:0;line-height:1.45}
+.nm small{font-weight:500;color:var(--muted);font-size:13px;margin-left:8px}
+.nm .grate{display:inline-block;font-family:var(--sans);font-weight:600;font-size:13px;color:var(--ink);margin-left:10px;text-decoration:none;white-space:nowrap;letter-spacing:0}
+.nm .grate::first-letter{color:var(--sun-500)}
 .nm .grate span{font-weight:400;color:var(--muted)}
 .nm .grate:hover span{text-decoration:underline}
-.nm .grate.none{font-weight:400;color:var(--muted);font-size:12px}
-.nm .addr{display:block;font-weight:400;font-size:12px;color:var(--muted);margin-top:2px;text-decoration:none;line-height:1.35}
-.nm .addr:hover{color:var(--accent);text-decoration:underline}
-.nm .addr em{font-style:normal;color:var(--warn);margin-left:4px}
-.promo{flex-basis:100%;font-size:12.5px;color:var(--muted);line-height:1.45;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
-.promo b{color:var(--ink,inherit);font-weight:600}
-.meta{grid-column:2/3;display:flex;flex-wrap:wrap;gap:6px;align-items:center;font-size:13px;color:var(--muted);min-width:0}
-.price{grid-row:1/3;grid-column:3;text-align:right;font-variant-numeric:tabular-nums}
-.price .tot{font-size:18px;font-weight:700;display:block}
+.nm .grate.none{font-weight:400;color:var(--muted);font-size:12px;font-family:var(--body)}
+.nm .addr{display:block;font-weight:500;font-size:12px;color:var(--muted);margin-top:2px;text-decoration:none;line-height:1.5;letter-spacing:.01em}
+.nm .addr:hover{color:var(--ink);text-decoration:underline}
+.nm .addr em{font-style:normal;color:var(--clay-600);margin-left:4px}
+.promo{flex-basis:100%;font-size:12.5px;color:var(--ink2);line-height:1.6;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.promo b{color:var(--ink);font-weight:600}
+.meta{grid-column:2/3;display:flex;flex-wrap:wrap;gap:6px;align-items:center;font-size:13px;color:var(--ink2);min-width:0}
+.price{grid-row:1/3;grid-column:3;text-align:right}
+.price .tot{font-size:20px;font-weight:600;display:block;color:var(--ink);letter-spacing:-.01em}
 .price .per{font-size:12px;color:var(--muted)}
-.chip{font-size:12px;padding:2px 8px;border-radius:999px;border:1px solid transparent;white-space:nowrap}
-.c-ok{background:var(--ok-soft);color:var(--ok)}
-.c-busy{background:var(--busy-soft);color:var(--muted)}
-.c-warn{background:var(--warn-soft);color:var(--warn)}
-.c-bad{background:var(--bad-soft);color:var(--bad)}
-.c-plain{border-color:var(--line);color:var(--muted)}
-.body{padding:14px;display:grid;gap:16px;border-top:1px solid var(--line)}
-.gal{display:grid;gap:10px}
-.gal .grow p{margin:0 0 4px;font-size:13px;color:var(--muted,#666);font-weight:600}
-.gal .tiles{display:grid;grid-template-columns:repeat(4,1fr);gap:6px}
-.gal .tile{aspect-ratio:3/2;border-radius:8px;background-repeat:no-repeat;cursor:zoom-in;border:0;padding:0}
+.chip{font-size:12px;font-weight:500;padding:3px 10px;border-radius:999px;border:1px solid transparent;white-space:nowrap;letter-spacing:.04em;line-height:1.5}
+.c-ok{background:var(--jade-100);color:var(--jade-700)}
+.c-busy{background:var(--paper-200);color:var(--ink-600)}
+.c-warn{background:var(--clay-100);color:var(--clay-600)}
+.c-bad{background:var(--clay-100);color:var(--clay-600)}
+.c-plain{border-color:var(--line-strong);color:var(--ink-700);background:transparent}
+.body{padding:20px;display:grid;gap:20px;border-top:1px solid var(--line)}
+.gal{display:grid;gap:12px}
+.gal .grow p{margin:0 0 6px}
+.gal .tiles{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.gal .tile{aspect-ratio:3/2;border-radius:var(--r-sm);background-repeat:no-repeat;cursor:zoom-in;border:0;padding:0;box-shadow:none}
 @media (max-width:600px){.gal .tiles{grid-template-columns:repeat(2,1fr)}}
-.lb{position:fixed;inset:0;background:rgba(0,0,0,.85);display:none;align-items:center;justify-content:center;z-index:99;padding:16px}
-.lb.on{display:flex}.lb div{width:min(720px,100%);aspect-ratio:3/2;background-repeat:no-repeat;border-radius:8px}
+.lb{position:fixed;inset:0;background:rgba(27,26,20,.88);display:none;align-items:center;justify-content:center;z-index:99;padding:16px}
+.lb.on{display:flex}.lb div{width:min(720px,100%);aspect-ratio:3/2;background-repeat:no-repeat;border-radius:var(--r-lg)}
 .photos{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
-.photos img{width:100%;aspect-ratio:3/2;max-width:100%;object-fit:cover;border-radius:8px;display:block}
+.photos img{width:100%;aspect-ratio:3/2;max-width:100%;object-fit:cover;border-radius:var(--r-sm);display:block}
 .links{display:flex;flex-wrap:wrap;gap:8px}
-.links a{font-size:13px;color:var(--accent);text-decoration:none;border:1px solid var(--line);border-radius:999px;padding:4px 10px}
-.links a:hover{border-color:var(--accent)}
-.facts{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:8px}
-.fact{border:1px solid var(--line);border-radius:8px;padding:8px 10px}
-.fact span{display:block;font-size:12px;color:var(--muted)}
-.fact b{font-variant-numeric:tabular-nums}
-.feat{display:grid;grid-template-columns:72px 1fr;gap:6px 12px;font-size:13px}
+.links a{font-size:13px;font-weight:500;color:var(--ink2);text-decoration:none;border:1px solid var(--line-strong);border-radius:999px;padding:5px 12px;transition:all var(--dur) var(--ease)}
+.links a:hover{border-color:var(--ink-900);color:var(--ink);background:var(--paper-50)}
+.facts{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:10px}
+.fact{background:var(--surface-warm);border:1px solid var(--line);border-radius:var(--r-md);padding:10px 14px}
+.fact span{display:block;font-size:12px;color:var(--muted);margin-bottom:2px}
+.fact b{font-weight:600;font-size:15px}
+.feat{display:grid;grid-template-columns:80px 1fr;gap:8px 14px;font-size:13.5px;margin:0}
 .feat dt{color:var(--muted)}
 .feat dd{margin:0;min-width:0}
-.notes{margin:0;padding-left:18px;display:grid;gap:4px;font-size:13px}
-.notes li.w{color:var(--warn)}
-.sec{font-size:13px;color:var(--muted);margin:0 0 6px;font-weight:500;letter-spacing:.04em}
-button{font:inherit;cursor:pointer;border:1px solid var(--accent);background:var(--accent);color:var(--accent-ink);border-radius:8px;padding:7px 14px}
-a.btnlink{display:inline-flex;align-items:center;border:1px solid var(--accent);background:var(--accent);color:var(--accent-ink);border-radius:8px;padding:7px 14px;text-decoration:none}
+.notes{margin:0;padding-left:18px;display:grid;gap:4px;font-size:13.5px}
+.notes li.w{color:var(--clay-600)}
+.sec{margin:0 0 8px}
+button{font:inherit;font-weight:500;font-size:14px;letter-spacing:.04em;cursor:pointer;border:1px solid var(--ink-900);background:var(--ink-900);color:var(--paper-50);border-radius:var(--r-md);padding:0 20px;height:42px;display:inline-flex;align-items:center;gap:8px;transition:all var(--dur) var(--ease)}
+button:hover{background:var(--ink-800);transform:translateY(-1px);box-shadow:var(--shadow-md)}
+a.btnlink{display:inline-flex;align-items:center;gap:8px;font-weight:500;font-size:14px;letter-spacing:.04em;border:1px solid var(--line-strong);background:var(--surface);color:var(--ink);border-radius:var(--r-md);padding:0 20px;height:42px;text-decoration:none;transition:all var(--dur) var(--ease)}
+a.btnlink:hover{background:var(--paper-50);border-color:var(--ink-900);transform:translateY(-1px)}
 .acthint{flex-basis:100%;font-size:12.5px;color:var(--muted);margin:2px 0 0}
-button.ghost{background:transparent;color:var(--accent)}
-button:disabled{opacity:.5;cursor:not-allowed}
-.actions{display:flex;gap:8px;flex-wrap:wrap}
-.note{font-size:12px;color:var(--muted);border-top:1px solid var(--line);padding-top:12px}
-.empty{padding:24px;text-align:center;color:var(--muted);background:var(--surface);border:1px dashed var(--line);border-radius:12px}
+button.ghost{background:var(--surface);color:var(--ink);border-color:var(--line-strong)}
+button.ghost:hover{background:var(--paper-50);border-color:var(--ink-900);box-shadow:none}
+button:disabled{opacity:.45;cursor:not-allowed;transform:none;box-shadow:none}
+.actions{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.note{font-size:12.5px;color:var(--muted);border-top:1px solid var(--line);padding-top:16px;line-height:1.8}
+.empty{padding:32px;text-align:center;color:var(--muted);background:var(--surface-warm);border:1px solid var(--line);border-radius:var(--r-lg)}
 /* booking dialog */
 .dlg{position:fixed;inset:0;background:var(--shade);display:grid;place-items:center;padding:16px;z-index:10}
 .dlg[hidden]{display:none!important}
-.panel{background:var(--surface);color:var(--ink);border-radius:14px;max-width:640px;width:100%;max-height:calc(100% - 32px);overflow:auto;padding:18px;display:grid;gap:14px}
-.grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:10px}
-.preview{white-space:pre-wrap;font-family:var(--mono);font-size:12px;background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:10px;margin:0;max-height:260px;overflow:auto}
-.msg{font-size:13px;padding:8px 10px;border-radius:8px}
-.msg.ok{background:var(--ok-soft);color:var(--ok)} .msg.err{background:var(--bad-soft);color:var(--bad)} .msg.warn{background:var(--warn-soft);color:var(--warn)}
-.rec{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:12px 14px}
-.rec summary{cursor:pointer;font-weight:500}
-.rec table{width:100%;border-collapse:collapse;font-size:13px;margin-top:10px}
-.rec th,.rec td{text-align:left;padding:6px 8px;border-bottom:1px solid var(--line);white-space:nowrap}
+.panel{background:var(--surface);color:var(--ink);border-radius:var(--r-xl);max-width:660px;width:100%;max-height:calc(100% - 32px);overflow:auto;padding:24px;display:grid;gap:16px;box-shadow:var(--shadow-lg)}
+.grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:12px}
+.preview{white-space:pre-wrap;font-family:var(--sans);letter-spacing:0;font-size:12.5px;line-height:1.6;background:var(--surface-warm);border:1px solid var(--line);border-radius:var(--r-md);padding:12px 14px;margin:0;max-height:260px;overflow:auto;color:var(--ink2)}
+.msg{font-size:13px;padding:10px 14px;border-radius:var(--r-md)}
+.msg.ok{background:var(--jade-100);color:var(--jade-700)} .msg.err{background:var(--clay-100);color:var(--clay-600)} .msg.warn{background:var(--sun-50);color:var(--sun-700)}
+.rec{background:var(--surface);border:1px solid var(--line);border-radius:var(--r-lg);padding:14px 20px;box-shadow:var(--shadow-sm)}
+.rec summary{cursor:pointer;font-weight:600;list-style:none;letter-spacing:.02em}
+.rec summary::-webkit-details-marker{display:none}
+.rec table{width:100%;border-collapse:collapse;font-size:13px;margin-top:12px}
+.rec th,.rec td{text-align:left;padding:8px 10px;border-bottom:1px solid var(--line);white-space:nowrap}
+.rec th,.histTbl th{font-family:var(--sans);font-weight:600;font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
 .tw{overflow-x:auto}
-@media (max-width:560px){details.v>summary{grid-template-columns:auto 1fr}.price{grid-row:auto;grid-column:1/3;text-align:left}.thumb{width:72px}.feat{grid-template-columns:1fr}}
+@media (max-width:560px){body{padding-inline:16px}details.v>summary{grid-template-columns:auto 1fr;padding:14px 16px}.price{grid-row:auto;grid-column:1/3;text-align:left}.thumb{width:76px}.feat{grid-template-columns:1fr}form.search{padding:16px}}
 @media (prefers-reduced-motion:reduce){*{transition:none!important}}
-.hbtn{background:var(--surface);color:var(--ink);border:1px solid var(--line);padding:5px 10px;font-size:13px;border-radius:999px}
-.hbtn:hover{border-color:var(--accent);color:var(--accent)}
-.panel.help{max-width:720px}
-.help ol{margin:0;padding-left:22px;display:grid;gap:10px;font-size:14px;line-height:1.55}
-.help li b{display:block;font-size:14.5px;margin-bottom:2px}
-.help .tip{font-size:13px;color:var(--muted);background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:8px 10px}
-.histNote{margin:0;font-size:13px;color:var(--muted)}
+.hbtn{background:var(--surface);color:var(--ink2);border:1px solid var(--line-strong);padding:0 14px;height:34px;font-size:13px;border-radius:999px;letter-spacing:.02em}
+.hbtn:hover{border-color:var(--ink-900);color:var(--ink);background:var(--paper-50);transform:none;box-shadow:none}
+.panel.help{max-width:740px}
+.help ol{margin:0;padding-left:22px;display:grid;gap:12px;font-size:14px;line-height:1.8}
+.help li b{display:block;font-size:15px;margin-bottom:2px;color:var(--ink)}
+.help .tip{font-size:13px;color:var(--ink2);background:var(--surface-warm);border:1px solid var(--line);border-radius:var(--r-md);padding:10px 14px;line-height:1.7}
+.histNote{margin:0;font-size:13px;color:var(--ink2)}
 .histTbl{width:100%;border-collapse:collapse;font-size:13px}
-.histTbl th,.histTbl td{text-align:left;padding:6px 8px;border-bottom:1px solid var(--line);white-space:nowrap}
-.histTbl td.ch{color:var(--ok);font-weight:600}.histTbl td.z{color:var(--muted)}
-.lang{display:inline-flex;align-items:center;gap:2px;font-size:13px;color:var(--muted)}
-.lang button{background:transparent;border:1px solid transparent;color:var(--muted);padding:3px 8px;border-radius:999px;font-size:13px;line-height:1.3}
-.lang button[aria-pressed="true"]{background:var(--accent-soft);color:var(--ink);border-color:var(--line)}
-.lang .sep{color:var(--line)}
+.histTbl th,.histTbl td{text-align:left;padding:8px 10px;border-bottom:1px solid var(--line);white-space:nowrap}
+.histTbl td.ch{color:var(--jade-700);font-weight:600}.histTbl td.z{color:var(--muted)}
+.lang{display:inline-flex;align-items:center;gap:2px;font-size:13px;color:var(--muted);border:1px solid var(--line-strong);border-radius:999px;padding:2px;height:34px;background:var(--surface)}
+.lang button{background:transparent;border:1px solid transparent;color:var(--muted);padding:0 10px;height:28px;border-radius:999px;font-size:12.5px;line-height:1;letter-spacing:.04em;box-shadow:none}
+.lang button:hover{transform:none;box-shadow:none;color:var(--ink);background:transparent}
+.lang button[aria-pressed="true"]{background:var(--ink-900);color:var(--paper-50);border-color:var(--ink-900)}
+.lang .sep{display:none}
+
+/* utility buttons: undo the primary-button defaults */
+.drg button,.drg button:hover,.drnav:hover,.drclr:hover,.qclr:hover,.zoomctl button:hover,.maptabs button:hover,.fchip:hover,.gal .tile,.gal .tile:hover,.drbtn:hover,.drok:hover{transform:none;box-shadow:none}
+.drg button{display:block;width:100%;height:auto;padding:8px 0;text-align:center}
+.drg button:hover:not(:disabled){background:var(--paper-200);color:var(--ink)}
+.drg button.s:hover,.drg button.e:hover{background:var(--ink-900);color:var(--paper-50)}
+.drbtn:hover{background:var(--surface);color:var(--ink);border-color:var(--ink-900)}
+.drbtn{font-weight:500;letter-spacing:.02em}
+.drnav:hover{background:var(--paper-50);color:var(--ink)}
+.drclr:hover{background:var(--paper-50);color:var(--ink)}
+.drok:hover{background:var(--ink-800)}
+.qclr:hover{background:var(--paper-200);color:var(--ink)}
+.zoomctl button:hover{background:var(--paper-50);color:var(--ink)}
+.maptabs button:hover{background:var(--paper-50);color:var(--ink);border-color:var(--ink-900)}
+.maptabs button[aria-selected="true"]:hover{background:var(--ink-900);color:var(--paper-50)}
+.fchip[aria-pressed="true"]:hover{background:var(--ink-900);color:var(--paper-50);border-color:var(--ink-900)}
+.fchip.soft[aria-pressed="true"]:hover{background:var(--clay-100);color:var(--clay-600);border-color:var(--clay-500)}
+.gal .tile{display:block;width:100%;height:auto;padding:0;border:0;background-color:var(--paper-200);cursor:zoom-in}
+.nm .grate.none::first-letter{color:inherit}
+.hbtn:hover{background:var(--paper-50);color:var(--ink)}
+.lang button:hover{background:transparent;color:var(--ink)}
+.lang button[aria-pressed="true"]:hover{background:var(--ink-900);color:var(--paper-50)}
 </style>
 
 
 <div class="wrap">
   <header>
     <div>
+      <div class="eyebrow">Outo · Bali Villas · Internal</div>
       <h1 data-t="title">峇里島別墅空房查詢</h1>
       <div class="sub" data-t="sub">Villa Finder 同業房源 118 間 · 價格為對外售價（美金、含稅），不是 Outo 成本價</div>
     </div>
@@ -229,7 +284,7 @@ button:disabled{opacity:.5;cursor:not-allowed}
   <details class="rec" id="rec"><summary><span data-t="recPre">訂房紀錄（</span><span id="recN">0</span><span data-t="recPost">）</span></summary><div class="tw"><table><thead><tr><th data-t="recSent">寄出時間</th><th data-t="recVilla">別墅</th><th data-t="ci">入住</th><th data-t="co">退房</th><th data-t="recBr">房數</th><th data-t="recGu">人數</th><th data-t="recLead">主要旅客</th><th data-t="recRef">Outo 訂單</th><th data-t="recStatus">狀態</th></tr></thead><tbody id="recBody"><tr><td colspan="9" data-t="recEmpty">還沒有訂房紀錄。在別墅細節按「確認預訂並寄信」後會出現在這裡。</td></tr></tbody></table></div></details>
 
   <div class="summary" id="sum"></div>
-  <details class="mapwrap" id="mapWrap" open><summary><span data-t="mapT">🗺️ 地圖</span><span id="mapN" class="mapn"></span><span class="maplegend"><i class="lg ok"></i><span data-t="chAvail">有空房</span><i class="lg busy"></i><span data-t="chBooked">已被訂</span><i class="lg unk"></i><span data-t="chNoData">無房況資料</span></span></summary>
+  <details class="mapwrap" id="mapWrap" open><summary><span data-t="mapT">地圖</span><span id="mapN" class="mapn"></span><span class="maplegend"><i class="lg ok"></i><span data-t="chAvail">有空房</span><i class="lg busy"></i><span data-t="chBooked">已被訂</span><i class="lg unk"></i><span data-t="chNoData">無房況資料</span></span></summary>
     <div id="gmap" class="gmap" hidden></div>
     <div class="maptabs" id="mapTabs" role="tablist"></div>
     <div class="smap" id="smap"><div class="smapInner" id="smapInner"><img id="smapImg" alt="" draggable="false"><div class="pins" id="pins"></div><div class="pinTip" id="pinTip" hidden></div></div><div class="zoomctl"><button type="button" id="zIn" aria-label="zoom in">＋</button><button type="button" id="zOut" aria-label="zoom out">－</button><button type="button" id="zReset" aria-label="reset">⟲</button></div></div>
@@ -294,7 +349,7 @@ zh:{
 <li><b>1. 選日期與房數</b>點「入住日 → 退房日」一次選好入住與退房，再選「至少幾房」（例如客人要 3 房就選 3 房，4 房的別墅也會出現，報價會用符合的最小格局）。入住人數會自動排除容納不下的別墅。</li>
 <li><b>2. 縮小範圍</b>區域、床型膠囊（雙床房／雙人房／四人房／上下舖，可複選，選了就代表「都要有」）、開車到市區幾分鐘、排序方式。知道名字就直接打在「搜尋別墅名稱」。預設只顯示有空房的，取消勾選可看全部。</li>
 <li><b>3. 看結果</b>每一列有：房況標籤（綠＝有空房、灰＝已被訂、黃＝無房況資料）、Google 評價、地址（點了開 Google 地圖）、到市區車程、該日期的總價與每晚均價、促銷。點整列展開看臥室／室內／戶外照片、設施、床型說明、所有外部連結。</li>
-<li><b>4. 用地圖比位置</b>「🗺️ 地圖」預設展開（點標題可收合），圖釘只顯示目前篩選結果，切換區域分頁、滾輪放大、點圖釘跳到該筆。</li>
+<li><b>4. 用地圖比位置</b>「地圖」預設展開（點標題可收合），圖釘只顯示目前篩選結果，切換區域分頁、滾輪放大、點圖釘跳到該筆。</li>
 <li><b>5. 預訂</b>展開別墅後有兩個按鈕：「到 Villa Finder 送出請求」會帶著日期開啟 Villa Finder 表單，在那邊填客人資料送出（若符合最少入住天數，Villa Finder 會直接出現線上付款）；「確認預訂並寄信」是在本頁填表後寄訂房信給 Villa Finder，寄出後會記錄在下方「訂房紀錄」。兩種都會建立真實請求，確認客人要訂了再按。</li>
 <li><b>6. 房況多新</b>右上角顯示最後更新時間；「房況更新歷史紀錄」列出每一次同步。房況是 Villa Finder 的 iCal 行事曆，可能比他們後台慢幾分鐘，送出前以 Villa Finder 回覆為準。</li>
 </ol><div class="tip">價格是 Villa Finder 的公告價（Published Rate），不是淨價。床型、評價、地址是定期整理的資料，不會即時變動；床型未確認的別墅請在送單前向 Villa Finder 確認。</div>`,
@@ -302,7 +357,7 @@ zh:{
   gu:'入住人數', any:'不限', area:'區域', areaAll:'全部區域',
   bed:'房型（可複選，全部都要有）', chipTw:'雙床房', chipDb:'雙人房', chipQd:'四人房', chipBk:'上下舖', chipUnk:'含床型未確認',
   dt:'開車到市區', dt10:'10 分鐘內', dt15:'15 分鐘內', dt20:'20 分鐘內', dt30:'30 分鐘內',
-  sort:'排序', sortPrice:'總價低到高', sortPriceDesc:'總價高到低', sortDist:'離市區最近', sortRate:'Google 評分高到低', rateT:'Google 評價（點開看評論）', rateN:(n)=>`${n} 則`, rateNoN:'評論數未顯示', rateNone:'Google 無評價', sortName:'名稱', onlyFree:'只看有空房', mapT:'🗺️ 地圖', mapN:(n,m)=>`此區顯示 ${n} 間`, mapFoot:'圖釘只顯示目前篩選結果；點圖釘跳到該筆。滾輪或 ＋－ 可放大到 3 倍並拖曳，更細的範圍請切換上方區域。', mapGo:'看這筆', reg_all:'全島', reg_south:'南部', reg_seminyak:'水明漾一帶', reg_canggu:'倉古一帶', reg_ubud:'烏布', reg_bukit:'烏魯瓦圖／賓金', reg_east:'坎迪達薩', reg_north:'羅威那', qL:'搜尋別墅名稱', qPh:'例：Chands、Omah Bumbak、Lange', qHit:(n)=>`名稱符合 ${n} 間（其他條件照常套用）`, qMiss:'沒有名稱符合的別墅，請檢查拼法或清除搜尋',
+  sort:'排序', sortPrice:'總價低到高', sortPriceDesc:'總價高到低', sortDist:'離市區最近', sortRate:'Google 評分高到低', rateT:'Google 評價（點開看評論）', rateN:(n)=>`${n} 則`, rateNoN:'評論數未顯示', rateNone:'Google 無評價', sortName:'名稱', onlyFree:'只看有空房', mapT:'地圖', mapN:(n,m)=>`此區顯示 ${n} 間`, mapFoot:'圖釘只顯示目前篩選結果；點圖釘跳到該筆。滾輪或 ＋－ 可放大到 3 倍並拖曳，更細的範圍請切換上方區域。', mapGo:'看這筆', reg_all:'全島', reg_south:'南部', reg_seminyak:'水明漾一帶', reg_canggu:'倉古一帶', reg_ubud:'烏布', reg_bukit:'烏魯瓦圖／賓金', reg_east:'坎迪達薩', reg_north:'羅威那', qL:'搜尋別墅名稱', qPh:'例：Chands、Omah Bumbak、Lange', qHit:(n)=>`名稱符合 ${n} 間（其他條件照常套用）`, qMiss:'沒有名稱符合的別墅，請檢查拼法或清除搜尋',
   recPre:'訂房紀錄（', recPost:'）', recSent:'寄出時間', recVilla:'別墅', recBr:'房數', recGu:'人數', recLead:'主要旅客', recRef:'Outo 訂單', recStatus:'狀態',
   recEmpty:'還沒有訂房紀錄。在別墅細節按「確認預訂並寄信」後會出現在這裡。',
   footNote:'房況來自各別墅的 iCal 行事曆，可能比實際訂房晚幾小時更新，下訂後一定要等 Villa Finder 回信確認。價格依後台季節價計算，未套用促銷；後台註明促銷不能疊加，且須符合最少入住晚數。標示「浮動價」的別墅每天價格不同，請回後台查實際報價。房間設施與照片來自 Villa Finder 同業後台與各別墅提供的相簿，僅供內部使用，對客人公開前需取得 Villa Finder 同意。',
@@ -324,8 +379,8 @@ zh:{
   chMin:n=>`最少要住 ${n} 晚`, chMax:n=>`最多 ${n} 人`, chRouteTitle:an=>`開車到${an}：平日上午／週五尖峰`, chRoute:(an,r,km)=>`到${an.split(' ')[0]} ${r} 分 · ${km} km`,
   priceCheck:'價格需查後台', priceRange:br=>`每晚區間（${br} 房）`, priceAvg:(per,br)=>`平均每晚 ${per} · ${br} 房`,
   layouts:b=>'可訂 '+b.map(x=>x+' 房').join('／'), promoLabel:'促銷（擇一使用，不可疊加）：',
-  lkMap:'📍 Google 地圖位置', addrT:'在 Google 地圖開啟', addrVague:'（Google 僅有區域，無門牌）', lkWeb:'🌐 別墅官網', lkVf:'🏷️ Villa Finder 頁面（已帶入日期）', lkAlbum:'🖼️ 完整相簿', lkDs:'📄 房源說明（Villa Finder 提供）',
-  lkBooking:'🔎 Booking.com 搜尋', lkAgoda:'🔎 Agoda 搜尋', lkAirbnb:'🔎 Airbnb 搜尋',
+  lkMap:'Google 地圖位置', addrT:'在 Google 地圖開啟', addrVague:'（Google 僅有區域，無門牌）', lkWeb:'別墅官網', lkVf:'Villa Finder 頁面（已帶入日期）', lkAlbum:'完整相簿', lkDs:'房源說明（Villa Finder 提供）',
+  lkBooking:'Booking.com 搜尋', lkAgoda:'Agoda 搜尋', lkAirbnb:'Airbnb 搜尋',
   fMax:'最多入住', fMaxV:n=>n+' 人', fLayouts:'可訂房數', fLayoutsV:b=>b.map(x=>x+' 房').join('／'), fSize:'別墅面積', fGarden:'庭院', fStaff:'駐點員工', fStaffV:n=>n+' 人', fGps:'GPS 座標', fBed:'床型', fBedNone:'說明未寫明',
   n1:'Villa Finder 公開頁面已帶入日期與人數；日期符合最少入住晚數時，頁面右側會出現「Book Now」線上付款，不符合時只會有詢問表單。付款連結是送出訂單後才由 Villa Finder 產生，無法在這裡預先顯示。',
   n2:'Booking.com／Agoda／Airbnb 連結是以別墅名稱搜尋的結果，供比價參考；同一棟別墅在不同平台名稱可能不同，點進去請核對地址或照片。',
@@ -366,7 +421,7 @@ en:{
 <li><b>1. Pick dates and bedrooms</b>Click "Check-in → Check-out" to pick both dates in one calendar, then "Min. bedrooms" (choose 3 for a 3-bedroom request; 4-bedroom villas still appear, quoted at the smallest layout that fits). Guest count hides villas that cannot accommodate the group.</li>
 <li><b>2. Narrow down</b>Area, room-type chips (Twin / Double / Quad / Bunk — multi-select means the villa must have all of them), drive time to town, sort order. Know the name? Type it in "Search by villa name". "Available only" is on by default; untick to see everything.</li>
 <li><b>3. Read the results</b>Each row shows the availability tag (green = available, grey = booked, yellow = no data), Google rating, address (opens Google Maps), drive time, total and per-night price for the dates, promotions. Click the row to see bedroom / indoor / outdoor photos, facilities, bed notes and all external links.</li>
-<li><b>4. Compare on the map</b>"🗺️ Map" is open by default (click the title to collapse); pins show the current results only; switch regions, scroll to zoom, click a pin to jump to the listing.</li>
+<li><b>4. Compare on the map</b>"Map" is open by default (click the title to collapse); pins show the current results only; switch regions, scroll to zoom, click a pin to jump to the listing.</li>
 <li><b>5. Book</b>Inside a villa there are two buttons: "Send request on Villa Finder" opens their form with the dates pre-filled — complete it there (online payment appears when the minimum stay is met); "Confirm & email" sends a booking email to Villa Finder from this page and logs it under "Booking records". Both create real requests — use them only when the client has decided.</li>
 <li><b>6. How fresh is the data</b>The top-right badge shows the last update; "Availability update log" lists every sync. Availability comes from Villa Finder's iCal and can lag their back office by minutes — treat Villa Finder's reply as final.</li>
 </ol><div class="tip">Prices are Villa Finder's Published Rates, not net. Bed types, ratings and addresses are compiled periodically and do not update live; confirm unconfirmed bed types with Villa Finder before sending.</div>`,
@@ -374,7 +429,7 @@ en:{
   gu:'Guests', any:'Any', area:'Area', areaAll:'All areas',
   bed:'Room types (multi-select, villa must have all)', chipTw:'Twin room', chipDb:'Double room', chipQd:'Quad room (sleeps 4)', chipBk:'Bunk beds', chipUnk:'Include unconfirmed',
   dt:'Drive to town', dt10:'Within 10 min', dt15:'Within 15 min', dt20:'Within 20 min', dt30:'Within 30 min',
-  sort:'Sort by', sortPrice:'Total price: low to high', sortPriceDesc:'Total price: high to low', sortDist:'Closest to town', sortRate:'Google rating: high to low', rateT:'Google rating (open reviews)', rateN:(n)=>`${n} review${n===1?'':'s'}`, rateNoN:'review count not shown', rateNone:'No Google reviews', sortName:'Name', onlyFree:'Available only', mapT:'🗺️ Map', mapN:(n,m)=>`${n} in this view`, mapFoot:'Pins show the current filter results only; click a pin to jump to the listing. Scroll or use ＋/－ to zoom up to 3× and drag to pan; switch regions above for finer detail.', mapGo:'Jump to listing', reg_all:'Whole island', reg_south:'South Bali', reg_seminyak:'Seminyak area', reg_canggu:'Canggu area', reg_ubud:'Ubud', reg_bukit:'Uluwatu / Bingin', reg_east:'Candidasa', reg_north:'Lovina', qL:'Search by villa name', qPh:'e.g. Chands, Omah Bumbak, Lange', qHit:(n)=>`${n} villa name match${n===1?'':'es'} (other filters still apply)`, qMiss:'No villa name matches — check the spelling or clear the search',
+  sort:'Sort by', sortPrice:'Total price: low to high', sortPriceDesc:'Total price: high to low', sortDist:'Closest to town', sortRate:'Google rating: high to low', rateT:'Google rating (open reviews)', rateN:(n)=>`${n} review${n===1?'':'s'}`, rateNoN:'review count not shown', rateNone:'No Google reviews', sortName:'Name', onlyFree:'Available only', mapT:'Map', mapN:(n,m)=>`${n} in this view`, mapFoot:'Pins show the current filter results only; click a pin to jump to the listing. Scroll or use ＋/－ to zoom up to 3× and drag to pan; switch regions above for finer detail.', mapGo:'Jump to listing', reg_all:'Whole island', reg_south:'South Bali', reg_seminyak:'Seminyak area', reg_canggu:'Canggu area', reg_ubud:'Ubud', reg_bukit:'Uluwatu / Bingin', reg_east:'Candidasa', reg_north:'Lovina', qL:'Search by villa name', qPh:'e.g. Chands, Omah Bumbak, Lange', qHit:(n)=>`${n} villa name match${n===1?'':'es'} (other filters still apply)`, qMiss:'No villa name matches — check the spelling or clear the search',
   recPre:'Booking log (', recPost:')', recSent:'Sent', recVilla:'Villa', recBr:'Bedrooms', recGu:'Guests', recLead:'Lead guest', recRef:'Outo booking', recStatus:'Status',
   recEmpty:'No bookings yet. Bookings appear here after you click "Confirm & email booking" in a villa\'s details.',
   footNote:"Availability comes from each villa's iCal calendar and may lag actual bookings by a few hours; always wait for Villa Finder's confirmation reply after booking. Prices are calculated from the portal's seasonal rates with no promotions applied; the portal states promotions cannot be combined and minimum-stay requirements apply. Villas marked \"Dynamic rate\" vary by day, so check the portal for the actual quote. Room features and photos come from the Villa Finder partner portal and albums supplied by each villa; for internal use only, and Villa Finder's consent is required before sharing with customers.",
@@ -396,8 +451,8 @@ en:{
   chMin:n=>`Min. stay ${n} nights`, chMax:n=>`Max ${n} guests`, chRouteTitle:an=>`Drive to ${an}: weekday morning / Friday rush hour`, chRoute:(an,r,km)=>`To ${an} ${r} min · ${km} km`,
   priceCheck:'Check portal for price', priceRange:br=>`Nightly range (${br} BR)`, priceAvg:(per,br)=>`Avg ${per} / night · ${br} BR`,
   layouts:b=>'Layouts: '+b.join('/')+' BR', promoLabel:'Promo (cannot be combined): ',
-  lkMap:'📍 Google Maps location', addrT:'Open in Google Maps', addrVague:'(area only — no street address on Google)', lkWeb:'🌐 Villa website', lkVf:'🏷️ Villa Finder page (dates pre-filled)', lkAlbum:'🖼️ Full photo album', lkDs:'📄 Property fact sheet (from Villa Finder)',
-  lkBooking:'🔎 Search on Booking.com', lkAgoda:'🔎 Search on Agoda', lkAirbnb:'🔎 Search on Airbnb',
+  lkMap:'Google Maps location', addrT:'Open in Google Maps', addrVague:'(area only — no street address on Google)', lkWeb:'Villa website', lkVf:'Villa Finder page (dates pre-filled)', lkAlbum:'Full photo album', lkDs:'Property fact sheet (from Villa Finder)',
+  lkBooking:'Search on Booking.com', lkAgoda:'Search on Agoda', lkAirbnb:'Search on Airbnb',
   fMax:'Max guests', fMaxV:n=>n+' guests', fLayouts:'Layouts', fLayoutsV:b=>b.join(' / ')+' BR', fSize:'Villa size', fGarden:'Garden', fStaff:'On-site staff', fStaffV:n=>n+' staff', fGps:'GPS coordinates', fBed:'Bed types', fBedNone:'Not specified',
   n1:'The Villa Finder public page opens with your dates and guest count. When the dates meet the minimum stay, a “Book Now” online-payment button appears on the right; otherwise only an enquiry form. The payment link itself is generated by Villa Finder after the order is submitted, so it cannot be shown here in advance.',
   n2:'Booking.com / Agoda / Airbnb links are name searches for price comparison; the same villa may be listed under a different name, so check the address or photos.',
@@ -512,9 +567,9 @@ function useDyn(){return HOSTED&&MAPS_KEY;}
 function loadGMaps(){if(gState!=='idle')return;gState='loading';window.__gmReady=()=>{gState='ready';initGMap();};const sc=document.createElement('script');sc.src='https://maps.googleapis.com/maps/api/js?key='+encodeURIComponent(MAPS_KEY)+'&v=weekly&loading=async&callback=__gmReady';sc.async=true;sc.onerror=()=>{gState='fail';$('gmap').hidden=true;$('mapTabs').hidden=false;$('smap').hidden=false;};document.head.appendChild(sc);}
 function gpin(c){return {path:google.maps.SymbolPath.CIRCLE,scale:8,fillColor:c,fillOpacity:1,strokeColor:'#fff',strokeWeight:2};}
 function initGMap(){gmap=new google.maps.Map($('gmap'),{center:{lat:-8.69,lng:115.17},zoom:11,mapTypeControl:false,streetViewControl:false,fullscreenControl:true,gestureHandling:'greedy'});gInfo=new google.maps.InfoWindow();
-  new google.maps.Marker({map:gmap,position:{lat:-8.7467,lng:115.1668},title:'DPS Airport',icon:{path:google.maps.SymbolPath.CIRCLE,scale:5,fillColor:'#555',fillOpacity:1,strokeColor:'#fff',strokeWeight:1},zIndex:1});drawGMap(true);}
+  new google.maps.Marker({map:gmap,position:{lat:-8.7467,lng:115.1668},title:'DPS Airport',icon:{path:google.maps.SymbolPath.CIRCLE,scale:5,fillColor:'#1B1A14',fillOpacity:1,strokeColor:'#fff',strokeWeight:1},zIndex:1});drawGMap(true);}
 function drawGMap(fit){if(!gmap)return;const keep=new Set();const b=new google.maps.LatLngBounds();let n=0;
-  for(const x of lastItems){const v=x.v;if(!v.g)continue;n++;keep.add(v.s);const [la,ln]=v.g.split(',').map(Number);const col=x.free===true?'#1a9c6b':x.free===false?'#9aa3ad':'#d99a1c';let m=gmarkers.get(v.s);
+  for(const x of lastItems){const v=x.v;if(!v.g)continue;n++;keep.add(v.s);const [la,ln]=v.g.split(',').map(Number);const col=x.free===true?'#2F8466':x.free===false?'#C9BCA1':'#B85C3B';let m=gmarkers.get(v.s);
     if(!m){m=new google.maps.Marker({map:gmap,position:{lat:la,lng:ln},title:v.n,icon:gpin(col),zIndex:x.free===true?3:2});
       m.addListener('click',()=>{const it=lastItems.find(y=>y.v.s===v.s);const q=it&&it.q;const price=q&&!q.missing?(q.dynamic?usd(q.lo)+'–'+Math.round(q.hi).toLocaleString('en-US'):usd(q.total)):'';gInfo.setContent(`<div class="gm-iw"><b>${esc(v.n)}</b><div>${esc(areaName(v.a))} · ${q?q.br:''} BR</div>${price?`<div class="p">${price}</div>`:''}<div class="p"><a href="#" onclick="highlightRow('${esc(v.s)}');return false;">${t('mapGo')} →</a></div></div>`);gInfo.open({map:gmap,anchor:m});});gmarkers.set(v.s,m);}
     else{m.setIcon(gpin(col));m.setZIndex(x.free===true?3:2);if(m.getMap()!==gmap)m.setMap(gmap);}
@@ -633,7 +688,7 @@ function row(x,ciD,coD,nights){
 
 function mapUrlOf(v){const gm=(typeof GMAP!=='undefined')&&GMAP[v.s];return gm?`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(gm[1]+' Bali')}&query_place_id=${gm[0]}`:(v.g?`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(v.g)}`:'');}
 function rateOf(v){const r=(typeof RATE!=='undefined')&&RATE[v.s];const u=mapUrlOf(v);if(!r||r[0]==null)return `<span class="grate none">${t('rateNone')}</span>`;const n=r[1]!=null?t('rateN',r[1].toLocaleString('en-US')):t('rateNoN');return `<a class="grate" href="${u}" target="_blank" rel="noopener" title="${t('rateT')}">★ ${r[0].toFixed(1)} <span>· ${n}</span></a>`;}
-function addrOf(v){const a=(typeof ADDR!=='undefined')&&ADDR[v.s];if(!a)return '';const vague=!/(Jl\.|Jalan|Gg\.|Gang|No\.|Rd|Banjar)/.test(a)||/^[0-9A-Z]{4,}\+[0-9A-Z]{2,}/.test(a)||/°/.test(a);return `<a class="addr" href="${mapUrlOf(v)}" target="_blank" rel="noopener" title="${t('addrT')}">📍 ${esc(a)}${vague?` <em>${t('addrVague')}</em>`:''}</a>`;}
+function addrOf(v){const a=(typeof ADDR!=='undefined')&&ADDR[v.s];if(!a)return '';const vague=!/(Jl\.|Jalan|Gg\.|Gang|No\.|Rd|Banjar)/.test(a)||/^[0-9A-Z]{4,}\+[0-9A-Z]{2,}/.test(a)||/°/.test(a);return `<a class="addr" href="${mapUrlOf(v)}" target="_blank" rel="noopener" title="${t('addrT')}">${esc(a)}${vague?` <em>${t('addrVague')}</em>`:''}</a>`;}
 function fillBody(b,x,ciD,coD,nights){
   const {v,q,free,cf}=x, X=v.x||{}, ph=photosOf(v);
   const links=[];
