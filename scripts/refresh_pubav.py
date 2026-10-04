@@ -2,7 +2,7 @@
 """Refresh pubav.js: booked date ranges for Villa Finder public-site villas.
 Reads the villa list from pub.js, fetches each public page, extracts the
 `:unavailabilities` attribute of #request-form, writes pubav.js.
-Runs every 4 hours on GitHub Actions. 4 parallel workers with a short pause each; backs off on HTTP 429.
+Runs every 4 hours on GitHub Actions. 10 parallel workers with a short pause each; backs off on HTTP 429.
 """
 import json, re, sys, time, datetime, html, os, urllib.request, urllib.error
 
@@ -67,8 +67,8 @@ def work(v):
     with lock:
         by[v['s']] = to_ranges(unav); ok += 1
         if (ok + err) % 100 == 0: print(f'{ok+err}/{len(villas)} ok={ok} err={err} {int(time.time()-t0)}s', flush=True)
-    time.sleep(0.3)
-with ThreadPoolExecutor(max_workers=4) as ex:
+    time.sleep(0.15)
+with ThreadPoolExecutor(max_workers=10) as ex:
     list(ex.map(work, villas))
 
 if ok < len(villas) * 0.7:
