@@ -98,6 +98,21 @@ label.q{grid-column:1/-1}
 .drok{font:inherit;font-size:13px;padding:0 18px;height:36px;border-radius:var(--r-md);border:1px solid var(--ink-900);background:var(--ink-900);color:var(--paper-50);cursor:pointer}
 @media (max-width:520px){.f.dr{grid-column:1/-1}}
 .chips{grid-column:1/-1}
+.budget{grid-column:1/-1}
+.budget>span{display:flex;justify-content:space-between;align-items:baseline;gap:12px}
+.budget .bval{font-weight:600;color:var(--ink);font-variant-numeric:tabular-nums}
+.rng{position:relative;height:28px;margin:2px 10px 0}
+.rng .track{position:absolute;left:0;right:0;top:12px;height:4px;border-radius:2px;background:var(--line-strong,#CFC7B5)}
+.rng .fill{position:absolute;top:0;bottom:0;background:var(--sun-500,#FEA600);border-radius:2px}
+.rng input[type=range]{position:absolute;left:-10px;right:-10px;width:calc(100% + 20px);top:0;height:28px;margin:0;background:none;pointer-events:none;-webkit-appearance:none;appearance:none}
+.rng input[type=range]::-webkit-slider-runnable-track{background:none;height:28px}
+.rng input[type=range]::-moz-range-track{background:none;height:28px}
+.rng input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;appearance:none;pointer-events:auto;width:20px;height:20px;margin-top:4px;border-radius:50%;background:var(--surface,#fff);border:2px solid var(--ink-900);box-shadow:var(--sh-sm,0 1px 3px rgba(0,0,0,.2));cursor:grab}
+.rng input[type=range]::-moz-range-thumb{pointer-events:auto;width:16px;height:16px;border-radius:50%;background:var(--surface,#fff);border:2px solid var(--ink-900);cursor:grab}
+.rng input[type=range]:focus-visible::-webkit-slider-thumb{outline:3px solid var(--ring)}
+.rlbl{display:flex;justify-content:space-between;align-items:center;font-size:12px;color:var(--muted);font-variant-numeric:tabular-nums;margin:0 2px}
+.rreset{font:inherit;font-size:12px;height:auto;padding:2px 10px;border-radius:999px;border:1px solid var(--line-strong);background:var(--surface);color:var(--ink2);cursor:pointer;box-shadow:none}
+.rreset:hover{border-color:var(--ink-900);transform:none;box-shadow:none}
 .chipbar{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
 .fchip{font:inherit;font-weight:500;font-size:13px;padding:0 16px;height:38px;border-radius:var(--r-md);border:1.5px solid var(--line-strong);background:var(--surface);color:var(--ink2);cursor:pointer;line-height:1;letter-spacing:.02em;box-shadow:none;transition:all var(--dur) var(--ease)}
 .fchip:hover{border-color:var(--ink-900);background:var(--paper-50);color:var(--ink)}
@@ -352,6 +367,9 @@ button:disabled{opacity:.45;cursor:not-allowed;transform:none;box-shadow:none}
       <span class="chipsep" aria-hidden="true"></span>
       <button type="button" class="fchip soft" id="bedUnk" aria-pressed="false"><span data-t="chipUnk">含床型未確認</span></button>
     </div></div>
+    <div class="f budget" id="budgetBox"><span><span data-t="budget">預算（整段住宿總價，官網直售價）</span><b class="bval" id="bVal"></b></span>
+      <div class="rng" id="rng"><div class="track"><div class="fill" id="rngFill"></div></div><input type="range" id="bLo" min="0" max="100" step="1" value="0" aria-label="min budget"><input type="range" id="bHi" min="0" max="100" step="1" value="100" aria-label="max budget"></div>
+      <div class="rlbl"><span id="bMinL"></span><button type="button" class="rreset" id="bReset" hidden data-t="bReset">重設</button><span id="bMaxL"></span></div></div>
     <label class="f q"><span data-t="qL">搜尋別墅名稱</span><span class="qbox"><input type="search" id="q" autocomplete="off" data-t-ph="qPh" placeholder="例：Chands、Omah Bumbak、Lange"><button type="button" id="qClr" class="qclr" aria-label="clear" hidden>×</button></span><span class="qhint" id="qHint"></span></label>
   </form>
 
@@ -444,7 +462,7 @@ zh:{
   dlgT:'確認預訂並寄信給 Villa Finder', bNameL:'主要旅客姓名（英文，同護照）', bNamePh:'例：CHEN MEI LING', bNatL:'國籍', bAdL:'大人', bChL:'小孩',
   bAgesL:'小孩年齡（用逗號分隔）', bAgesPh:'例：7, 10', bRefL:'Outo 訂單編號', bRefPh:'例：OUTO-2026-1234', bArrL:'預計抵達（航班／時間）', bArrPh:'例：BR255 15:10',
   bCcL:'副本給（逗號分隔）', bCcPh:'例：andrew@outo.co', bReqL:'特殊需求（英文）', bReqPh:'例：baby cot, airport pick-up for 4 pax, early check-in if possible',
-  prevSec:'信件預覽（寄到 bookings@villa-finder.com，從你自己的 Gmail 寄出）', bSend:'寄出訂房信', bCopy:'只複製信件內容', bClose:'取消', waSec:'WhatsApp 訊息（同一份資料的精簡版）', waSend:'傳 WhatsApp 給 Villa Finder', waGroup:'複製訊息並開啟群組', waCopy:'只複製訊息', waCopied:'訊息已複製，貼到 WhatsApp 對話框送出即可。', waGroupCopied:'訊息已複製，群組已在新分頁開啟，貼上後送出。', waNoNum:'尚未設定 Villa Finder 的 WhatsApp 號碼（config.js 的 WA_NUMBER）。', waNoGroup:'尚未設定群組連結（config.js 的 WA_GROUP）。', waNote:'WhatsApp 只能把寫好的訊息帶進「個人對話」；群組沒有這種連結，所以群組是先複製、開啟後貼上送出。', lbAria:'放大照片',
+  prevSec:'信件預覽（寄到 bookings@villa-finder.com，從你自己的 Gmail 寄出）', bSend:'寄出訂房信', bCopy:'只複製信件內容', bClose:'取消', budget:'預算（整段住宿總價，官網直售價）', budgetPub:'預算（整段住宿總價）', bReset:'重設', bAll:'不限', bNoPrice:'（沒有價格的別墅不列入）', waSec:'WhatsApp 訊息（同一份資料的精簡版）', waSend:'傳 WhatsApp 給 Villa Finder', waGroup:'複製訊息並開啟群組', waCopy:'只複製訊息', waCopied:'訊息已複製，貼到 WhatsApp 對話框送出即可。', waGroupCopied:'訊息已複製，群組已在新分頁開啟，貼上後送出。', waNoNum:'尚未設定 Villa Finder 的 WhatsApp 號碼（config.js 的 WA_NUMBER）。', waNoGroup:'尚未設定群組連結（config.js 的 WA_GROUP）。', waNote:'WhatsApp 只能把寫好的訊息帶進「個人對話」；群組沒有這種連結，所以群組是先複製、開啟後貼上送出。', lbAria:'放大照片',
   season:{L:'淡季',M:'中旺季',H:'旺季',P:'尖峰',Q:'次尖峰'},
   anchor:{'Seminyak':'水明漾 Eat Street','Kerobokan':'水明漾 Eat Street','Umalas':'水明漾 Eat Street','Legian':'雷吉安大街','Canggu':'倉古 Batu Bolong','Berawa':'貝拉瓦海灘路','Pererenan':'佩雷雷南中心','Seseh':'佩雷雷南中心','Ubud':'烏布皇宮','Bingin':'賓金海灘路','Uluwatu & Bingin':'賓金海灘路','Candidasa':'坎迪達薩主街','Lovina':'羅威那海豚像'},
   localCenter:'生活圈中心', town:'市區', sep:'、',
@@ -529,7 +547,7 @@ en:{
   dlgT:'Confirm booking & email Villa Finder', bNameL:'Lead guest name (English, as in passport)', bNamePh:'e.g. CHEN MEI LING', bNatL:'Nationality', bAdL:'Adults', bChL:'Children',
   bAgesL:"Children's ages (comma-separated)", bAgesPh:'e.g. 7, 10', bRefL:'Outo booking reference', bRefPh:'e.g. OUTO-2026-1234', bArrL:'Expected arrival (flight / time)', bArrPh:'e.g. BR255 15:10',
   bCcL:'CC (comma-separated)', bCcPh:'e.g. andrew@outo.co', bReqL:'Special requests (English)', bReqPh:'e.g. baby cot, airport pick-up for 4 pax, early check-in if possible',
-  prevSec:'Email preview (to bookings@villa-finder.com, sent from your own Gmail)', bSend:'Send booking email', bCopy:'Copy email text only', bClose:'Cancel', waSec:'WhatsApp message (short version of the same request)', waSend:'WhatsApp Villa Finder', waGroup:'Copy & open group', waCopy:'Copy message only', waCopied:'Copied. Paste it into WhatsApp and send.', waGroupCopied:'Copied. The group opened in a new tab; paste and send.', waNoNum:'Villa Finder WhatsApp number not set (WA_NUMBER in config.js).', waNoGroup:'Group link not set (WA_GROUP in config.js).', waNote:'WhatsApp can prefill a message only into a 1:1 chat; groups have no such link, so for the group it copies the text and opens the group for you to paste.', lbAria:'Enlarged photo',
+  prevSec:'Email preview (to bookings@villa-finder.com, sent from your own Gmail)', bSend:'Send booking email', bCopy:'Copy email text only', bClose:'Cancel', budget:'Budget (total stay, published rate)', budgetPub:'Budget (total stay)', bReset:'Reset', bAll:'Any', bNoPrice:'(villas without a price are excluded)', waSec:'WhatsApp message (short version of the same request)', waSend:'WhatsApp Villa Finder', waGroup:'Copy & open group', waCopy:'Copy message only', waCopied:'Copied. Paste it into WhatsApp and send.', waGroupCopied:'Copied. The group opened in a new tab; paste and send.', waNoNum:'Villa Finder WhatsApp number not set (WA_NUMBER in config.js).', waNoGroup:'Group link not set (WA_GROUP in config.js).', waNote:'WhatsApp can prefill a message only into a 1:1 chat; groups have no such link, so for the group it copies the text and opens the group for you to paste.', lbAria:'Enlarged photo',
   season:{L:'Low season',M:'Mid season',H:'High season',P:'Peak season',Q:'Sub-peak season'},
   anchor:{'Seminyak':'Seminyak Eat Street','Kerobokan':'Seminyak Eat Street','Umalas':'Seminyak Eat Street','Legian':'Legian Street','Canggu':'Canggu Batu Bolong','Berawa':'Berawa Beach Road','Pererenan':'Pererenan center','Seseh':'Pererenan center','Ubud':'Ubud Palace','Bingin':'Bingin Beach Road','Uluwatu & Bingin':'Bingin Beach Road','Candidasa':'Candidasa main street','Lovina':'Lovina dolphin statue'},
   localCenter:'local center', town:'town', sep:', ',
@@ -795,6 +813,44 @@ function initDR(){drSync();$('drBtn').addEventListener('click',()=>{if($('drPop'
   document.addEventListener('pointerdown',e=>{if(!$('drPop').hidden&&!e.target.closest('.f.dr'))$('drPop').hidden=true;});
   document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!$('drPop').hidden){$('drPop').hidden=true;$('drBtn').focus();}});}
 function norm(x){return String(x||'').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^a-z0-9\u4e00-\u9fff]/g,'');}
+// ---- budget slider ----
+const BSTEP=50;let bud={min:0,max:0,lo:null,hi:null};
+const bTot=x=>x.q.missing?null:(x.q.dynamic?x.q.lo:x.q.total);
+function budgetFmt(n){return 'US$'+Math.round(n).toLocaleString('en-US');}
+function applyBudget(items){
+  if(SHARE){$('budgetBox').hidden=true;return items;}
+  $('budgetBox').hidden=false;
+  if(PUBLIC)document.querySelector('[data-t=budget]').textContent=t('budgetPub');
+  const vals=items.map(bTot).filter(v=>v!=null);
+  if(!vals.length){$('bVal').textContent='';$('bMinL').textContent='';$('bMaxL').textContent='';$('bReset').hidden=true;return items;}
+  const mn=Math.floor(Math.min(...vals)/BSTEP)*BSTEP, mx=Math.ceil(Math.max(...vals)/BSTEP)*BSTEP;
+  const full=bud.lo==null||(bud.lo<=bud.min&&bud.hi>=bud.max);
+  bud.min=mn;bud.max=Math.max(mx,mn+BSTEP);
+  if(full){bud.lo=bud.min;bud.hi=bud.max;}else{bud.lo=Math.min(Math.max(bud.lo,bud.min),bud.max);bud.hi=Math.max(Math.min(bud.hi,bud.max),bud.lo);}
+  const steps=(bud.max-bud.min)/BSTEP;
+  for(const id of ['bLo','bHi']){const el=$(id);el.min=0;el.max=steps;}
+  $('bLo').value=(bud.lo-bud.min)/BSTEP;$('bHi').value=(bud.hi-bud.min)/BSTEP;
+  drawBudget();
+  const active=bud.lo>bud.min||bud.hi<bud.max;
+  $('bReset').hidden=!active;
+  if(!active)return items;
+  return items.filter(x=>{const v=bTot(x);if(v==null)return false;const hi=x.q.dynamic?x.q.hi:v;return hi>=bud.lo&&v<=bud.hi;});
+}
+function drawBudget(){
+  const steps=+$('bLo').max||1;const a=+$('bLo').value,b=+$('bHi').value;
+  $('rngFill').style.left=(a/steps*100)+'%';$('rngFill').style.right=(100-b/steps*100)+'%';
+  const active=bud.lo>bud.min||bud.hi<bud.max;
+  $('bVal').textContent=active?budgetFmt(bud.lo)+' – '+budgetFmt(bud.hi)+(active?' '+t('bNoPrice'):''):t('bAll');
+  $('bMinL').textContent=budgetFmt(bud.min);$('bMaxL').textContent=budgetFmt(bud.max);
+}
+function onBudgetInput(e){
+  let a=+$('bLo').value,b=+$('bHi').value;
+  if(a>b){if(e.target.id==='bLo'){b=a;$('bHi').value=b;}else{a=b;$('bLo').value=a;}}
+  bud.lo=bud.min+a*BSTEP;bud.hi=bud.min+b*BSTEP;drawBudget();
+}
+let bTimer=null;
+['bLo','bHi'].forEach(id=>{$(id).addEventListener('input',e=>{onBudgetInput(e);clearTimeout(bTimer);bTimer=setTimeout(render,120);});});
+$('bReset').addEventListener('click',()=>{bud.lo=bud.min;bud.hi=bud.max;render();});
 function render(){
   const {ciD,coD,nights,ci,co}=state();
   const list=$('list');
@@ -817,6 +873,7 @@ function render(){
   const freeN=items.filter(x=>x.free===true).length,busyN=items.filter(x=>x.free===false).length,unk=items.filter(x=>x.free===null).length;
   $('sum').innerHTML=`${t('sumNights',nights)}<span>${fmt(ciD)} → ${fmt(coD)}</span><span>${t('sumFree',freeN)}</span><span>${t('sumBooked',busyN)}</span>${unk?`<span>${t('sumUnk',unk)}</span>`:''}`;
   if($('onlyFree').checked&&!SHARE) items=items.filter(x=>x.free!==false);
+  items=applyBudget(items);
   const val=x=>x.q.missing?Infinity:x.q.total, s=$('sort').value;
   const dv=x=>{const r=(typeof ROUTE!=='undefined')&&ROUTE[x.v.s];return r?r[0]:999;};
   const pv=x=>{const r=poi&&poi.by&&poi.by[x.v.s];return r?r.s:1e9;};
