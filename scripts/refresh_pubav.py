@@ -9,10 +9,11 @@ import json, re, sys, time, datetime, html, os, urllib.request, urllib.error
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 src = open(os.path.join(ROOT, 'pub.js'), encoding='utf-8').read()
 villas = json.loads(re.search(r'const PUB_VILLAS=(\[.*?\]);\n', src, re.S).group(1))
-old = {}
+old = {}; hist = []
 try:
     o = open(os.path.join(ROOT, 'pubav.js'), encoding='utf-8').read()
-    old = json.loads(re.search(r'const PUBAV=(\{.*\});', o, re.S).group(1)).get('by', {})
+    prev = json.loads(re.search(r'const PUBAV=(\{.*\});', o, re.S).group(1))
+    old = prev.get('by', {}); hist = prev.get('history', [])
 except Exception:
     pass
 
@@ -69,6 +70,8 @@ if ok < len(villas) * 0.7:
     sys.exit(1)
 
 now = datetime.datetime.now(datetime.timezone(datetime.timedelta(hours=8))).strftime('%Y-%m-%dT%H:%M:%S+08:00')
-out = {'updatedAt': now, 'by': by, 'ok': ok, 'err': err}
+changed = sum(1 for k, v in by.items() if old.get(k) != v)
+hist = ([{'t': now, 'feeds': ok, 'errors': err, 'changed': changed}] + hist)[:120]
+out = {'updatedAt': now, 'by': by, 'ok': ok, 'err': err, 'history': hist}
 open(os.path.join(ROOT, 'pubav.js'), 'w', encoding='utf-8').write('const PUBAV=' + json.dumps(out, separators=(',', ':')) + ';\n')
 print(f'done ok={ok} err={err} in {int(time.time()-t0)}s')
