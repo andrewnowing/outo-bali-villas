@@ -171,6 +171,7 @@ details.v.hl{border-color:var(--ink-900);box-shadow:var(--ring)}
 mark.q{background:var(--sun-100);color:inherit;border-radius:3px;padding:0 1px}
 .summary{display:flex;flex-wrap:wrap;gap:8px 20px;align-items:baseline;font-size:14px;color:var(--ink2);padding:0 4px}
 .summary b{color:var(--ink);font-size:20px;font-weight:600}
+.summary .fx{flex-basis:100%;font-size:12px;color:var(--muted)}
 .list{display:grid;gap:12px}
 details.v{background:var(--surface);border:1px solid var(--line);border-radius:var(--r-lg);overflow:hidden;box-shadow:var(--shadow-sm);transition:border-color var(--dur) var(--ease),box-shadow var(--dur) var(--ease),transform var(--dur) var(--ease)}
 details.v:hover{border-color:var(--paper-400);box-shadow:var(--shadow-md)}
@@ -344,7 +345,7 @@ button:disabled{opacity:.45;cursor:not-allowed;transform:none;box-shadow:none}
       <h1 data-t="title">Outo 峇里島別墅空房查詢</h1>
       <div class="sub" data-t="sub">Villa Finder 同業房源 118 間 · 價格為對外售價（美金、含稅），不是 Outo 成本價</div>
     </div></div>
-    <div class="hdr-r"><span class="fresh" id="fresh" data-t="loading">房況資料載入中</span><button type="button" class="hbtn" id="helpBtn" data-t="helpBtn">操作說明</button><button type="button" class="hbtn" id="histBtn" data-t="histBtn">房況更新歷史紀錄</button><div class="lang" id="lang" role="group" data-t-aria="langGroup" aria-label="語言"><button type="button" data-lang="zh" aria-pressed="true" lang="zh-Hant">中文</button><span class="sep" aria-hidden="true">|</span><button type="button" data-lang="en" aria-pressed="false" lang="en">EN</button></div></div>
+    <div class="hdr-r"><span class="fresh" id="fresh" data-t="loading">房況資料載入中</span><button type="button" class="hbtn" id="helpBtn" data-t="helpBtn">操作說明</button><button type="button" class="hbtn" id="histBtn" data-t="histBtn">房況更新歷史紀錄</button><div class="lang" id="lang" role="group" data-t-aria="langGroup" aria-label="語言"><button type="button" data-lang="zh" aria-pressed="true" lang="zh-Hant">中文</button><span class="sep" aria-hidden="true">|</span><button type="button" data-lang="en" aria-pressed="false" lang="en">EN</button></div><div class="lang" id="cur" role="group" aria-label="currency"><button type="button" data-cur="USD" aria-pressed="true">USD</button><span class="sep" aria-hidden="true">|</span><button type="button" data-cur="TWD" aria-pressed="false">TWD</button></div></div>
   </header>
 
   <form class="search" id="f" autocomplete="off">
@@ -464,7 +465,7 @@ zh:{
   dlgT:'確認預訂並寄信給 Villa Finder', bNameL:'主要旅客姓名（英文，同護照）', bNamePh:'例：CHEN MEI LING', bNatL:'國籍', bAdL:'大人', bChL:'小孩',
   bAgesL:'小孩年齡（用逗號分隔）', bAgesPh:'例：7, 10', bRefL:'Outo 訂單編號', bRefPh:'例：OUTO-2026-1234', bArrL:'預計抵達（航班／時間）', bArrPh:'例：BR255 15:10',
   bCcL:'副本給（逗號分隔）', bCcPh:'例：andrew@outo.co', bReqL:'特殊需求（英文）', bReqPh:'例：baby cot, airport pick-up for 4 pax, early check-in if possible',
-  prevSec:'信件預覽（寄到 bookings@villa-finder.com，從你自己的 Gmail 寄出）', bSend:'寄出訂房信', bCopy:'只複製信件內容', bClose:'取消', budget:'預算（整段住宿總價，官網直售價）', budgetPub:'預算（整段住宿總價）', bReset:'重設', bAll:'不限', bNoPrice:'（沒有價格的別墅不列入）', waSec:'WhatsApp 訊息預覽', waGroup:'複製訊息並開啟 Villa Finder 群組', waCopy:'只複製訊息', waCopied:'訊息已複製，貼到 WhatsApp 對話框送出即可。', waGroupCopied:'訊息已複製，Outo × Villa Finder 群組已開啟，到群組貼上後送出。', waNoNum:'尚未設定 Villa Finder 的 WhatsApp 號碼（config.js 的 WA_NUMBER）。', waNoGroup:'尚未設定群組連結（config.js 的 WA_GROUP）。', waNote:'WhatsApp 不開放把寫好的訊息直接帶進群組，所以流程是：按鈕自動複製訊息並開啟群組 → 在群組輸入框貼上（Ctrl/⌘+V）→ 送出。', lbAria:'放大照片',
+  prevSec:'信件預覽（寄到 bookings@villa-finder.com，從你自己的 Gmail 寄出）', bSend:'寄出訂房信', bCopy:'只複製信件內容', bClose:'取消', budget:'預算（整段住宿總價，官網直售價）', budgetPub:'預算（整段住宿總價）', fxNote:(r,d,src)=>`匯率 1 USD = ${r} TWD（${src==='BOT'?'台灣銀行即期賣出':'中間價'}，${d} 更新；台幣金額為參考，實際以付款當日匯率為準）`, fxFallback:(r)=>`匯率暫用 ${r}（即時匯率讀取失敗），台幣金額僅供參考`, bReset:'重設', bAll:'不限', bNoPrice:'（沒有價格的別墅不列入）', waSec:'WhatsApp 訊息預覽', waGroup:'複製訊息並開啟 Villa Finder 群組', waCopy:'只複製訊息', waCopied:'訊息已複製，貼到 WhatsApp 對話框送出即可。', waGroupCopied:'訊息已複製，Outo × Villa Finder 群組已開啟，到群組貼上後送出。', waNoNum:'尚未設定 Villa Finder 的 WhatsApp 號碼（config.js 的 WA_NUMBER）。', waNoGroup:'尚未設定群組連結（config.js 的 WA_GROUP）。', waNote:'WhatsApp 不開放把寫好的訊息直接帶進群組，所以流程是：按鈕自動複製訊息並開啟群組 → 在群組輸入框貼上（Ctrl/⌘+V）→ 送出。', lbAria:'放大照片',
   season:{L:'淡季',M:'中旺季',H:'旺季',P:'尖峰',Q:'次尖峰'},
   anchor:{'Seminyak':'水明漾 Eat Street','Kerobokan':'水明漾 Eat Street','Umalas':'水明漾 Eat Street','Legian':'雷吉安大街','Canggu':'倉古 Batu Bolong','Berawa':'貝拉瓦海灘路','Pererenan':'佩雷雷南中心','Seseh':'佩雷雷南中心','Ubud':'烏布皇宮','Bingin':'賓金海灘路','Uluwatu & Bingin':'賓金海灘路','Candidasa':'坎迪達薩主街','Lovina':'羅威那海豚像'},
   localCenter:'生活圈中心', town:'市區', sep:'、',
@@ -549,7 +550,7 @@ en:{
   dlgT:'Confirm booking & email Villa Finder', bNameL:'Lead guest name (English, as in passport)', bNamePh:'e.g. CHEN MEI LING', bNatL:'Nationality', bAdL:'Adults', bChL:'Children',
   bAgesL:"Children's ages (comma-separated)", bAgesPh:'e.g. 7, 10', bRefL:'Outo booking reference', bRefPh:'e.g. OUTO-2026-1234', bArrL:'Expected arrival (flight / time)', bArrPh:'e.g. BR255 15:10',
   bCcL:'CC (comma-separated)', bCcPh:'e.g. andrew@outo.co', bReqL:'Special requests (English)', bReqPh:'e.g. baby cot, airport pick-up for 4 pax, early check-in if possible',
-  prevSec:'Email preview (to bookings@villa-finder.com, sent from your own Gmail)', bSend:'Send booking email', bCopy:'Copy email text only', bClose:'Cancel', budget:'Budget (total stay, published rate)', budgetPub:'Budget (total stay)', bReset:'Reset', bAll:'Any', bNoPrice:'(villas without a price are excluded)', waSec:'WhatsApp message preview', waGroup:'Copy message & open Villa Finder group', waCopy:'Copy message only', waCopied:'Copied. Paste it into WhatsApp and send.', waGroupCopied:'Copied. The group opened in a new tab; paste and send.', waNoNum:'Villa Finder WhatsApp number not set (WA_NUMBER in config.js).', waNoGroup:'Group link not set (WA_GROUP in config.js).', waNote:'WhatsApp does not allow prefilling a message into a group, so the button copies the message and opens the group; paste (Ctrl/⌘+V) and send.', lbAria:'Enlarged photo',
+  prevSec:'Email preview (to bookings@villa-finder.com, sent from your own Gmail)', bSend:'Send booking email', bCopy:'Copy email text only', bClose:'Cancel', budget:'Budget (total stay, published rate)', budgetPub:'Budget (total stay)', fxNote:(r,d,src)=>`1 USD = ${r} TWD (${src==='BOT'?'Bank of Taiwan spot selling':'mid-market'}, updated ${d}; TWD amounts are indicative)`, fxFallback:(r)=>`Using fallback rate ${r} (live rate unavailable); TWD amounts are indicative`, bReset:'Reset', bAll:'Any', bNoPrice:'(villas without a price are excluded)', waSec:'WhatsApp message preview', waGroup:'Copy message & open Villa Finder group', waCopy:'Copy message only', waCopied:'Copied. Paste it into WhatsApp and send.', waGroupCopied:'Copied. The group opened in a new tab; paste and send.', waNoNum:'Villa Finder WhatsApp number not set (WA_NUMBER in config.js).', waNoGroup:'Group link not set (WA_GROUP in config.js).', waNote:'WhatsApp does not allow prefilling a message into a group, so the button copies the message and opens the group; paste (Ctrl/⌘+V) and send.', lbAria:'Enlarged photo',
   season:{L:'Low season',M:'Mid season',H:'High season',P:'Peak season',Q:'Sub-peak season'},
   anchor:{'Seminyak':'Seminyak Eat Street','Kerobokan':'Seminyak Eat Street','Umalas':'Seminyak Eat Street','Legian':'Legian Street','Canggu':'Canggu Batu Bolong','Berawa':'Berawa Beach Road','Pererenan':'Pererenan center','Seseh':'Pererenan center','Ubud':'Ubud Palace','Bingin':'Bingin Beach Road','Uluwatu & Bingin':'Bingin Beach Road','Candidasa':'Candidasa main street','Lovina':'Lovina dolphin statue'},
   localCenter:'local center', town:'town', sep:', ',
@@ -638,6 +639,22 @@ const addDays=(d,n)=>new Date(d.getTime()+n*864e5);
 const fmt=d=>d.getUTCFullYear()+'/'+pad(d.getUTCMonth()+1)+'/'+pad(d.getUTCDate());
 const enDate=d=>d.toLocaleDateString('en-GB',{timeZone:'UTC',day:'2-digit',month:'short',year:'numeric'});
 const usd=n=>'USD '+Math.round(n).toLocaleString('en-US');
+// ---- currency ----
+let CUR='USD';try{const c=localStorage.getItem('vf-cur');if(c==='TWD'||c==='USD')CUR=c;}catch(e){}
+const FX_FALLBACK=32.5;let FX={rate:null,at:null,src:''};
+const fxRate=()=>FX.rate||FX_FALLBACK;
+const toCur=n=>CUR==='TWD'?n*fxRate():n;
+const moneyN=n=>CUR==='TWD'?(Math.round(toCur(n)/10)*10).toLocaleString('en-US'):Math.round(n).toLocaleString('en-US');
+const money=n=>(CUR==='TWD'?'NT$ ':'USD ')+moneyN(n);
+const moneyRng=(lo,hi)=>money(lo)+'–'+moneyN(hi);
+function fxNote(){if(CUR!=='TWD')return '';const d=FX.at?new Date(FX.at).toLocaleString(LOC(),{timeZone:'Asia/Taipei',month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit',hour12:false}):'';return t(FX.rate?'fxNote':'fxFallback',fxRate().toFixed(2),d,FX.src||'');}
+async function loadFx(){
+  if(avail&&avail.fx&&avail.fx.rate){FX={rate:+avail.fx.rate,at:avail.fx.at,src:avail.fx.src||'BOT'};return;}
+  try{const r=await fetch('https://open.er-api.com/v6/latest/USD');const j=await r.json();if(j&&j.rates&&j.rates.TWD){FX={rate:+j.rates.TWD,at:(j.time_last_update_unix||0)*1000||Date.now(),src:'mid'};}}catch(e){}
+}
+function setCur(c){if(c!=='USD'&&c!=='TWD')return;CUR=c;try{localStorage.setItem('vf-cur',c);}catch(e){}
+  document.querySelectorAll('#cur button[data-cur]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.cur===c)));render();}
+
 const k2d=k=>fromInput('20'+k.slice(0,2)+'-'+k.slice(2,4)+'-'+k.slice(4));
 function esc(s){return String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));}
 
@@ -755,7 +772,7 @@ function drawMap(){
   const pins=$('pins');pins.innerHTML='';let n=0;
   for(const x of lastItems){const v=x.v;if(!inReg(v,mapRegion))continue;n++;const [la,ln]=v.g.split(',').map(Number);const [px,py]=pinPct(la,ln,mapRegion);
     const d=document.createElement('button');d.type='button';d.className='pin '+(x.free===true?'ok':x.free===false?'busy':'unk');d.style.left=px+'%';d.style.top=py+'%';d.dataset.s=v.s;d.setAttribute('aria-label',v.n);
-    const price=x.q&&!x.q.missing?(x.q.dynamic?usd(x.q.lo)+'–'+Math.round(x.q.hi).toLocaleString('en-US'):usd(x.q.total)):'';
+    const price=x.q&&!x.q.missing?(x.q.dynamic?moneyRng(x.q.lo,x.q.hi):money(x.q.total)):'';
     d.addEventListener('mouseenter',()=>{const tip=$('pinTip');tip.textContent=v.n+(price?' · '+price:'');tip.style.left=px+'%';tip.style.top=py+'%';tip.hidden=false;});
     d.addEventListener('mouseleave',()=>{$('pinTip').hidden=true;});
     d.addEventListener('click',()=>highlightRow(v.s));
@@ -771,7 +788,7 @@ function initGMap(){gmap=new google.maps.Map($('gmap'),{center:{lat:-8.69,lng:11
 function drawGMap(fit){if(!gmap)return;const keep=new Set();const b=new google.maps.LatLngBounds();let n=0;
   for(const x of lastItems){const v=x.v;if(!v.g)continue;n++;keep.add(v.s);const [la,ln]=v.g.split(',').map(Number);const col=x.free===true?'#2F8466':x.free===false?'#C9BCA1':'#B85C3B';let m=gmarkers.get(v.s);
     if(!m){m=new google.maps.Marker({map:gmap,position:{lat:la,lng:ln},title:v.n,icon:gpin(col),zIndex:x.free===true?3:2});
-      m.addListener('click',()=>{const it=lastItems.find(y=>y.v.s===v.s);const q=it&&it.q;const price=q&&!q.missing?(q.dynamic?usd(q.lo)+'–'+Math.round(q.hi).toLocaleString('en-US'):usd(q.total)):'';gInfo.setContent(`<div class="gm-iw"><b>${esc(v.n)}</b><div>${esc(areaName(v.a))} · ${q?q.br:''} BR</div>${price?`<div class="p">${price}</div>`:''}<div class="p"><a href="#" onclick="highlightRow('${esc(v.s)}');return false;">${t('mapGo')} →</a></div></div>`);gInfo.open({map:gmap,anchor:m});});gmarkers.set(v.s,m);}
+      m.addListener('click',()=>{const it=lastItems.find(y=>y.v.s===v.s);const q=it&&it.q;const price=q&&!q.missing?(q.dynamic?moneyRng(q.lo,q.hi):money(q.total)):'';gInfo.setContent(`<div class="gm-iw"><b>${esc(v.n)}</b><div>${esc(areaName(v.a))} · ${q?q.br:''} BR</div>${price?`<div class="p">${price}</div>`:''}<div class="p"><a href="#" onclick="highlightRow('${esc(v.s)}');return false;">${t('mapGo')} →</a></div></div>`);gInfo.open({map:gmap,anchor:m});});gmarkers.set(v.s,m);}
     else{m.setIcon(gpin(col));m.setZIndex(x.free===true?3:2);if(m.getMap()!==gmap)m.setMap(gmap);}
     b.extend(m.getPosition());}
   for(const [s,m] of gmarkers) if(!keep.has(s)) m.setMap(null);
@@ -818,7 +835,7 @@ function norm(x){return String(x||'').toLowerCase().normalize('NFD').replace(/[\
 // ---- budget slider ----
 const BSTEP=50;let bud={min:0,max:0,lo:null,hi:null};
 const bTot=x=>x.q.missing?null:(x.q.dynamic?x.q.lo:x.q.total);
-function budgetFmt(n){return 'US$'+Math.round(n).toLocaleString('en-US');}
+function budgetFmt(n){return money(n);}
 function applyBudget(items){
   if(SHARE){$('budgetBox').hidden=true;return items;}
   $('budgetBox').hidden=false;
@@ -873,7 +890,7 @@ function render(){
     return {v,q,free:v.i?cf.length===0:null,cf};
   }).filter(Boolean);
   const freeN=items.filter(x=>x.free===true).length,busyN=items.filter(x=>x.free===false).length,unk=items.filter(x=>x.free===null).length;
-  $('sum').innerHTML=`${t('sumNights',nights)}<span>${fmt(ciD)} → ${fmt(coD)}</span><span>${t('sumFree',freeN)}</span><span>${t('sumBooked',busyN)}</span>${unk?`<span>${t('sumUnk',unk)}</span>`:''}`;
+  $('sum').innerHTML=`${t('sumNights',nights)}<span>${fmt(ciD)} → ${fmt(coD)}</span><span>${t('sumFree',freeN)}</span><span>${t('sumBooked',busyN)}</span>${unk?`<span>${t('sumUnk',unk)}</span>`:''}${CUR==='TWD'?`<span class="fx">${esc(fxNote())}</span>`:''}`;
   if($('onlyFree').checked&&!SHARE) items=items.filter(x=>x.free!==false);
   items=applyBudget(items);
   const val=x=>x.q.missing?Infinity:x.q.total, s=$('sort').value;
@@ -900,7 +917,7 @@ document.addEventListener('click',e=>{const t=e.target.closest('.tile');const lb
 function vfReq(v,ci,co){return `https://distribution.villa-finder.com/request/${encodeURIComponent(v.s)}?from=${toInput(ci)}&to=${toInput(co)}`;}
 
 const AVAIL_FILE_ID='1E7bPXD0-dR_Skgm53URFi1UDciwnxmiI';
-function applyAvail(d,src){if(d&&d.byIcal&&d.updatedAt&&new Date(d.updatedAt)>=new Date(avail.updatedAt)){avail=Object.assign({},d,{src});noteUpdate();showFresh();render();}}
+function applyAvail(d,src){if(d&&d.fx&&d.fx.rate)FX={rate:+d.fx.rate,at:d.fx.at,src:d.fx.src||'BOT'};if(d&&d.byIcal&&d.updatedAt&&new Date(d.updatedAt)>=new Date(avail.updatedAt)){avail=Object.assign({},d,{src});noteUpdate();showFresh();render();}}
 function decodeB64(b){const bin=atob(b.replace(/\s/g,''));const u=new Uint8Array(bin.length);for(let i=0;i<bin.length;i++)u[i]=bin.charCodeAt(i);return new TextDecoder().decode(u);}
 function watchAvail(m){try{m.watchTool('Google Drive','download_file_content',{fileId:AVAIL_FILE_ID},ev=>{if(ev.type!=='data')return;try{const p=ev.result&&ev.result.payload;const b64=p&&(p.content||p.base64Content);if(!b64)return;applyAvail(JSON.parse(decodeB64(b64)),'drive');}catch(e){}},{refetchInterval:120000,cache:{staleTime:60000}});}catch(e){}}
 function photosOf(v){return (typeof PHOTOS!=='undefined'&&PHOTOS[v.s])||[];}
@@ -923,8 +940,8 @@ function row(x,ciD,coD,nights){
   {const tc=twinChip(v);if(tc)chips.push(tc);}
   let price=`<span class="per">${t('priceCheck')}</span>`;
   const pc=promoCalc(v,q,ciD,nights);
-  if(PUB){price=q.missing?`<span class="per">${t('priceCheck')}</span>`:q.dynamic?`<span class="tot">${usd(q.lo)}–${Math.round(q.hi).toLocaleString('en-US')}</span><span class="per">${t('priceRange',q.br)}</span>`:`<span class="tot"><i>${t(PUBLIC?'lblPrice':'lblPub')}</i>${usd(q.total)}</span><span class="per">${t('priceAvg',usd(q.per),q.br)}</span>${QUOTE?`<span class="per">${esc(t('quoteDates',fmt(ciD),fmt(coD),nights))}</span>`:''}`;}
-  else if(!q.missing) price=q.dynamic?`<span class="tot">${usd(q.lo)}–${Math.round(q.hi).toLocaleString('en-US')}</span><span class="per">${t('priceRange',q.br)}</span>`:(pc&&pc.best?`<span class="was"><i>${t('lblPub')}</i><b>${usd(q.total)}</b></span><span class="tot"><i>${t('lblPartner')}</i>${usd(pc.best.total)}</span><span class="per">${t('priceAvg',usd(pc.best.total/nights),q.br)}</span><span class="dl">${esc(t('dlOff',pc.best.label))}${pc.n>1?' · '+esc(t('dlMore',pc.n-1)):''}</span>`:`<span class="tot">${usd(q.total)}</span><span class="per">${t('priceAvg',usd(q.per),q.br)}</span>`);
+  if(PUB){price=q.missing?`<span class="per">${t('priceCheck')}</span>`:q.dynamic?`<span class="tot">${moneyRng(q.lo,q.hi)}</span><span class="per">${t('priceRange',q.br)}</span>`:`<span class="tot"><i>${t(PUBLIC?'lblPrice':'lblPub')}</i>${money(q.total)}</span><span class="per">${t('priceAvg',money(q.per),q.br)}</span>${QUOTE?`<span class="per">${esc(t('quoteDates',fmt(ciD),fmt(coD),nights))}</span>`:''}`;}
+  else if(!q.missing) price=q.dynamic?`<span class="tot">${moneyRng(q.lo,q.hi)}</span><span class="per">${t('priceRange',q.br)}</span>`:(pc&&pc.best?`<span class="was"><i>${t('lblPub')}</i><b>${money(q.total)}</b></span><span class="tot"><i>${t('lblPartner')}</i>${money(pc.best.total)}</span><span class="per">${t('priceAvg',money(pc.best.total/nights),q.br)}</span><span class="dl">${esc(t('dlOff',pc.best.label))}${pc.n>1?' · '+esc(t('dlMore',pc.n-1)):''}</span>`:`<span class="tot">${money(q.total)}</span><span class="per">${t('priceAvg',money(q.per),q.br)}</span>`);
   const ph=photosOf(v);const g0=gsOf(v.s);const promo=promoOf(v);
   el.innerHTML=`<summary>${ph[0]?`<img class="thumb" src="${ph[0]}" alt="">`:(g0?`<span class="thumb" style="${tileStyle(g0.k,0,g0.c[0]+g0.c[1]+g0.c[2])}"></span>`:'<span class="thumb" aria-hidden="true"></span>')}<div class="nm">${esc(v.n)}<small>${esc(areaName(v.a))}</small>${rateOf(v)}${addrOf(v)}</div><div class="price">${price}</div><div class="meta">${chips.join('')}<span>${esc(t('layouts',v.b))}</span></div></summary><div class="body"></div>`;
   el.addEventListener('toggle',()=>{if(el.open&&!el._built){el._built=true;fillBody(el.querySelector('.body'),x,ciD,coD,nights);}});
@@ -955,8 +972,8 @@ function fillBody(b,x,ciD,coD,nights){
   {const tw=twinOf(v.s);if(tw&&tw[0]==='unk')notes.push(['w',t('nTwinUnk',tw[3])]);else if(tw&&tw[3])notes.push(['',tw[3]]);}
   if(typeof ROUTE!=='undefined'&&ROUTE[v.s])notes.push(['',t('nRoute')]);
   if(q.missing) notes.push(['w',t('nMissing')]);
-  else if(q.dynamic) notes.push(['',t('nDyn',q.br,usd(q.lo),Math.round(q.hi).toLocaleString('en-US'))]);
-  else notes.push(['',t('nTotal',q.br,nights,usd(q.total),q.seasons.map(SEASON_OF).join(t('sep')))]);
+  else if(q.dynamic) notes.push(['',t('nDyn',q.br,money(q.lo),moneyN(q.hi))]);
+  else notes.push(['',t('nTotal',q.br,nights,money(q.total),q.seasons.map(SEASON_OF).join(t('sep')))]);
   if(q.minStay) notes.push([q.short?'w':'',t('nMinStay',q.minStay)]);
   if(cf.length) notes.push(['w',t('nConflict',cf.map(([s,e])=>fmt(k2d(s))+'–'+fmt(k2d(e))).join(t('sep')))]);
   if(free===null) notes.push(['w',t('nNoIcal')]);
@@ -965,8 +982,8 @@ function fillBody(b,x,ciD,coD,nights){
   notes.push(['',t('nTerms')]);
   const pc=promoCalc(v,q,ciD,nights);
   let promoSec='';
-  if(pc){const rows=pc.list.map(x=>`<tr class="${x.ok?'ok':'no'}"><td>${esc(x.label)}</td><td>${x.ok?t('prApply'):t('prNo')}${x.why?`<span class="why">${esc(x.why)}</span>`:(x.ok&&q.dynamic?`<span class="why">${esc(t('why_dyn'))}</span>`:'')}</td><td class="n">${x.total!=null?usd(x.total)+(pc.best&&pc.best===x&&pc.n>1?` <small>(${t('prBest')})</small>`:''):'—'}</td></tr>`).join('');
-    promoSec=`<div class="promoSec"><p class="sec">${t('secPromo')}</p><div class="tw"><table class="promoTbl"><thead><tr><th>${t('prRule')}</th><th>${t('prCond')}</th><th style="text-align:right">${t('prPrice')}${!q.missing&&!q.dynamic?`<span class="why">${t('prOrig')} ${usd(q.total)}</span>`:''}</th></tr></thead><tbody>${rows}</tbody></table></div><p class="histNote" style="margin-top:8px">${esc(t('prNote'))}</p></div>`;}
+  if(pc){const rows=pc.list.map(x=>`<tr class="${x.ok?'ok':'no'}"><td>${esc(x.label)}</td><td>${x.ok?t('prApply'):t('prNo')}${x.why?`<span class="why">${esc(x.why)}</span>`:(x.ok&&q.dynamic?`<span class="why">${esc(t('why_dyn'))}</span>`:'')}</td><td class="n">${x.total!=null?money(x.total)+(pc.best&&pc.best===x&&pc.n>1?` <small>(${t('prBest')})</small>`:''):'—'}</td></tr>`).join('');
+    promoSec=`<div class="promoSec"><p class="sec">${t('secPromo')}</p><div class="tw"><table class="promoTbl"><thead><tr><th>${t('prRule')}</th><th>${t('prCond')}</th><th style="text-align:right">${t('prPrice')}${!q.missing&&!q.dynamic?`<span class="why">${t('prOrig')} ${money(q.total)}</span>`:''}</th></tr></thead><tbody>${rows}</tbody></table></div><p class="histNote" style="margin-top:8px">${esc(t('prNote'))}</p></div>`;}
   else promoSec=`<div class="promoSec"><p class="sec">${t('secPromo')}</p><p class="histNote">${t('prNoPromo')}</p></div>`;
   const box=(title,arr)=>`<div class="box"><h4>${esc(title)}</h4>${arr&&arr.length?`<ul>${arr.map(x=>`<li>${esc(L2(x))}</li>`).join('')}</ul>`:`<ul><li class="na">${esc(t('polNone'))}</li></ul>`}</div>`;
   const polSec=pol?`<div class="polSec"><p class="sec">${t('secPol')}</p><div class="pol">${box(t('polCancel'),pol.cancel)}${box(t('polPay'),pol.pay)}${box(t('polRules'),pol.rules)}${box(t('polIncl'),pol.incl)}</div><p class="histNote" style="margin-top:8px">${esc(t('polSrc'))}</p></div>`:'';
@@ -1113,6 +1130,9 @@ function setLang(l){
   if(cur){ $('dlgInfo').innerHTML=dlgInfoHTML(); if(!$('bSend').disabled) $('bSend').textContent=t('bSend'); }
 }
 $('lang').addEventListener('click',e=>{const b=e.target.closest('button[data-lang]');if(b)setLang(b.dataset.lang);});
+$('cur').addEventListener('click',e=>{const b=e.target.closest('button[data-cur]');if(b)setCur(b.dataset.cur);});
+document.querySelectorAll('#cur button[data-cur]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.cur===CUR)));
+loadFx().then(()=>{if(CUR==='TWD')render();});
 
 (function init(){
   const areas=[...new Set(VILLAS.map(v=>v.a))].sort((a,b)=>VILLAS.filter(v=>v.a===b).length-VILLAS.filter(v=>v.a===a).length);
