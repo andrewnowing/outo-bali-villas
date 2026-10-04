@@ -641,7 +641,7 @@ const enDate=d=>d.toLocaleDateString('en-GB',{timeZone:'UTC',day:'2-digit',month
 const usd=n=>'USD '+Math.round(n).toLocaleString('en-US');
 // ---- currency ----
 let CUR='USD';try{const c=localStorage.getItem('vf-cur');if(c==='TWD'||c==='USD')CUR=c;}catch(e){}
-const FX_FALLBACK=32.5;let FX={rate:null,at:null,src:''};
+const FX_FALLBACK=31.9;let FX={rate:null,at:null,src:''};
 const fxRate=()=>FX.rate||FX_FALLBACK;
 const toCur=n=>CUR==='TWD'?n*fxRate():n;
 const moneyN=n=>CUR==='TWD'?(Math.round(toCur(n)/10)*10).toLocaleString('en-US'):Math.round(n).toLocaleString('en-US');
