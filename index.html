@@ -186,9 +186,10 @@ details.v>summary::-webkit-details-marker{display:none}
 .nm .grate span{font-weight:400;color:var(--muted)}
 .nm .grate:hover span{text-decoration:underline}
 .nm .grate.none{font-weight:400;color:var(--muted);font-size:12px;font-family:var(--body)}
-.nm .addr{display:block;font-weight:500;font-size:12px;color:var(--muted);margin-top:2px;text-decoration:none;line-height:1.5;letter-spacing:.01em}
-.nm .addr:hover{color:var(--ink);text-decoration:underline}
-.nm .addr em{font-style:normal;color:var(--clay-600);margin-left:4px}
+.nm .addrw{display:block;font-weight:500;font-size:12px;color:var(--muted);margin-top:2px;line-height:1.5;letter-spacing:.01em}
+.nm .addr{display:inline;color:inherit;text-decoration:underline dotted;text-underline-offset:3px;text-decoration-color:var(--line-strong)}
+.nm .addr:hover{color:var(--ink);text-decoration:underline solid;text-decoration-color:var(--ink)}
+.nm .addrv{font-style:normal;color:var(--clay-600);margin-left:4px}
 .promo{flex-basis:100%;font-size:12.5px;color:var(--ink2);line-height:1.6;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
 .promo b{color:var(--ink);font-weight:600}
 .meta{grid-column:2/3;display:flex;flex-wrap:wrap;gap:6px;align-items:center;font-size:13px;color:var(--ink2);min-width:0}
@@ -238,7 +239,7 @@ body.share .nm{font-size:24px;line-height:1.3}
 body.share.quote .price{display:block!important;grid-row:auto;grid-column:1;text-align:left;margin-top:6px;padding:10px 14px;background:var(--surface-warm);border:1px solid var(--line);border-radius:var(--r-md);width:max-content;max-width:100%}
 body.quote .price .tot i{color:var(--muted)}
 body.quote .price .per{display:block}
-body.public #rec,body.public .promoSec,body.public .polSec,body.public .secNotes,body.public .actions,body.public .links a.int,body.public .chip.c-warn:not(.st),body.public .price .was,body.public .price .dl,body.public .poiBox{display:none!important}
+body.public #rec,body.public .promoSec,body.public .polSec,body.public .secNotes,body.public .actions,body.public .links a.int,body.public .chip.c-warn:not(.st),body.public .price .was,body.public .price .dl{display:none!important}
 body.public .price .tot i{color:var(--muted)}
 .copyBtn.done{background:var(--jade-700);border-color:var(--jade-700);color:#fff}
 .chip{font-size:12px;font-weight:500;padding:3px 10px;border-radius:999px;border:1px solid transparent;white-space:nowrap;letter-spacing:.04em;line-height:1.5}
@@ -714,7 +715,7 @@ function mergedFeats(v){const F=featsOf(v);const pol=polOf(v.s);const fees=(pol&
   return out.join('');}
 
 let poi=null,poiMarker=null,poiReq=0;
-async function initPOI(){if(!useDyn()||PUB||SHARE)return;try{const {PlaceAutocompleteElement}=await google.maps.importLibrary('places');const el=new PlaceAutocompleteElement({includedRegionCodes:['id'],locationBias:{north:-8.0,south:-8.9,east:115.8,west:114.4}});el.setAttribute('placeholder',t('poiPh'));$('poiIn').innerHTML='';$('poiIn').appendChild(el);$('poiBox').hidden=false;
+async function initPOI(){if(!useDyn()||SHARE||QUOTE)return;try{const {PlaceAutocompleteElement}=await google.maps.importLibrary('places');const el=new PlaceAutocompleteElement({includedRegionCodes:['id'],locationBias:{north:-8.0,south:-8.9,east:115.8,west:114.4}});el.setAttribute('placeholder',t('poiPh'));$('poiIn').innerHTML='';$('poiIn').appendChild(el);$('poiBox').hidden=false;
   el.addEventListener('gmp-select',async ev=>{try{const place=ev.placePrediction.toPlace();await place.fetchFields({fields:['displayName','location','formattedAddress']});if(!place.location){setPoiMsg(t('poiNoGeo'),true);return;}poi={name:place.displayName||'',lat:place.location.lat(),lng:place.location.lng(),mode:'DRIVE',by:{}};$('poiSelName').textContent=poi.name;$('poiSel').hidden=false;$('poiIn').hidden=true;await computePOI();}catch(e){setPoiMsg(t('poiErr'),true);}});
   fillVillaList();
   $('poiVilla').addEventListener('change',()=>{const nm=$('poiVilla').value.trim().toLowerCase();const v=VILLAS.find(x=>x.n.toLowerCase()===nm);if(!v)return;selVilla=v.s;if(!poi){setPoiMsg(t('poiNeed'));return;}showRoute(v.s);});
@@ -722,7 +723,7 @@ async function initPOI(){if(!useDyn()||PUB||SHARE)return;try{const {PlaceAutocom
  }catch(e){/* places unavailable */}}
 function fillVillaList(){const dl=$('villaList');if(!dl)return;const src=(lastItems&&lastItems.length?lastItems.map(x=>x.v):VILLAS).slice().sort((a,b)=>a.n.localeCompare(b.n));dl.innerHTML=src.map(v=>`<option value="${esc(v.n)}">${esc(areaName(v.a))}</option>`).join('');}
 function setPoiMsg(m,err){const el=$('poiMsg');el.textContent=m;el.classList.toggle('err',!!err);}
-async function computePOI(){if(!poi)return;clearRoute();const my=++poiReq;const dests=VILLAS.filter(v=>v.g);setPoiMsg(t('poiCalc',dests.length));const by={};
+async function computePOI(){if(!poi)return;clearRoute();const my=++poiReq;const dests=(PUBLIC?lastItems.map(x=>x.v):VILLAS).filter(v=>v.g);setPoiMsg(t('poiCalc',dests.length));const by={};
   for(let i=0;i<dests.length;i+=50){const chunk=dests.slice(i,i+50);const body={origins:[{waypoint:{location:{latLng:{latitude:poi.lat,longitude:poi.lng}}}}],destinations:chunk.map(v=>{const [la,ln]=v.g.split(',').map(Number);return {waypoint:{location:{latLng:{latitude:la,longitude:ln}}}};}),travelMode:poi.mode};if(poi.mode==='DRIVE'){body.routingPreference='TRAFFIC_UNAWARE';}
     let r;try{r=await fetch('https://routes.googleapis.com/distanceMatrix/v2:computeRouteMatrix',{method:'POST',headers:{'Content-Type':'application/json','X-Goog-Api-Key':MAPS_KEY,'X-Goog-FieldMask':'originIndex,destinationIndex,duration,distanceMeters,condition'},body:JSON.stringify(body)});}catch(e){setPoiMsg(t('poiErr'),true);return;}
     if(!r.ok){setPoiMsg(t('poiErr')+' ('+r.status+')',true);return;}const arr=await r.json();if(my!==poiReq)return;
@@ -950,7 +951,7 @@ function row(x,ciD,coD,nights){
 
 function mapUrlOf(v){const gm=(typeof GMAP!=='undefined')&&GMAP[v.s];return gm?`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(gm[1]+' Bali')}&query_place_id=${gm[0]}`:(v.g?`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(v.g)}`:'');}
 function rateOf(v){const r=(typeof RATE!=='undefined')&&RATE[v.s];const u=mapUrlOf(v);if(!r||r[0]==null)return `<span class="grate none">${t('rateNone')}</span>`;const n=r[1]!=null?t('rateN',r[1].toLocaleString('en-US')):t('rateNoN');return `<a class="grate" href="${u}" target="_blank" rel="noopener" title="${t('rateT')}">★ ${r[0].toFixed(1)} <span>· ${n}</span></a>`;}
-function addrOf(v){const a=(typeof ADDR!=='undefined')&&ADDR[v.s];if(!a)return '';const vague=!/(Jl\.|Jalan|Gg\.|Gang|No\.|Rd|Banjar)/.test(a)||/^[0-9A-Z]{4,}\+[0-9A-Z]{2,}/.test(a)||/°/.test(a);return `<a class="addr" href="${mapUrlOf(v)}" target="_blank" rel="noopener" title="${t('addrT')}">${esc(a)}${vague?` <em>${t('addrVague')}</em>`:''}</a>`;}
+function addrOf(v){const a=(typeof ADDR!=='undefined')&&ADDR[v.s];if(!a)return '';const vague=!/(Jl\.|Jalan|Gg\.|Gang|No\.|Rd|Banjar)/.test(a)||/^[0-9A-Z]{4,}\+[0-9A-Z]{2,}/.test(a)||/°/.test(a);return `<span class="addrw"><a class="addr" href="${mapUrlOf(v)}" target="_blank" rel="noopener" title="${t('addrT')}">${esc(a)}</a>${vague?` <em class="addrv">${t('addrVague')}</em>`:''}</span>`;}
 function fillBody(b,x,ciD,coD,nights){
   const {v,q,free,cf}=x, X=v.x||{}, ph=photosOf(v);
   const links=[];
