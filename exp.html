@@ -60,7 +60,7 @@ input{font:inherit;font-weight:500;color:var(--ink);background:var(--surface);bo
 .mapn{color:var(--muted);font-weight:500;font-size:13px}
 .legend{margin-left:auto;display:flex;gap:4px 14px;align-items:center;font-weight:500;font-size:12px;color:var(--ink2);flex-wrap:wrap}
 .route{padding:12px 20px 14px;border-top:1px solid var(--line-subtle);display:grid;gap:10px}
-.rgrid{display:grid;grid-template-columns:1fr 1fr;gap:12px 16px}
+.rgrid{display:grid;grid-template-columns:minmax(0,1fr);gap:12px 16px;max-width:760px}
 @media (max-width:720px){.rgrid{grid-template-columns:1fr}}
 .rcol{display:grid;gap:8px;min-width:0}
 .sel{display:flex;align-items:center;justify-content:space-between;gap:8px;height:44px;padding:0 6px 0 14px;border:1px solid var(--ink-900);border-radius:var(--r-md);background:var(--surface)}
@@ -76,6 +76,8 @@ input{font:inherit;font-weight:500;color:var(--ink);background:var(--surface);bo
 .stop.drag{opacity:.45}
 .stop.over{box-shadow:0 -3px 0 var(--sun-500)}
 .stop .no{flex:none;width:24px;height:24px;border-radius:50%;background:var(--sun-500);color:var(--ink-900);font-size:12px;font-weight:700;display:grid;place-items:center}
+.stop .no.st{width:auto;padding:0 8px;border-radius:999px;background:var(--ink-900);color:var(--paper-50);font-size:11.5px}
+.stop:first-child{border-width:1.5px}
 .stop .nm{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .stop .grip{cursor:grab;color:var(--muted);user-select:none;padding:0 2px}
 .stop button{height:30px;width:30px;padding:0;border:0;color:var(--ink2);font-size:15px;line-height:1;flex:none}
@@ -316,11 +318,7 @@ input{font:inherit;font-weight:500;color:var(--ink);background:var(--surface);bo
     <div class="mhead"><span>地圖</span><span class="mapn" id="mapN"></span><span class="legend" id="legend"></span></div>
     <div class="route">
       <div class="rgrid">
-        <div class="rcol"><span class="lbl">起點（體驗）</span>
-          <input id="oIn" list="expList" autocomplete="off" placeholder="輸入或選擇體驗，也可以點地圖上的點">
-          <div class="sel" id="oSel" hidden><span id="oName"></span><button type="button" id="oClr" aria-label="清除起點">×</button></div>
-        </div>
-        <div class="rcol"><span class="lbl">目的地（可加多個，依順序走）</span>
+        <div class="rcol"><span class="lbl">行程路線（第一站是起點，可拖曳或用 ↑↓ 調整順序）</span>
           <ol class="stops" id="stops"></ol>
           <div class="adder" id="adder">
             <div class="combo" role="combobox" aria-expanded="false" aria-owns="dDD">
@@ -329,11 +327,11 @@ input{font:inherit;font-weight:500;color:var(--ink);background:var(--surface);bo
               <div class="dd" id="dDD" role="listbox" hidden></div>
             </div>
           </div>
-          <div class="addrow"><button type="button" id="addStop" class="addbtn">＋ 新增目的地</button><button type="button" id="clrStops" class="linkbtn" hidden>清除全部目的地</button></div>
+          <div class="addrow"><button type="button" id="addStop" class="addbtn">＋ 新增目的地</button><button type="button" id="clrStops" class="linkbtn" hidden>清除路線</button></div>
         </div>
       </div>
       <datalist id="expList"></datalist>
-      <div class="frow"><span class="lbl">交通</span><button type="button" data-mode="DRIVE" aria-pressed="true">開車</button><button type="button" data-mode="WALK" aria-pressed="false">步行</button><button type="button" id="calcAll" hidden>算清單內體驗到最後一站的時間</button><span class="hint" id="calcHint">加好目的地後，可以把目前篩選的體驗依到最後一站的時間排序</span></div>
+      <div class="frow"><span class="lbl">交通</span><button type="button" data-mode="DRIVE" aria-pressed="true">開車</button><button type="button" data-mode="WALK" aria-pressed="false">步行</button><button type="button" id="calcAll" hidden>算清單內體驗到最後一站的時間</button><span class="hint" id="calcHint">加好路線後，可以把目前篩選的體驗依到最後一站的時間排序</span></div>
       <div class="msg" id="msg"></div>
       <div class="legs" id="legs" hidden></div>
     </div>
@@ -410,7 +408,7 @@ function itemHtml(x){
   ${x.hl&&x.hl.length?`<ul class="ihl">${x.hl.map(t=>`<li>${esc(t)}</li>`).join('')}</ul>`:''}
   ${x.s&&x.s.length?`<div class="iseg"><span class="lbl">適合客群</span>${x.s.map((v,i)=>`<span class="sg s${v}" title="${SEGT[v]}">${SEGN[i]}</span>`).join('')}</div>`:''}
   <div class="imeta">${[x.tm?'時間：'+x.tm:'',x.pr?'原文價格：'+x.pr:'',g,x.gp?'標示地點：'+x.gp:''].filter(Boolean).map(esc).join(' ｜ ')}</div>
-  <div class="iacts"><button type="button" data-act="x" data-id="${esc(x.id)}" aria-expanded="${OPEN.has(x.id)}">${OPEN.has(x.id)?'收合詳情':'展開詳情'}</button><button type="button" data-act="o" data-id="${esc(x.id)}">設為起點</button><button type="button" data-act="d" data-id="${esc(x.id)}">加為目的地</button><button type="button" data-act="z" data-id="${esc(x.id)}">在地圖上看</button><a href="https://www.google.com/maps/search/?api=1&query=${x.la},${x.ln}" target="_blank" rel="noopener">Google 地圖 →</a></div></div>
+  <div class="iacts"><button type="button" data-act="x" data-id="${esc(x.id)}" aria-expanded="${OPEN.has(x.id)}">${OPEN.has(x.id)?'收合詳情':'展開詳情'}</button><button type="button" data-act="o" data-id="${esc(x.id)}">設為起點</button><button type="button" data-act="d" data-id="${esc(x.id)}">加到路線</button><button type="button" data-act="z" data-id="${esc(x.id)}">在地圖上看</button><a href="https://www.google.com/maps/search/?api=1&query=${x.la},${x.ln}" target="_blank" rel="noopener">Google 地圖 →</a></div></div>
   <div class="det" data-det="${esc(x.id)}"${OPEN.has(x.id)?'':' hidden'}>${OPEN.has(x.id)?detHtml(x):''}</div>
 </article>`;}
 let DLOAD=null;
@@ -490,18 +488,16 @@ $('list').addEventListener('click',e=>{const b=e.target.closest('button[data-act
   if(!card||e.target.closest('a,input,select,textarea,.det'))return;const tb=card.querySelector('button[data-act="x"]');const x=BYID[card.dataset.id];if(x&&tb)toggleDet(x,tb);});
 
 function pickExp(val){const id=String(val||'').trim().split(/\s+/)[0];return BYID[id]&&BYID[id].d===S.dest?BYID[id]:null;}
-$('oIn').addEventListener('change',()=>{const x=pickExp($('oIn').value);if(x)setOrigin(x);});
-$('oClr').addEventListener('click',()=>{clearOrigin();render();});
 document.querySelector('.route').addEventListener('click',e=>{const b=e.target.closest('button[data-mode]');if(!b)return;S.mode=b.dataset.mode;document.querySelectorAll('button[data-mode]').forEach(x=>x.setAttribute('aria-pressed',String(x===b)));if(dest)by=CACHE[ck()]||null;showRoute();render();});
 
 function setMsg(h,err){$('msg').innerHTML=h;$('msg').classList.toggle('err',!!err);}
 // ---- stops (multiple destinations, ordered) ----
 let STOPS=[];let adding=true;
-function syncStops(){dest=STOPS.length?STOPS[STOPS.length-1]:null;by=dest?(CACHE[ck()]||null):null;$('calcAll').hidden=!dest;drawStops();drawStopMarkers();}
+function syncStops(){origin=STOPS.length&&STOPS[0].id?BYID[STOPS[0].id]||null:null;dest=STOPS.length?STOPS[STOPS.length-1]:null;by=dest?(CACHE[ck()]||null):null;$('calcAll').hidden=!dest;drawStops();drawStopMarkers();}
 function drawStops(){
-  $('stops').innerHTML=STOPS.map((d,i)=>`<li class="stop" draggable="true" data-i="${i}"><span class="grip" title="拖曳調整順序">⋮⋮</span><span class="no">${i+1}</span><span class="nm" title="${esc(d.name)}">${esc(d.name)}</span><button type="button" data-sa="up" data-i="${i}" aria-label="往前移"${i===0?' disabled':''}>↑</button><button type="button" data-sa="down" data-i="${i}" aria-label="往後移"${i===STOPS.length-1?' disabled':''}>↓</button><button type="button" data-sa="del" data-i="${i}" aria-label="移除這個目的地">×</button></li>`).join('');
-  const showAdder=!STOPS.length||adding;$('adder').hidden=!showAdder;$('addStop').hidden=STOPS.length>=20;$('addStop').textContent=STOPS.length?`＋ 新增第 ${STOPS.length+1} 個目的地`:'＋ 新增目的地';$('dQ').placeholder=STOPS.length?`搜尋第 ${STOPS.length+1} 個目的地：飯店、餐廳、地址或體驗`:'搜尋飯店、餐廳、地址或體驗';$('clrStops').hidden=STOPS.length<2;}
-function addStop(d){if(STOPS.length>=20){setMsg('最多 20 個目的地',true);return;}STOPS.push(d);adding=false;$('dQ').value='';hideDD();acTok=null;syncStops();render();showRoute();}
+  $('stops').innerHTML=STOPS.map((d,i)=>`<li class="stop" draggable="true" data-i="${i}"><span class="grip" title="拖曳調整順序">⋮⋮</span><span class="no${i===0?' st':''}">${i===0?'起點':i}</span><span class="nm" title="${esc(d.name)}">${esc(d.name)}</span><button type="button" data-sa="up" data-i="${i}" aria-label="往前移"${i===0?' disabled':''}>↑</button><button type="button" data-sa="down" data-i="${i}" aria-label="往後移"${i===STOPS.length-1?' disabled':''}>↓</button><button type="button" data-sa="del" data-i="${i}" aria-label="移除這個目的地">×</button></li>`).join('');
+  const showAdder=!STOPS.length||adding;$('adder').hidden=!showAdder;$('addStop').hidden=STOPS.length>=20;$('addStop').textContent=STOPS.length?`＋ 新增第 ${STOPS.length} 站`:'＋ 新增起點';$('dQ').placeholder=STOPS.length?`搜尋第 ${STOPS.length} 站：飯店、餐廳、地址或體驗`:'搜尋起點：飯店、餐廳、地址或體驗';$('clrStops').hidden=STOPS.length<2;}
+function addStop(d){if(STOPS.length>=20){setMsg('最多 20 站',true);return;}STOPS.push(d);adding=false;$('dQ').value='';hideDD();acTok=null;syncStops();render();showRoute();}
 function setDest(d){addStop(d);}
 function setDestExp(x){addStop({name:x.n,lat:x.la,lng:x.ln,id:x.id});}
 function moveStop(a,b){if(b<0||b>=STOPS.length||a===b)return;const [d]=STOPS.splice(a,1);STOPS.splice(b,0,d);syncStops();render();showRoute();}
@@ -517,11 +513,10 @@ $('addStop').addEventListener('click',()=>{adding=true;drawStops();try{$('dQ').f
 $('clrStops').addEventListener('click',()=>{clearDest();render();});
 let stopMarkers=[];
 function drawStopMarkers(){stopMarkers.forEach(m=>m.setMap(null));stopMarkers=[];if(!gmap)return;
-  STOPS.forEach((d,i)=>stopMarkers.push(new google.maps.Marker({map:gmap,position:{lat:d.lat,lng:d.lng},title:`${i+1}. ${d.name}`,label:{text:String(i+1),color:'#1B1A14',fontSize:'12px',fontWeight:'700'},icon:{path:google.maps.SymbolPath.CIRCLE,scale:12,fillColor:'#FEA600',fillOpacity:1,strokeColor:'#1B1A14',strokeWeight:2},zIndex:20+i})));}
+  STOPS.forEach((d,i)=>stopMarkers.push(new google.maps.Marker({map:gmap,position:{lat:d.lat,lng:d.lng},title:`${i===0?'起點':i+'.'} ${d.name}`,label:{text:i===0?'起':String(i),color:i===0?'#F6F1E7':'#1B1A14',fontSize:'12px',fontWeight:'700'},icon:{path:google.maps.SymbolPath.CIRCLE,scale:12,fillColor:i===0?'#1B1A14':'#FEA600',fillOpacity:1,strokeColor:'#1B1A14',strokeWeight:2},zIndex:20+i})));}
 
-function setOrigin(x){origin=x;$('oName').textContent=x.id+' '+x.n;$('oSel').hidden=false;$('oIn').hidden=true;$('oIn').value='';
-  if(STOPS.length)showRoute();else{setMsg(`起點：<b>${esc(x.n)}</b>。再加一個或多個目的地就會算出各段時間和路線。`);focusExp(x,false);}render();}
-function clearOrigin(silent){origin=null;$('oSel').hidden=true;$('oIn').hidden=false;if(!silent)showRoute();}
+function setOrigin(x){const k=STOPS.findIndex(d=>d.id===x.id);if(k>=0)STOPS.splice(k,1);if(STOPS.length>=20)STOPS.pop();STOPS.unshift({name:x.n,lat:x.la,lng:x.ln,id:x.id});adding=false;$('dQ').value='';hideDD();syncStops();render();showRoute();if(STOPS.length<2)focusExp(x,false);}
+function clearOrigin(){}
 
 const ll=(la,ln)=>({waypoint:{location:{latLng:{latitude:la,longitude:ln}}}});
 const CACHE={};const ck=()=>dest?[S.dest,dest.lat.toFixed(5),dest.lng.toFixed(5),S.mode].join('|'):'';
@@ -536,11 +531,11 @@ async function computeAll(){if(!dest)return;const my=++req;const key=ck();const 
 
 let routeLine=null,routeLine2=null,routeInfo=null;
 function clearRoute(){if(routeLine){routeLine.setMap(null);routeLine=null;}if(routeLine2){routeLine2.setMap(null);routeLine2=null;}if(routeInfo){routeInfo.close();routeInfo=null;}$('legs').hidden=true;$('legs').innerHTML='';}
-function routePts(){const p=STOPS.map(d=>({name:d.name,lat:d.lat,lng:d.lng}));if(origin)p.unshift({name:origin.n,lat:origin.la,lng:origin.ln,o:1});return p;}
+function routePts(){return STOPS.map(d=>({name:d.name,lat:d.lat,lng:d.lng}));}
 function dirUrl(pts){pts=pts||routePts();const f=x=>x.lat+','+x.lng;const mid=pts.slice(1,-1).map(f).join('|');return `https://www.google.com/maps/dir/?api=1&origin=${f(pts[0])}&destination=${f(pts[pts.length-1])}${mid?'&waypoints='+encodeURIComponent(mid):''}&travelmode=${S.mode==='WALK'?'walking':'driving'}`;}
 const km=m=>((m||0)/1000).toFixed(1);
 async function showRoute(){const pts=routePts();const my=++req;
-  if(pts.length<2){clearRoute();if(!pts.length)setMsg('');else if(origin)setMsg(`起點：<b>${esc(origin.n)}</b>。再加一個或多個目的地就會算出各段時間和路線。`);else setMsg(`目的地：<b>${esc(pts[0].name)}</b>。選一個起點，或再加一個目的地，就會畫出路線；也可以按「算清單內體驗到最後一站的時間」排序。`);return;}
+  if(pts.length<2){clearRoute();if(!pts.length)setMsg('');else setMsg(`起點：<b>${esc(pts[0].name)}</b>。再加一站就會算出各段時間和路線。`);return;}
   if(!gmap)return;
   setMsg(`計算 ${pts.length-1} 段路線…`);
   const wp=x=>({location:{latLng:{latitude:x.lat,longitude:x.lng}}});
@@ -558,7 +553,7 @@ async function showRoute(){const pts=routePts();const my=++req;
   clearRoute();routeLine=new google.maps.Polyline({map:gmap,path,strokeColor:'#1B1A14',strokeOpacity:.9,strokeWeight:5});
   if(rd&&rw&&rt===rd){const wpath=encoding.decodePath(rw.polyline.encodedPolyline);routeLine2=new google.maps.Polyline({map:gmap,path:wpath,strokeColor:'#2F8466',strokeOpacity:0,strokeWeight:4,icons:[{icon:{path:'M 0,-1 0,1',strokeOpacity:.9,strokeColor:'#2F8466',scale:3},offset:'0',repeat:'14px'}]});}
   const bb=new google.maps.LatLngBounds();path.forEach(p=>bb.extend(p));gmap.fitBounds(bb,60);
-  const lab=i=>i===0&&pts[0].o?'起點':String(origin?i:i+1);
+  const lab=i=>i===0?'起點':String(i);
   const legs=pts.slice(1).map((p,i)=>{const d=dl&&dl[i],w=rw&&rw.legs&&rw.legs[i];
     return `<div class="lg"><span><b>${lab(i)}</b> ${esc(pts[i].name)} → <b>${lab(i+1)}</b> ${esc(p.name)}</span><span class="num">開車 ${d&&d.duration?fmtMin(parseInt(d.duration))+' 分 · '+km(d.distanceMeters)+' km':'無法開車（可能要搭船）'} ｜ 步行 ${w&&w.duration?fmtMin(parseInt(w.duration))+' 分 · '+km(w.distanceMeters)+' km':'—'}</span></div>`;}).join('');
   const tot=`<div class="lg tot"><span><b>全程 ${pts.length-1} 段</b></span><span class="num">開車 ${rd?fmtMin(parseInt(rd.duration))+' 分 · '+km(rd.distanceMeters)+' km':(dl&&dl.some(Boolean)?'含無法開車路段':'—')} ｜ 步行 ${rw?fmtMin(parseInt(rw.duration))+' 分 · '+km(rw.distanceMeters)+' km':'—'}</span></div>`;
@@ -616,7 +611,7 @@ function drawMarkers(r){if(!gmap)return;if(acDest!==S.dest){acDest=S.dest;buildA
   const vis=[...keep].map(id=>gmarkers.get(id));
   if(gcluster){gcluster.clearMarkers(true);gcluster.addMarkers(vis);}else{for(const [id,m] of gmarkers)m.setMap(keep.has(id)?gmap:null);}
   if(fitDest&&r.length){fitDest=false;if(dest)b.extend({lat:dest.lat,lng:dest.lng});gmap.fitBounds(b,40);}}
-function openInfo(x,m){gInfo.setContent(`<div class="gm-iw"><b>${esc(x.n)}</b><div class="m">${esc(x.en)}</div><div class="m">${esc(X.cats[x.c])} · ${esc(x.r)} · ${x.p}</div>${x.tm?`<div class="m">${esc(x.tm)}</div>`:''}<div class="acts"><button type="button" onclick="setOrigin(BYID['${x.id}'])">設為起點</button><button type="button" onclick="setDestExp(BYID['${x.id}'])">加為目的地</button><button type="button" onclick="scrollToItem('${x.id}')">看介紹</button></div></div>`);gInfo.open({map:gmap,anchor:m});}
+function openInfo(x,m){gInfo.setContent(`<div class="gm-iw"><b>${esc(x.n)}</b><div class="m">${esc(x.en)}</div><div class="m">${esc(X.cats[x.c])} · ${esc(x.r)} · ${x.p}</div>${x.tm?`<div class="m">${esc(x.tm)}</div>`:''}<div class="acts"><button type="button" onclick="setOrigin(BYID['${x.id}'])">設為起點</button><button type="button" onclick="setDestExp(BYID['${x.id}'])">加到路線</button><button type="button" onclick="scrollToItem('${x.id}')">看介紹</button></div></div>`);gInfo.open({map:gmap,anchor:m});}
 function scrollToItem(id){const r=rows();let idx=r.findIndex(x=>x.id===id);if(dest&&by){const s=r.slice().sort((a,b)=>((by[a.id]||{s:1e12}).s)-((by[b.id]||{s:1e12}).s));idx=s.findIndex(x=>x.id===id);}if(idx>=S.limit){S.limit=idx+10;render();}const el=document.querySelector(`.item[data-id="${id}"]`);if(el){const tb=el.querySelector('button[data-act="x"]');if(tb&&!OPEN.has(id))toggleDet(BYID[id],tb);el.scrollIntoView({behavior:'smooth',block:'start'});el.classList.add('on');setTimeout(()=>{if(!origin||origin.id!==id)el.classList.remove('on');},1600);}}
 function focusExp(x,open){if(!gmap)return;const m=gmarkers.get(x.id);gmap.panTo({lat:x.la,lng:x.ln});if(gmap.getZoom()<13)gmap.setZoom(13);if(open&&m)setTimeout(()=>openInfo(x,m),250);$('gmap').scrollIntoView({behavior:'smooth',block:'center'});}
 
