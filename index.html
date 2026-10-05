@@ -408,7 +408,7 @@ button:disabled{opacity:.45;cursor:not-allowed;transform:none;box-shadow:none}
   <div class="panel help"><h3 id="helpT" data-t="helpT">怎麼查房況、怎麼預訂</h3><div id="helpBody"></div><div class="actions"><button type="button" class="ghost" data-close="helpDlg" data-t="close">關閉</button></div></div>
 </div>
 <div class="dlg" id="histDlg" hidden role="dialog" aria-modal="true" aria-labelledby="histT">
-  <div class="panel"><h3 id="histT" data-t="histT">房況更新歷史紀錄</h3><p class="histNote" data-t="histNote">房況每 5 分鐘從 Villa Finder 的 iCal 行事曆同步一次。時間為台灣時間。</p><div class="tw"><table class="histTbl"><thead><tr><th data-t="hTime">更新時間</th><th data-t="hFeeds">同步間數</th><th data-t="hChanged">房況有變動</th><th data-t="hErr">失敗</th></tr></thead><tbody id="histBody"></tbody></table></div><div class="actions"><button type="button" class="ghost" data-close="histDlg" data-t="close">關閉</button></div></div>
+  <div class="panel"><h3 id="histT" data-t="histT">房況更新歷史紀錄</h3><p class="histNote" data-t="histNote">房況每 5 分鐘從 Villa Finder 的 iCal 行事曆同步一次。時間為台灣時間。</p><div class="tw"><table class="histTbl"><thead><tr><th data-t="hTime">更新時間</th><th data-t="hPortalCol">同業後台 118 間</th><th data-t="hPubCol">官網直售 1,019 間</th></tr></thead><tbody id="histBody"></tbody></table></div><div class="actions"><button type="button" class="ghost" data-close="histDlg" data-t="close">關閉</button></div></div>
 </div>
 <div class="dlg" id="dlg" hidden role="dialog" aria-modal="true" aria-labelledby="dlgT">
   <div class="panel">
@@ -463,7 +463,7 @@ zh:{
   title:'Outo 峇里島別墅空房查詢',
   sub:'Villa Finder 同業房源 118 間 · 價格為對外售價（美金、含稅），不是 Outo 成本價',
   loading:'房況資料載入中', langGroup:'語言', helpBtn:'操作說明', histBtn:'房況更新歷史紀錄', close:'關閉',
-  helpT:'怎麼查房況、怎麼預訂', histT:'房況更新歷史紀錄', histNote:'同業後台 118 間：每 5 分鐘從 Villa Finder 的 iCal 行事曆同步一次。官網直售 1,019 間：每 5 分鐘從 Villa Finder 公開頁面抓一次已訂日期（GitHub 排程尖峰時可能延後幾分鐘）。表格列出每一次更新，時間為台灣時間。', hSrcPortal:'同業後台', hSrcPub:'官網直售', freshPub:(d)=>`；官網直售房況 ${d}`, hTime:'更新時間', hFeeds:'同步間數', hChanged:'房況有變動', hErr:'失敗', histEmpty:'還沒有紀錄（下一次同步後會出現）', histNow:'目前頁面使用的版本', hUnk:'—',
+  helpT:'怎麼查房況、怎麼預訂', histT:'房況更新歷史紀錄', histNote:'兩種房源都每 5 分鐘更新一次：同業後台 118 間從 Villa Finder 的 iCal 行事曆同步，官網直售 1,019 間從 Villa Finder 公開頁面抓已訂日期。兩邊各自排程，同一輪的更新合併成一列，時間取較晚的那一個（台灣時間）。', hPortalCol:'同業後台 118 間', hPubCol:'官網直售 1,019 間', hCell:(f,c,e)=>`${f==null?'—':f+' 間'}${c==null?'':'・變動 '+c}${e?'・失敗 '+e:''}`, hNoRun:'—', freshBoth:(a,b)=>`房況更新：同業後台 ${a}｜官網直售 ${b}（每 5 分鐘自動同步）`, hSrcPortal:'同業後台', hSrcPub:'官網直售', freshPub:(d)=>`；官網直售房況 ${d}`, hTime:'更新時間', hFeeds:'同步間數', hChanged:'房況有變動', hErr:'失敗', histEmpty:'還沒有紀錄（下一次同步後會出現）', histNow:'目前頁面使用的版本', hUnk:'—',
   helpHtml:`<ol>
 <li><b>選日期與房數</b>點「入住日 → 退房日」一次選好入住與退房，再選「至少幾房」（例如客人要 3 房就選 3 房，4 房的別墅也會出現，報價會用符合的最小格局）。入住人數會自動排除容納不下的別墅。</li>
 <li><b>縮小範圍</b>區域、床型膠囊（雙床房／雙人房／四人房／上下舖，可複選，選了就代表「都要有」）、開車到市區幾分鐘、排序方式。知道名字就直接打在「搜尋別墅名稱」。預設只顯示有空房的，取消勾選可看全部。</li>
@@ -552,7 +552,7 @@ en:{
   title:'Outo Bali Villa Availability',
   sub:"118 Villa Finder partner listings · Prices are public selling prices (USD, tax included), not Outo's cost",
   loading:'Loading availability data', langGroup:'Language', helpBtn:'How to use', histBtn:'Availability update log', close:'Close',
-  helpT:'How to search and book', histT:'Availability update log', histNote:'Partner-portal villas (118): synced from Villa Finder iCal calendars every 5 minutes. Published-rate villas (1,019): booked dates fetched from Villa Finder public pages every 5 minutes (GitHub scheduling may lag a few minutes). Every update is listed; Taiwan time.', hSrcPortal:'Partner portal', hSrcPub:'Published rate', freshPub:(d)=>`; published-rate villas ${d}`, hTime:'Updated at', hFeeds:'Feeds synced', hChanged:'Changed', hErr:'Failed', histEmpty:'No entries yet (they appear after the next sync)', histNow:'version this page is using', hUnk:'—',
+  helpT:'How to search and book', histT:'Availability update log', histNote:'Both sources update every 5 minutes: the 118 partner-portal villas from Villa Finder iCal calendars, the 1,019 published-rate villas from Villa Finder public pages. The two schedules run independently; updates from the same cycle are merged into one row, shown at the later of the two times (Taiwan time).', hPortalCol:'Partner portal (118)', hPubCol:'Published rate (1,019)', hCell:(f,c,e)=>`${f==null?'—':f+' villas'}${c==null?'':' · changed '+c}${e?' · failed '+e:''}`, hNoRun:'—', freshBoth:(a,b)=>`Availability: partner portal ${a} | published rate ${b} (auto-sync every 5 min)`, hSrcPortal:'Partner portal', hSrcPub:'Published rate', freshPub:(d)=>`; published-rate villas ${d}`, hTime:'Updated at', hFeeds:'Feeds synced', hChanged:'Changed', hErr:'Failed', histEmpty:'No entries yet (they appear after the next sync)', histNow:'version this page is using', hUnk:'—',
   helpHtml:`<ol>
 <li><b>Pick dates and bedrooms</b>Click "Check-in → Check-out" to pick both dates in one calendar, then "Min. bedrooms" (choose 3 for a 3-bedroom request; 4-bedroom villas still appear, quoted at the smallest layout that fits). Guest count hides villas that cannot accommodate the group.</li>
 <li><b>Narrow down</b>Area, room-type chips (Twin / Double / Quad / Bunk — multi-select means the villa must have all of them), drive time to town, sort order. Know the name? Type it in "Search by villa name". "Available only" is on by default; untick to see everything.</li>
@@ -1115,13 +1115,18 @@ document.querySelectorAll('[data-close]').forEach(b=>b.addEventListener('click',
 $('helpBtn').addEventListener('click',()=>{$('helpBody').innerHTML=t('helpHtml');$('helpDlg').hidden=false;});
 let localHist=[];try{localHist=JSON.parse(localStorage.getItem('vf-hist')||'[]');}catch(e){}
 function noteUpdate(){try{if(!avail.updatedAt)return;if(!localHist.some(h=>h.t===avail.updatedAt)){localHist.unshift({t:avail.updatedAt,src:avail.src||'snap'});if(localHist.length>400)localHist.length=400;localStorage.setItem('vf-hist',JSON.stringify(localHist));}}catch(e){}}
-function renderHist(){const tb=$('histBody');const seen=new Set();const rows=[];
-  for(const h of (avail.history||[])){if(!seen.has(h.t)){seen.add(h.t);rows.push(h);}}
-  for(const h of localHist){if(!seen.has(h.t)){seen.add(h.t);rows.push({t:h.t,feeds:null,errors:null,changed:null});}}
-  if(typeof PUBAV!=='undefined'){const ph=(PUBAV.history&&PUBAV.history.length)?PUBAV.history:[{t:PUBAV.updatedAt,feeds:PUBAV.ok??Object.keys(PUBAV.by||{}).length,errors:PUBAV.err??null,changed:null}];for(const h of ph)rows.push(Object.assign({pub:true},h));}
-  rows.sort((a,b)=>new Date(b.t)-new Date(a.t));
-  const fmtT=t=>new Date(t).toLocaleString(LOC(),{timeZone:'Asia/Taipei',year:'numeric',month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit',second:'2-digit',hour12:false});
-  tb.innerHTML=rows.length?rows.map(h=>`<tr><td>${fmtT(h.t)} <span class="chip ${h.pub?'c-src pub':'c-src'}">${t(h.pub?'hSrcPub':'hSrcPortal')}</span>${(!h.pub&&h.t===avail.updatedAt)||(h.pub&&typeof PUBAV!=='undefined'&&h.t===PUBAV.updatedAt)?` <span class="chip c-ok">${t('histNow')}</span>`:''}</td><td>${h.feeds??t('hUnk')}</td><td class="${h.changed>0?'ch':'z'}">${h.changed==null?t('hUnk'):h.changed}</td><td class="${h.errors>0?'':'z'}">${h.errors??t('hUnk')}</td></tr>`).join(''):`<tr><td colspan="4">${t('histEmpty')}</td></tr>`;}
+function renderHist(){const tb=$('histBody');const seen=new Set();const por=[];
+  for(const h of (avail.history||[])){if(!seen.has(h.t)){seen.add(h.t);por.push(h);}}
+  for(const h of localHist){if(!seen.has(h.t)){seen.add(h.t);por.push({t:h.t,feeds:null,errors:null,changed:null});}}
+  let pub=[];if(typeof PUBAV!=='undefined'){pub=(PUBAV.history&&PUBAV.history.length)?PUBAV.history.slice():[{t:PUBAV.updatedAt,feeds:PUBAV.ok??Object.keys(PUBAV.by||{}).length,errors:PUBAV.err??null,changed:null}];}
+  por.sort((a,b)=>new Date(b.t)-new Date(a.t));pub.sort((a,b)=>new Date(b.t)-new Date(a.t));
+  const used=new Set();const rows=[];
+  for(const a of por){let best=-1,bd=4*60e3;for(let i=0;i<pub.length;i++){if(used.has(i))continue;const d=Math.abs(new Date(a.t)-new Date(pub[i].t));if(d<bd){bd=d;best=i;}}if(best>=0){used.add(best);rows.push({t:new Date(a.t)>new Date(pub[best].t)?a.t:pub[best].t,p:a,u:pub[best]});}else rows.push({t:a.t,p:a,u:null});}
+  pub.forEach((u,i)=>{if(!used.has(i))rows.push({t:u.t,p:null,u});});
+  const kept=rows.filter(r=>(r.p&&r.p.feeds!=null)||r.u);rows.length=0;rows.push(...kept);rows.sort((a,b)=>new Date(b.t)-new Date(a.t));
+  const fmtT=t=>new Date(t).toLocaleString(LOC(),{timeZone:'Asia/Taipei',year:'numeric',month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit',hour12:false});
+  const cell=(h,now)=>h?`${t('hCell',h.feeds,h.changed,h.errors)}${now?` <span class="chip c-ok">${t('histNow')}</span>`:''}`:`<span class="z">${t('hNoRun')}</span>`;
+  tb.innerHTML=rows.length?rows.map(r=>`<tr><td>${fmtT(r.t)}</td><td class="${r.p&&r.p.changed>0?'ch':''}">${cell(r.p,r.p&&r.p.t===avail.updatedAt)}</td><td class="${r.u&&r.u.changed>0?'ch':''}">${cell(r.u,r.u&&typeof PUBAV!=='undefined'&&r.u.t===PUBAV.updatedAt)}</td></tr>`).join(''):`<tr><td colspan="3">${t('histEmpty')}</td></tr>`;}
 $('histBtn').addEventListener('click',()=>{renderHist();$('histDlg').hidden=false;});
 $('dlg').addEventListener('click',e=>{if(e.target.id==='dlg')$('dlg').hidden=true;});
 document.addEventListener('keydown',e=>{if(e.key==='Escape'){$('dlg').hidden=true;$('helpDlg').hidden=true;$('histDlg').hidden=true;}});
@@ -1168,8 +1173,9 @@ function renderRecords(){
 function showFresh(){
   const d=new Date(avail.updatedAt),min=Math.round((Date.now()-d)/6e4),days=min/1440,f=$('fresh');
   const when=min<1?t('justNow'):min<60?t('minAgo',min):min<1440?t('hAgo',Math.round(min/60)):d.toLocaleString(LOC(),{timeZone:'Asia/Taipei',year:'numeric',month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit',hour12:false});
-  f.textContent=t('freshAt',when)+(avail.src==='drive'?t('srcDrive'):avail.src==='db'?t('srcDb'):t('srcSnap'));
-  if(typeof PUBAV!=='undefined'&&PUBAV.updatedAt){const pd=new Date(PUBAV.updatedAt);f.textContent+=t('freshPub',pd.toLocaleString(LOC(),{timeZone:'Asia/Taipei',month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit',hour12:false}));}
+  const rel=(x)=>{const m=Math.round((Date.now()-new Date(x))/6e4);return m<1?t('justNow'):m<60?t('minAgo',m):m<1440?t('hAgo',Math.round(m/60)):new Date(x).toLocaleString(LOC(),{timeZone:'Asia/Taipei',month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit',hour12:false});};
+  if(typeof PUBAV!=='undefined'&&PUBAV.updatedAt&&avail.src==='drive')f.textContent=t('freshBoth',rel(avail.updatedAt),rel(PUBAV.updatedAt));
+  else{f.textContent=t('freshAt',when)+(avail.src==='drive'?t('srcDrive'):avail.src==='db'?t('srcDb'):t('srcSnap'));if(typeof PUBAV!=='undefined'&&PUBAV.updatedAt){const pd=new Date(PUBAV.updatedAt);f.textContent+=t('freshPub',pd.toLocaleString(LOC(),{timeZone:'Asia/Taipei',month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit',hour12:false}));}}
   f.classList.toggle('old',days>2); if(days>2) f.textContent+=t('old2d');
 }
 
