@@ -83,7 +83,9 @@ input{font:inherit;font-weight:500;color:var(--ink);background:var(--surface);bo
 .stop button:disabled{opacity:.25;cursor:default}
 .adder{display:grid;gap:8px}
 .addrow{display:flex;flex-wrap:wrap;gap:8px 14px;align-items:center}
-.addbtn{border-style:dashed}
+.addbtn{border:1.5px dashed var(--ink-900);background:var(--surface);color:var(--ink);font-weight:600;height:40px;padding:0 16px;border-radius:var(--r-md)}
+.addbtn:hover{background:var(--sun-50)}
+.adder{border-radius:var(--r-md)}
 .linkbtn{border:0;background:none;padding:0;height:auto;font-size:12px;color:var(--muted);text-decoration:underline}
 .legs{display:grid;gap:4px;font-size:13px;color:var(--ink2)}
 .legs .lg{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:4px 12px;padding:6px 10px;border-radius:var(--r-md);background:var(--paper-100)}
@@ -229,7 +231,7 @@ input{font:inherit;font-weight:500;color:var(--ink);background:var(--surface);bo
             <div class="acwrap" id="dAc"></div>
             <input id="dExp" list="expList" autocomplete="off" placeholder="或選另一個體驗">
           </div>
-          <div class="addrow"><button type="button" id="addStop" class="addbtn" hidden>＋ 新增目的地</button><button type="button" id="clrStops" class="linkbtn" hidden>清除全部目的地</button></div>
+          <div class="addrow"><button type="button" id="addStop" class="addbtn">＋ 新增目的地</button><button type="button" id="clrStops" class="linkbtn" hidden>清除全部目的地</button></div>
         </div>
       </div>
       <datalist id="expList"></datalist>
@@ -399,7 +401,7 @@ let STOPS=[];let adding=true;
 function syncStops(){dest=STOPS.length?STOPS[STOPS.length-1]:null;by=dest?(CACHE[ck()]||null):null;$('calcAll').hidden=!dest;drawStops();drawStopMarkers();}
 function drawStops(){
   $('stops').innerHTML=STOPS.map((d,i)=>`<li class="stop" draggable="true" data-i="${i}"><span class="grip" title="拖曳調整順序">⋮⋮</span><span class="no">${i+1}</span><span class="nm" title="${esc(d.name)}">${esc(d.name)}</span><button type="button" data-sa="up" data-i="${i}" aria-label="往前移"${i===0?' disabled':''}>↑</button><button type="button" data-sa="down" data-i="${i}" aria-label="往後移"${i===STOPS.length-1?' disabled':''}>↓</button><button type="button" data-sa="del" data-i="${i}" aria-label="移除這個目的地">×</button></li>`).join('');
-  const showAdder=!STOPS.length||adding;$('adder').hidden=!showAdder;$('addStop').hidden=showAdder||STOPS.length>=20;$('clrStops').hidden=STOPS.length<2;}
+  const showAdder=!STOPS.length||adding;$('adder').hidden=!showAdder;$('addStop').hidden=STOPS.length>=20;$('addStop').textContent=STOPS.length?`＋ 新增第 ${STOPS.length+1} 個目的地`:'＋ 新增目的地';$('dExp').placeholder=STOPS.length?`或選體驗當第 ${STOPS.length+1} 站`:'或選另一個體驗';$('clrStops').hidden=STOPS.length<2;}
 function addStop(d){if(STOPS.length>=20){setMsg('最多 20 個目的地',true);return;}STOPS.push(d);adding=false;$('dExp').value='';buildAC();syncStops();render();showRoute();}
 function setDest(d){addStop(d);}
 function setDestExp(x){addStop({name:x.n,lat:x.la,lng:x.ln,id:x.id});}
@@ -412,7 +414,7 @@ $('stops').addEventListener('dragstart',e=>{const li=e.target.closest('.stop');i
 $('stops').addEventListener('dragover',e=>{const li=e.target.closest('.stop');if(!li||dragI<0)return;e.preventDefault();document.querySelectorAll('.stop.over').forEach(x=>x.classList.remove('over'));li.classList.add('over');});
 $('stops').addEventListener('dragend',()=>{dragI=-1;document.querySelectorAll('.stop.drag,.stop.over').forEach(x=>x.classList.remove('drag','over'));});
 $('stops').addEventListener('drop',e=>{const li=e.target.closest('.stop');if(!li||dragI<0)return;e.preventDefault();const to=+li.dataset.i,from=dragI;dragI=-1;moveStop(from,to);});
-$('addStop').addEventListener('click',()=>{adding=true;drawStops();const ac=document.querySelector('#dAc gmp-place-autocomplete');if(ac)try{ac.focus();}catch(e){}});
+$('addStop').addEventListener('click',()=>{adding=true;drawStops();const ac=document.querySelector('#dAc gmp-place-autocomplete');try{(ac||$('dExp')).focus();}catch(e){}$('adder').animate([{boxShadow:'0 0 0 3px #FEA600'},{boxShadow:'0 0 0 0 transparent'}],{duration:900});});
 $('clrStops').addEventListener('click',()=>{clearDest();render();});
 let stopMarkers=[];
 function drawStopMarkers(){stopMarkers.forEach(m=>m.setMap(null));stopMarkers=[];if(!gmap)return;
