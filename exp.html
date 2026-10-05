@@ -234,7 +234,7 @@ async function computeAll(){if(!dest)return;const my=++req;const key=ck();const 
     if(!r.ok){setMsg('Google 路線服務目前無法使用（'+r.status+'）',true);return;}const arr=await r.json();if(my!==req)return;
     for(const e of (Array.isArray(arr)?arr:[])){const x=chunk[e.originIndex];if(!x)continue;res[x.id]=(e.condition==='ROUTE_EXISTS'&&e.duration)?{s:parseInt(e.duration),d:e.distanceMeters||0}:null;}}
   if(my!==req)return;by=res;const ok=Object.values(res).filter(Boolean).length;
-  setMsg(`已算出 ${ok} 個體驗到「<b>${esc(dest.name)}</b>」的${S.mode==='WALK'?'步行':'車程'}，清單已由近到遠排列；選一個起點就會畫出路線。`);
+  if(origin)showRoute();else setMsg(`已算出 ${ok} 個體驗到「<b>${esc(dest.name)}</b>」的${S.mode==='WALK'?'步行':'車程'}，清單已由近到遠排列；選一個起點就會畫出路線。`);
   render();}
 
 let routeLine=null,routeLine2=null,routeInfo=null;
