@@ -3,7 +3,7 @@
 <title>Outo 體驗元件地圖</title>
 <link rel="icon" href="favicon-32.png">
 <script src="config.js"></script>
-<script src="exp_data.js?v=1"></script>
+<script src="exp_data.js?v=2"></script>
 <style>
 @font-face{font-family:"Fields Display";src:url("fonts/Fields-Display-Semi-Bold.woff2") format("woff2");font-weight:600;font-display:swap}
 @font-face{font-family:"Fields";src:url("fonts/Fields-Regular.woff2") format("woff2");font-weight:400;font-display:swap}
@@ -103,6 +103,44 @@ input{font:inherit;font-weight:500;color:var(--ink);background:var(--surface);bo
 .iacts a:hover{border-color:var(--ink-900);color:var(--ink)}
 .more{justify-self:center;height:40px;padding:0 22px}
 .empty{padding:24px;text-align:center;color:var(--muted)}
+.det{border-top:1px solid var(--line-subtle);margin-top:6px;padding-top:12px;display:grid;gap:14px;cursor:auto}
+.dtop{display:grid;grid-template-columns:minmax(0,300px) 1fr;gap:16px;align-items:start}
+@media (max-width:720px){.dtop{grid-template-columns:1fr}}
+.ph{margin:0;display:grid;gap:6px}
+.ph img{width:100%;aspect-ratio:4/3;object-fit:cover;border-radius:var(--r-md);background:var(--paper-200);display:block}
+.ph.err img{display:none}
+.ph figcaption{font-size:11.5px;color:var(--muted);line-height:1.6}
+.ph a,.det a{color:var(--ink2)}
+.tx{font-size:13.5px;color:var(--ink2);line-height:1.75}
+.dt{font-family:var(--sans);font-weight:600;font-size:11px;letter-spacing:.14em;color:var(--sun-deep);margin:8px 0 2px}
+.det ul{margin:0;padding-left:18px;font-size:13.5px;line-height:1.7;color:var(--ink2)}
+.dg{display:grid;grid-template-columns:1fr 1fr;gap:12px 20px;margin:0}
+.dg>div{min-width:0}.dg .w{grid-column:1/-1}
+@media (max-width:720px){.dg{grid-template-columns:1fr}}
+.dg dt{font-family:var(--sans);font-weight:600;font-size:11px;letter-spacing:.14em;color:var(--sun-deep)}
+.dg dd{margin:2px 0 0;font-size:13.5px;line-height:1.7;color:var(--ink2);overflow-wrap:anywhere}
+.plats,.lks{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px}
+.lks{margin-top:0}
+.det a.plat{display:inline-flex;align-items:center;height:28px;padding:0 10px;border-radius:999px;border:1px solid var(--ink-900);font-size:12px;text-decoration:none;color:var(--ink)}
+.det a.plat.srch{border-color:var(--line-strong);color:var(--muted)}
+.lks a{font-size:12.5px}
+.sgs{display:flex;flex-wrap:wrap;gap:6px}
+.sg{font-size:12px;padding:1px 9px;border-radius:999px;border:1px solid var(--line-strong)}
+.sg.s2{background:var(--jade-100);color:var(--jade-700);border-color:transparent}
+.sg.s1{background:var(--sun-50);color:var(--sun-700);border-color:var(--sun-100)}
+.sg.s0{color:var(--muted);text-decoration:line-through}
+.blk{background:var(--paper-50);border:1px solid var(--line-subtle);border-radius:var(--r-md);padding:12px 14px;display:grid;gap:4px}
+.bh{display:flex;flex-wrap:wrap;gap:6px 12px;align-items:baseline}
+.bh b{font-weight:600}
+.quote{color:var(--ink2);font-size:13.5px}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:4px 20px}
+@media (max-width:720px){.g2{grid-template-columns:1fr}}
+.sc{display:flex;align-items:center;gap:8px;font-size:12.5px;color:var(--ink2)}
+.sc span:first-child{min-width:64px}
+.dots{display:inline-flex;gap:3px}.dots i{width:9px;height:9px;border-radius:50%;background:var(--paper-300)}.dots i.on{background:var(--sun-500)}
+.why{font-size:13.5px;background:var(--sun-50);border-left:3px solid var(--sun-500);padding:8px 12px;border-radius:6px;color:var(--ink2)}
+.why b{color:var(--ink)}
+.iacts button[data-act="x"]{border-color:var(--ink-900);color:var(--ink)}
 .foot{font-size:12px;color:var(--muted);line-height:1.8}
 </style></head><body>
 <div class="wrap">
@@ -117,8 +155,11 @@ input{font:inherit;font-weight:500;color:var(--ink);background:var(--surface);bo
 
   <section class="card filters" aria-label="篩選">
     <div class="frow" id="fDest"><span class="lbl">目的地</span></div>
+    <div class="frow" id="fReg"><span class="lbl">地區</span></div>
     <div class="frow" id="fCat"><span class="lbl">分類</span></div>
+    <div class="frow" id="fSeg"><span class="lbl">客群</span></div>
     <div class="frow" id="fPri"><span class="lbl">優先</span></div>
+    <div class="frow" id="fOff"><span class="lbl">通路</span></div>
     <div class="frow"><span class="lbl">搜尋</span><input class="q" id="q" type="search" placeholder="名稱、英文名、地區…" aria-label="搜尋體驗"></div>
   </section>
 
@@ -157,23 +198,31 @@ function esc(s){return String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt
 const MAPS_KEY=(window.OUTO_CFG&&window.OUTO_CFG.MAPS_KEY)||'';
 const X=window.EXP||{dests:[],cats:[],items:[]};
 const CATCOL=['#2F8466','#3E6B8B','#A16A1B','#B85C3B','#E18C00','#7A5C99','#1B1A14'];
-const S={dest:0,cat:null,pri:null,q:'',limit:40,mode:'DRIVE'};
+const S={dest:0,reg:null,cat:null,seg:null,pri:null,off:null,q:'',limit:40,mode:'DRIVE'};const OPEN=new Set();
+const SEGN=['帶小孩','帶長輩','伴侶','好友'];
 try{const v=JSON.parse(localStorage.getItem('exp-filter')||'null');if(v&&typeof v.dest==='number'&&X.dests[v.dest])S.dest=v.dest;}catch(e){}
 let origin=null,dest=null,by=null,req=0;
 const BYID={};X.items.forEach(x=>BYID[x.id]=x);
 
-function rows(){const q=S.q.trim().toLowerCase();return X.items.filter(x=>x.d===S.dest&&(S.cat===null||x.c===S.cat)&&(S.pri===null||x.p===S.pri)&&(!q||[x.id,x.n,x.en,x.r,x.ty||''].join(' ').toLowerCase().includes(q)));}
+function match(x,skip){const q=S.q.trim().toLowerCase();return x.d===S.dest&&(skip==='reg'||S.reg===null||x.ri===S.reg)&&(skip==='cat'||S.cat===null||x.c===S.cat)&&(skip==='seg'||S.seg===null||(x.s&&x.s[S.seg]===2))&&(skip==='pri'||S.pri===null||x.p===S.pri)&&(skip==='off'||S.off===null||(x.off?1:0)===S.off)&&(!q||[x.id,x.n,x.en,x.r,x.ty||''].join(' ').toLowerCase().includes(q));}
+function rows(){return X.items.filter(x=>match(x));}
 function chips(){
   const all=X.items.filter(x=>x.d===S.dest);
-  $('fDest').innerHTML='<span class="lbl">目的地</span>'+X.dests.map((d,i)=>`<button type="button" data-k="dest" data-v="${i}" aria-pressed="${S.dest===i}">${esc(d.name)}<small>${X.items.filter(x=>x.d===i).length}</small></button>`).join('');
-  $('fCat').innerHTML='<span class="lbl">分類</span>'+`<button type="button" data-k="cat" data-v="" aria-pressed="${S.cat===null}">全部</button>`+X.cats.map((c,i)=>{const n=all.filter(x=>x.c===i).length;return n?`<button type="button" data-k="cat" data-v="${i}" aria-pressed="${S.cat===i}"><span class="dot" style="background:${CATCOL[i]}"></span>${esc(c)}<small>${n}</small></button>`:'';}).join('');
-  $('fPri').innerHTML='<span class="lbl">優先</span>'+`<button type="button" data-k="pri" data-v="" aria-pressed="${S.pri===null}">全部</button>`+['P0','P1','P2'].map(p=>`<button type="button" data-k="pri" data-v="${p}" aria-pressed="${S.pri===p}">${p}<small>${all.filter(x=>x.p===p).length}</small></button>`).join('');
+  const n=(k,f)=>X.items.filter(x=>match(x,k)&&f(x)).length;
+  const btn=(k,v,label,cnt,pressed,pre='')=>`<button type="button" data-k="${k}" data-v="${v}" aria-pressed="${pressed}">${pre}${esc(label)}${cnt===undefined?'':`<small>${cnt}</small>`}</button>`;
+  $('fDest').innerHTML='<span class="lbl">目的地</span>'+X.dests.map((d,i)=>btn('dest',i,d.name,X.items.filter(x=>x.d===i).length,S.dest===i)).join('');
+  $('fReg').innerHTML='<span class="lbl">地區</span>'+btn('reg','','全部',undefined,S.reg===null)+X.regs[S.dest].map((r,i)=>{const c=n('reg',x=>x.ri===i);return c||S.reg===i?btn('reg',i,r,c,S.reg===i):'';}).join('');
+  $('fCat').innerHTML='<span class="lbl">分類</span>'+btn('cat','','全部',undefined,S.cat===null)+X.cats.map((c,i)=>{const k=n('cat',x=>x.c===i);return k||S.cat===i?btn('cat',i,c,k,S.cat===i,`<span class="dot" style="background:${CATCOL[i]}"></span>`):'';}).join('');
+  $('fSeg').innerHTML='<span class="lbl">客群</span>'+btn('seg','','全部',undefined,S.seg===null)+SEGN.map((l,i)=>btn('seg',i,l+'適合',n('seg',x=>x.s&&x.s[i]===2),S.seg===i)).join('');
+  $('fPri').innerHTML='<span class="lbl">優先</span>'+btn('pri','','全部',undefined,S.pri===null)+['P0','P1','P2'].map(p=>btn('pri',p,p,n('pri',x=>x.p===p),S.pri===p)).join('');
+  $('fOff').innerHTML='<span class="lbl">通路</span>'+btn('off','','全部',undefined,S.off===null)+btn('off',0,'OTA 有上架',n('off',x=>!x.off),S.off===0)+btn('off',1,'只有官網／社群接單',n('off',x=>x.off),S.off===1);
   $('legend').innerHTML=X.cats.map((c,i)=>`<span><span class="dot" style="background:${CATCOL[i]}"></span>${esc(c)}</span>`).join('');
   $('expList').innerHTML=all.map(x=>`<option value="${esc(x.id+' '+x.n)}">${esc(x.r)}</option>`).join('');
 }
 document.querySelector('.filters').addEventListener('click',e=>{const b=e.target.closest('button[data-k]');if(!b)return;const k=b.dataset.k,v=b.dataset.v;
-  if(k==='dest'){const nv=+v;if(nv!==S.dest){S.dest=nv;S.cat=null;S.pri=null;clearOrigin(true);clearDest(true);fitDest=true;}}
-  else if(k==='cat')S.cat=v===''?null:+v;else S.pri=v===''?null:v;
+  if(k==='dest'){const nv=+v;if(nv!==S.dest){S.dest=nv;S.reg=null;S.cat=null;S.seg=null;S.pri=null;S.off=null;clearOrigin(true);clearDest(true);}}
+  else S[k]=v===''?null:(k==='pri'?v:+v);
+  fitDest=true;
   S.limit=40;try{localStorage.setItem('exp-filter',JSON.stringify({dest:S.dest}));}catch(e){}render();});
 $('q').addEventListener('input',e=>{S.q=e.target.value;S.limit=40;render();});
 
@@ -186,8 +235,67 @@ function itemHtml(x){
   <div class="chips"><span class="chip"><span class="dot" style="background:${CATCOL[x.c]}"></span>${esc(X.cats[x.c])}</span><span class="chip">${esc(x.r)}</span><span class="chip ${x.p.toLowerCase()}">${x.p}</span>${x.off?'<span class="chip">只有官網／社群接單</span>':''}${x.lo?'<span class="chip warn">座標待確認</span>':''}${distChip(x)}</div>
   ${x.ds?`<div class="idesc">${esc(x.ds)}</div>`:''}
   <div class="imeta">${[x.tm?'時間：'+x.tm:'',x.pr?'價格：'+x.pr:'',g,x.gp?'標示地點：'+x.gp:''].filter(Boolean).map(esc).join(' ｜ ')}</div>
-  <div class="iacts"><button type="button" data-act="o" data-id="${esc(x.id)}">設為起點</button><button type="button" data-act="d" data-id="${esc(x.id)}">設為終點</button><button type="button" data-act="z" data-id="${esc(x.id)}">在地圖上看</button><a href="https://www.google.com/maps/search/?api=1&query=${x.la},${x.ln}" target="_blank" rel="noopener">Google 地圖 →</a></div>
+  <div class="iacts"><button type="button" data-act="x" data-id="${esc(x.id)}" aria-expanded="${OPEN.has(x.id)}">${OPEN.has(x.id)?'收合詳情':'展開詳情'}</button><button type="button" data-act="o" data-id="${esc(x.id)}">設為起點</button><button type="button" data-act="d" data-id="${esc(x.id)}">設為終點</button><button type="button" data-act="z" data-id="${esc(x.id)}">在地圖上看</button><a href="https://www.google.com/maps/search/?api=1&query=${x.la},${x.ln}" target="_blank" rel="noopener">Google 地圖 →</a></div>
+  <div class="det" data-det="${esc(x.id)}"${OPEN.has(x.id)?'':' hidden'}>${OPEN.has(x.id)?detHtml(x):''}</div>
 </article>`;}
+let DLOAD=null;
+function loadDet(){if(window.EXPD)return Promise.resolve();if(!DLOAD)DLOAD=new Promise((ok,no)=>{const sc=document.createElement('script');sc.src='exp_detail.js?v=1';sc.onload=ok;sc.onerror=()=>{DLOAD=null;no();};document.head.appendChild(sc);});return DLOAD;}
+async function toggleDet(x,b){const box=document.querySelector(`.det[data-det="${x.id}"]`);if(!box)return;
+  if(OPEN.has(x.id)){OPEN.delete(x.id);box.hidden=true;box.innerHTML='';b.textContent='展開詳情';b.setAttribute('aria-expanded','false');return;}
+  OPEN.add(x.id);box.hidden=false;b.textContent='收合詳情';b.setAttribute('aria-expanded','true');
+  if(!window.EXPD){box.innerHTML='<div class="hint">載入中…</div>';try{await loadDet();}catch(e){box.innerHTML='<div class="hint">詳情載入失敗，請重新整理</div>';return;}}
+  if(OPEN.has(x.id))box.innerHTML=detHtml(x);}
+const SCL=['體力負荷','刺激程度','放鬆程度','拍照程度','文化深度','人潮多寡'];
+const SEGT=['不建議','有條件','適合'];
+const host=u=>{try{return new URL(u).hostname}catch(e){return ''}};
+const BUY=/klook\.com|kkday\.com|tripadvisor\.|viator\.com|(^|\.)trip\.com$|getyourguide\.com/;
+const ul=a=>a&&a.length?`<ul>${a.map(t=>`<li>${esc(t)}</li>`).join('')}</ul>`:'<span class="hint">—</span>';
+const lk=(t,u,c='')=>`<a class="${c}" href="${esc(u)}" target="_blank" rel="noopener">${esc(t)}</a>`;
+function detHtml(x){
+  const D=(window.EXPD||{})[x.id];if(!D)return window.EXPD?'<div class="hint">沒有更多資料</div>':'<div class="hint">載入中…</div>';
+  // photo
+  let ph='';
+  const gq=`https://www.google.com/search?tbm=isch&q=${encodeURIComponent((D.map||x.en)+' '+(['Bali','Phu Quoc','Ho Chi Minh','Chiang Mai','Bangkok'][x.d]))}`;
+  if(D.ph){const [f,art,lic,demo]=D.ph;ph=`<figure class="ph"><img loading="lazy" src="exp_img/${x.id}.jpg" alt="${esc(x.n)}" onerror="this.closest('figure').classList.add('err')"><figcaption>${demo?'示意照，非該地點或業者現場。':''}<a href="https://commons.wikimedia.org/wiki/${encodeURI(f.replace(/ /g,'_'))}" target="_blank" rel="noopener">${esc(art)}</a>，${esc(lic)}，Wikimedia Commons · <a href="${gq}" target="_blank" rel="noopener">Google 圖片</a></figcaption></figure>`;}
+  else if(D.phx){const [src,page,demo]=D.phx;ph=`<figure class="ph"><img loading="lazy" src="exp_img/${x.id}.jpg" alt="${esc(x.n)}" onerror="this.closest('figure').classList.add('err')"><figcaption>${demo?'示意照。':''}圖片來源：${page?lk(src,page):esc(src)}，僅供內部參考 · <a href="${gq}" target="_blank" rel="noopener">Google 圖片</a></figcaption></figure>`;}
+  else ph=`<figure class="ph err"><figcaption><a href="${gq}" target="_blank" rel="noopener">在 Google 圖片看照片</a></figcaption></figure>`;
+  // platforms
+  const links=(D.links||[]).slice();if(D.tc&&D.tc[1]&&!links.some(l=>l[1]===D.tc[1]))links.push(['Trip.com',D.tc[1]]);
+  const buy=links.filter(l=>BUY.test(host(l[1]))),art=links.filter(l=>!BUY.test(host(l[1])));
+  const q=encodeURIComponent(D.map||x.en);const has=k=>buy.some(l=>host(l[1]).includes(k));const plat=buy.map(l=>lk(l[0],l[1],'plat'));
+  if(!has('klook'))plat.push(lk('Klook 搜尋',`https://www.klook.com/zh-TW/search/result/?query=${q}`,'plat srch'));
+  if(!has('kkday'))plat.push(lk('KKday 搜尋',`https://www.kkday.com/zh-tw/product/productlist?keyword=${q}`,'plat srch'));
+  if(!has('tripadvisor'))plat.push(lk('Tripadvisor 搜尋',`https://www.tripadvisor.com/Search?q=${q}`,'plat srch'));
+  if(!buy.some(l=>/(^|\.)trip\.com$/.test(host(l[1]))))plat.push(lk('Trip.com 搜尋',`https://www.trip.com/global-search/searchlist/search?keyword=${q}`,'plat srch'));
+  const segs=(x.s||[]).map((v,i)=>`<span class="sg s${v}" title="${SEGT[v]}">${SEGN[i]}</span>`).join('');
+  // feel
+  let fe='';const f=D.feel;
+  if(f){const sc=f.sc?f.sc.map((v,i)=>`<div class="sc"><span>${SCL[i]}</span><span class="dots">${[1,2,3,4,5].map(k=>`<i class="${k<=v?'on':''}"></i>`).join('')}</span><b class="num">${v}</b></div>`).join(''):'<span class="hint">評論不足，不給分數</span>';
+    fe=`<section class="blk"><div class="bh"><b>體驗感受</b>${f.q?`<span class="quote">「${esc(String(f.q).replace(/[「」]/g,''))}」</span>`:''}</div>
+    <div class="g2"><div><div class="dt">最有感的時刻</div>${ul(f.up)}</div><div><div class="dt">最常失望的點</div>${ul(f.down)}</div>
+    <div><div class="dt">台灣／華人旅客在意</div>${ul(f.tw)}</div><div><div class="dt">感受分數（1–5，評論推估）</div>${sc}</div></div>
+    ${f.vd?`<div class="dt">不同業者的差異</div><div class="tx">${esc(f.vd)}</div>`:''}
+    <div class="hint">樣本：${esc(f.n||'')}${(f.src||[]).map(([t,u])=>' · '+lk(t,u)).join('')}</div></section>`;}
+  // google
+  let gg='';const g=D.g;
+  if(g&&g.rating){gg=`<section class="blk"><div class="bh"><b>Google 評論</b><span class="num">${g.rating}／${Number(g.count||0).toLocaleString()} 則</span><span class="hint">${esc(g.place||'')}</span></div>
+    ${g.topics&&g.topics.length?`<div class="hint">常被提到：${esc(g.topics.slice(0,8).join('、'))}</div>`:''}
+    <div class="g2"><div><div class="dt">好評重點</div>${ul((g.up||[]).slice(0,3))}</div><div><div class="dt">負評重點</div>${ul((g.down||[]).slice(0,3))}</div></div>
+    ${g.note?`<div class="hint">備註：${esc(g.note)}</div>`:''}</section>`;}
+  const vid=D.vid&&D.vid.length?`<ul>${D.vid.map(([t,u,m])=>`<li>${lk(t,u)} <span class="hint">${esc(m||'')}</span></li>`).join('')}</ul>`:'<span class="hint">—</span>';
+  return `<div class="dtop">${ph}<div class="dintro"><div class="tx">${esc(D.desc||'')}</div>${D.hl&&D.hl.length?`<div class="dt">體驗亮點</div>${ul(D.hl)}`:''}</div></div>
+  <dl class="dg">
+    <div class="w"><dt>價格行情與訂購平台</dt><dd><div>${esc(D.price||'未查到')}</div><div class="plats">${plat.join('')}</div></dd></div>
+    <div><dt>區域</dt><dd>${esc(D.area||x.r)}</dd></div>
+    <div><dt>時間</dt><dd>${esc(D.time||'—')}</dd></div>
+    <div><dt>適合客群</dt><dd class="sgs">${segs}</dd></div>
+    <div><dt>社群提及／來源</dt><dd>${esc(D.social||'—')}</dd></div>
+    <div class="w"><dt>OTA 熱度（評分／評論／訂購）</dt><dd class="num">${esc((D.ota||'—')+(D.tc&&D.tc[0]?'；'+D.tc[0]:''))}</dd></div>
+    <div class="w"><dt>注意事項</dt><dd>${ul(D.notes)}</dd></div>
+    <div><dt>可接洽供應商</dt><dd>${esc(D.vendors||'—')}</dd></div>
+    <div><dt>社群／文章</dt><dd class="lks">${art.length?art.map(l=>lk(l[0],l[1])).join(''):'—'}</dd></div>
+    <div class="w"><dt>影片</dt><dd>${vid}</dd></div>
+  </dl>${fe}${gg}${D.why?`<div class="why"><b>開發建議</b>　${esc(D.why)}</div>`:''}`;}
 let fitDest=true;
 function render(){
   chips();
@@ -204,8 +312,7 @@ function render(){
 $('more').addEventListener('click',()=>{S.limit+=40;render();});
 $('calcAll').addEventListener('click',computeAll);
 $('list').addEventListener('click',e=>{const b=e.target.closest('button[data-act]');const card=e.target.closest('.item');
-  if(b){e.stopPropagation();const x=BYID[b.dataset.id];if(b.dataset.act==='o')setOrigin(x);else if(b.dataset.act==='d')setDestExp(x);else focusExp(x,true);return;}
-  if(card&&!e.target.closest('a'))focusExp(BYID[card.dataset.id],true);});
+  if(b){e.stopPropagation();const x=BYID[b.dataset.id];const a=b.dataset.act;if(a==='o')setOrigin(x);else if(a==='d')setDestExp(x);else if(a==='x')toggleDet(x,b);else focusExp(x,true);return;}});
 
 function pickExp(val){const id=String(val||'').trim().split(/\s+/)[0];return BYID[id]&&BYID[id].d===S.dest?BYID[id]:null;}
 $('oIn').addEventListener('change',()=>{const x=pickExp($('oIn').value);if(x)setOrigin(x);});
@@ -274,7 +381,7 @@ function drawMarkers(r){if(!gmap)return;if(acDest!==S.dest){acDest=S.dest;buildA
   if(gcluster){gcluster.clearMarkers(true);gcluster.addMarkers(vis);}else{for(const [id,m] of gmarkers)m.setMap(keep.has(id)?gmap:null);}
   if(fitDest&&r.length){fitDest=false;if(dest)b.extend({lat:dest.lat,lng:dest.lng});gmap.fitBounds(b,40);}}
 function openInfo(x,m){gInfo.setContent(`<div class="gm-iw"><b>${esc(x.n)}</b><div class="m">${esc(x.en)}</div><div class="m">${esc(X.cats[x.c])} · ${esc(x.r)} · ${x.p}</div>${x.tm?`<div class="m">${esc(x.tm)}</div>`:''}<div class="acts"><button type="button" onclick="setOrigin(BYID['${x.id}'])">設為起點</button><button type="button" onclick="setDestExp(BYID['${x.id}'])">設為終點</button><button type="button" onclick="scrollToItem('${x.id}')">看介紹</button></div></div>`);gInfo.open({map:gmap,anchor:m});}
-function scrollToItem(id){const r=rows();let idx=r.findIndex(x=>x.id===id);if(dest&&by){const s=r.slice().sort((a,b)=>((by[a.id]||{s:1e12}).s)-((by[b.id]||{s:1e12}).s));idx=s.findIndex(x=>x.id===id);}if(idx>=S.limit){S.limit=idx+10;render();}const el=document.querySelector(`.item[data-id="${id}"]`);if(el){el.scrollIntoView({behavior:'smooth',block:'center'});el.classList.add('on');setTimeout(()=>{if(!origin||origin.id!==id)el.classList.remove('on');},1600);}}
+function scrollToItem(id){const r=rows();let idx=r.findIndex(x=>x.id===id);if(dest&&by){const s=r.slice().sort((a,b)=>((by[a.id]||{s:1e12}).s)-((by[b.id]||{s:1e12}).s));idx=s.findIndex(x=>x.id===id);}if(idx>=S.limit){S.limit=idx+10;render();}const el=document.querySelector(`.item[data-id="${id}"]`);if(el){const tb=el.querySelector('button[data-act="x"]');if(tb&&!OPEN.has(id))toggleDet(BYID[id],tb);el.scrollIntoView({behavior:'smooth',block:'start'});el.classList.add('on');setTimeout(()=>{if(!origin||origin.id!==id)el.classList.remove('on');},1600);}}
 function focusExp(x,open){if(!gmap)return;const m=gmarkers.get(x.id);gmap.panTo({lat:x.la,lng:x.ln});if(gmap.getZoom()<13)gmap.setZoom(13);if(open&&m)setTimeout(()=>openInfo(x,m),250);$('gmap').scrollIntoView({behavior:'smooth',block:'center'});}
 
 render();loadGMaps();
