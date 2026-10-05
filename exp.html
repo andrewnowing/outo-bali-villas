@@ -270,6 +270,21 @@ input{font:inherit;font-weight:500;color:var(--ink);background:var(--surface);bo
   .budget{border-top:0;padding-top:0}
   .bhead{padding-top:2px}
 }
+.combo{position:relative}
+.combo .cico{position:absolute;left:14px;top:50%;width:18px;height:18px;margin-top:-9px;color:var(--ink-600);pointer-events:none}
+.combo input{padding-left:42px;border-color:var(--ink-900)}
+.combo input::-webkit-search-cancel-button{cursor:pointer}
+.dd{position:absolute;z-index:30;left:0;right:0;top:calc(100% + 6px);max-height:min(60vh,420px);overflow:auto;background:var(--surface);border:1px solid var(--line-strong);border-radius:var(--r-md);box-shadow:0 10px 30px rgba(27,26,20,.14);padding:6px}
+.ddh{font-family:var(--sans);font-size:10.5px;font-weight:600;letter-spacing:.12em;color:var(--sun-deep);padding:8px 10px 4px}
+.ddo{display:flex;align-items:flex-start;gap:10px;padding:8px 10px;border-radius:var(--r-sm);cursor:pointer}
+.ddo.on,.ddo:hover{background:var(--paper-100)}
+.ddt{flex:none;font-size:11px;line-height:20px;padding:0 7px;border-radius:999px;background:var(--sun-50);color:var(--sun-700);margin-top:1px}
+.ddt.g{background:var(--jade-100);color:var(--jade-700)}
+.ddm{display:grid;min-width:0;line-height:1.45}
+.ddm b{font-weight:600;color:var(--ink);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.ddm small{font-size:12px;color:var(--muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.ddm mark{background:var(--sun-100);color:inherit;border-radius:3px}
+.ddn{font-size:12.5px;color:var(--muted);padding:6px 10px 8px}
 </style></head><body>
 <div class="wrap">
   <header>
@@ -308,8 +323,11 @@ input{font:inherit;font-weight:500;color:var(--ink);background:var(--surface);bo
         <div class="rcol"><span class="lbl">目的地（可加多個，依順序走）</span>
           <ol class="stops" id="stops"></ol>
           <div class="adder" id="adder">
-            <div class="acwrap" id="dAc"></div>
-            <input id="dExp" list="expList" autocomplete="off" placeholder="或選另一個體驗">
+            <div class="combo" role="combobox" aria-expanded="false" aria-owns="dDD">
+              <svg class="cico" viewBox="0 0 24 24" aria-hidden="true"><path d="M10.5 3a7.5 7.5 0 0 1 5.96 12.06l4.24 4.24-1.4 1.4-4.24-4.24A7.5 7.5 0 1 1 10.5 3zm0 2a5.5 5.5 0 1 0 0 11 5.5 5.5 0 0 0 0-11z" fill="currentColor"/></svg>
+              <input id="dQ" type="search" autocomplete="off" placeholder="搜尋飯店、餐廳、地址或體驗" aria-autocomplete="list" aria-controls="dDD">
+              <div class="dd" id="dDD" role="listbox" hidden></div>
+            </div>
           </div>
           <div class="addrow"><button type="button" id="addStop" class="addbtn">＋ 新增目的地</button><button type="button" id="clrStops" class="linkbtn" hidden>清除全部目的地</button></div>
         </div>
@@ -473,7 +491,6 @@ $('list').addEventListener('click',e=>{const b=e.target.closest('button[data-act
 
 function pickExp(val){const id=String(val||'').trim().split(/\s+/)[0];return BYID[id]&&BYID[id].d===S.dest?BYID[id]:null;}
 $('oIn').addEventListener('change',()=>{const x=pickExp($('oIn').value);if(x)setOrigin(x);});
-$('dExp').addEventListener('change',()=>{const x=pickExp($('dExp').value);if(x)setDestExp(x);});
 $('oClr').addEventListener('click',()=>{clearOrigin();render();});
 document.querySelector('.route').addEventListener('click',e=>{const b=e.target.closest('button[data-mode]');if(!b)return;S.mode=b.dataset.mode;document.querySelectorAll('button[data-mode]').forEach(x=>x.setAttribute('aria-pressed',String(x===b)));if(dest)by=CACHE[ck()]||null;showRoute();render();});
 
@@ -483,8 +500,8 @@ let STOPS=[];let adding=true;
 function syncStops(){dest=STOPS.length?STOPS[STOPS.length-1]:null;by=dest?(CACHE[ck()]||null):null;$('calcAll').hidden=!dest;drawStops();drawStopMarkers();}
 function drawStops(){
   $('stops').innerHTML=STOPS.map((d,i)=>`<li class="stop" draggable="true" data-i="${i}"><span class="grip" title="拖曳調整順序">⋮⋮</span><span class="no">${i+1}</span><span class="nm" title="${esc(d.name)}">${esc(d.name)}</span><button type="button" data-sa="up" data-i="${i}" aria-label="往前移"${i===0?' disabled':''}>↑</button><button type="button" data-sa="down" data-i="${i}" aria-label="往後移"${i===STOPS.length-1?' disabled':''}>↓</button><button type="button" data-sa="del" data-i="${i}" aria-label="移除這個目的地">×</button></li>`).join('');
-  const showAdder=!STOPS.length||adding;$('adder').hidden=!showAdder;$('addStop').hidden=STOPS.length>=20;$('addStop').textContent=STOPS.length?`＋ 新增第 ${STOPS.length+1} 個目的地`:'＋ 新增目的地';$('dExp').placeholder=STOPS.length?`或選體驗當第 ${STOPS.length+1} 站`:'或選另一個體驗';$('clrStops').hidden=STOPS.length<2;}
-function addStop(d){if(STOPS.length>=20){setMsg('最多 20 個目的地',true);return;}STOPS.push(d);adding=false;$('dExp').value='';buildAC();syncStops();render();showRoute();}
+  const showAdder=!STOPS.length||adding;$('adder').hidden=!showAdder;$('addStop').hidden=STOPS.length>=20;$('addStop').textContent=STOPS.length?`＋ 新增第 ${STOPS.length+1} 個目的地`:'＋ 新增目的地';$('dQ').placeholder=STOPS.length?`搜尋第 ${STOPS.length+1} 個目的地：飯店、餐廳、地址或體驗`:'搜尋飯店、餐廳、地址或體驗';$('clrStops').hidden=STOPS.length<2;}
+function addStop(d){if(STOPS.length>=20){setMsg('最多 20 個目的地',true);return;}STOPS.push(d);adding=false;$('dQ').value='';hideDD();acTok=null;syncStops();render();showRoute();}
 function setDest(d){addStop(d);}
 function setDestExp(x){addStop({name:x.n,lat:x.la,lng:x.ln,id:x.id});}
 function moveStop(a,b){if(b<0||b>=STOPS.length||a===b)return;const [d]=STOPS.splice(a,1);STOPS.splice(b,0,d);syncStops();render();showRoute();}
@@ -496,7 +513,7 @@ $('stops').addEventListener('dragstart',e=>{const li=e.target.closest('.stop');i
 $('stops').addEventListener('dragover',e=>{const li=e.target.closest('.stop');if(!li||dragI<0)return;e.preventDefault();document.querySelectorAll('.stop.over').forEach(x=>x.classList.remove('over'));li.classList.add('over');});
 $('stops').addEventListener('dragend',()=>{dragI=-1;document.querySelectorAll('.stop.drag,.stop.over').forEach(x=>x.classList.remove('drag','over'));});
 $('stops').addEventListener('drop',e=>{const li=e.target.closest('.stop');if(!li||dragI<0)return;e.preventDefault();const to=+li.dataset.i,from=dragI;dragI=-1;moveStop(from,to);});
-$('addStop').addEventListener('click',()=>{adding=true;drawStops();const ac=document.querySelector('#dAc gmp-place-autocomplete');try{(ac||$('dExp')).focus();}catch(e){}$('adder').animate([{boxShadow:'0 0 0 3px #FEA600'},{boxShadow:'0 0 0 0 transparent'}],{duration:900});});
+$('addStop').addEventListener('click',()=>{adding=true;drawStops();try{$('dQ').focus();}catch(e){}$('adder').animate([{boxShadow:'0 0 0 3px #FEA600'},{boxShadow:'0 0 0 0 transparent'}],{duration:900});});
 $('clrStops').addEventListener('click',()=>{clearDest();render();});
 let stopMarkers=[];
 function drawStopMarkers(){stopMarkers.forEach(m=>m.setMap(null));stopMarkers=[];if(!gmap)return;
@@ -557,10 +574,40 @@ function loadGMaps(){if(!MAPS_KEY){setMsg('沒有地圖金鑰，無法載入 Goo
 function initMap(){gmap=new google.maps.Map($('gmap'),{center:{lat:X.dests[S.dest].c[0],lng:X.dests[S.dest].c[1]},zoom:10,mapTypeControl:false,streetViewControl:false,fullscreenControl:true,gestureHandling:'greedy'});gInfo=new google.maps.InfoWindow();
   if(typeof markerClusterer!=='undefined')gcluster=new markerClusterer.MarkerClusterer({map:gmap,markers:[],renderer:{render:({count,position})=>{const sz=count<10?28:count<100?36:46;return new google.maps.Marker({position,icon:clIcon(sz),label:{text:String(count),color:'#F6F1E7',fontSize:'11px',fontWeight:'600'},zIndex:1000+count});}},algorithm:new markerClusterer.SuperClusterAlgorithm({radius:50,maxZoom:14})});
   initAC();drawStopMarkers();render();showRoute();}
-let acEl=null;
-async function initAC(){try{const {PlaceAutocompleteElement}=await google.maps.importLibrary('places');buildAC(PlaceAutocompleteElement);}catch(e){$('dAc').innerHTML='<span class="hint">Google 地點搜尋目前無法使用，可改選另一個體驗當終點。</span>';}}
-let ACC=null;function buildAC(C){ACC=C||ACC;if(!ACC)return;const d=X.dests[S.dest];acEl=new ACC({includedRegionCodes:[d.cc],locationBias:d.b});acEl.setAttribute('placeholder','例：飯店名稱、餐廳、地址');$('dAc').innerHTML='';$('dAc').appendChild(acEl);
-  acEl.addEventListener('gmp-select',async ev=>{try{const place=ev.placePrediction.toPlace();await place.fetchFields({fields:['displayName','location']});if(!place.location){setMsg('這個地點沒有座標',true);return;}addStop({name:place.displayName||'自訂地點',lat:place.location.lat(),lng:place.location.lng()});}catch(e){setMsg('Google 地點搜尋目前無法使用，請稍後再試',true);}});}
+// ---- one search box: experiences (local) + Google places (hotels, restaurants, addresses) ----
+let PL=null,acTok=null,acT=0,acSeq=0,DD=[],ddI=-1;
+async function initAC(){try{PL=await google.maps.importLibrary('places');}catch(e){PL=null;}}
+function buildAC(){acTok=null;hideDD();}
+function hideDD(){$('dDD').hidden=true;$('dDD').innerHTML='';DD=[];ddI=-1;document.querySelector('.combo').setAttribute('aria-expanded','false');}
+function hl(t,q){const i=t.toLowerCase().indexOf(q.toLowerCase());return i<0?esc(t):esc(t.slice(0,i))+'<mark>'+esc(t.slice(i,i+q.length))+'</mark>'+esc(t.slice(i+q.length));}
+function drawDD(q,ex,pl,loading){DD=[...ex,...(pl||[])];ddI=DD.length?0:-1;let h='';
+  if(ex.length)h+='<div class="ddh">體驗元件</div>'+ex.map((o,k)=>`<div class="ddo" role="option" data-k="${k}"><span class="ddt">體驗</span><span class="ddm"><b>${hl(o.x.n,q)}</b><small>${esc(o.x.id)} · ${esc(o.x.r)}${o.x.en?' · '+hl(o.x.en,q):''}</small></span></div>`).join('');
+  h+='<div class="ddh">Google 地點（飯店、餐廳、地址）</div>';
+  if(loading)h+='<div class="ddn">搜尋中…</div>';
+  else if(pl&&pl.length)h+=pl.map((o,k)=>`<div class="ddo" role="option" data-k="${ex.length+k}"><span class="ddt g">地點</span><span class="ddm"><b>${esc(o.main)}</b><small>${esc(o.sec)}</small></span></div>`).join('');
+  else h+=`<div class="ddn">${PL?'沒有找到地點':'Google 地點搜尋目前無法使用'}</div>`;
+  $('dDD').innerHTML=h;$('dDD').hidden=false;document.querySelector('.combo').setAttribute('aria-expanded','true');markDD();}
+function markDD(){$('dDD').querySelectorAll('.ddo').forEach(e=>e.classList.toggle('on',+e.dataset.k===ddI));const on=$('dDD').querySelector('.ddo.on');if(on)on.scrollIntoView({block:'nearest'});}
+async function runDD(){const q=$('dQ').value.trim();const my=++acSeq;if(!q){hideDD();return;}const ql=q.toLowerCase();
+  const ex=X.items.filter(x=>x.d===S.dest&&[x.id,x.n,x.en,x.r,x.gp].some(v=>v&&String(v).toLowerCase().includes(ql))).slice(0,6).map(x=>({t:'exp',x}));
+  drawDD(q,ex,null,!!PL);if(!PL)return;
+  let pl=[];try{if(!acTok)acTok=new PL.AutocompleteSessionToken();const d=X.dests[S.dest];
+    const r=await PL.AutocompleteSuggestion.fetchAutocompleteSuggestions({input:q,includedRegionCodes:[d.cc],locationBias:d.b,sessionToken:acTok,language:'zh-TW'});
+    pl=(r.suggestions||[]).filter(s=>s.placePrediction).slice(0,5).map(s=>{const p=s.placePrediction;return {t:'pl',p,main:(p.mainText&&p.mainText.text)||String(p.text||''),sec:(p.secondaryText&&p.secondaryText.text)||''};});}catch(e){pl=[];}
+  if(my!==acSeq)return;drawDD(q,ex,pl,false);}
+async function pickDD(k){const o=DD[k];if(!o)return;hideDD();
+  if(o.t==='exp'){setDestExp(o.x);return;}
+  try{const place=o.p.toPlace();await place.fetchFields({fields:['displayName','location']});if(!place.location){setMsg('這個地點沒有座標',true);return;}acTok=null;addStop({name:place.displayName||o.main||'自訂地點',lat:place.location.lat(),lng:place.location.lng()});}catch(e){setMsg('Google 地點搜尋目前無法使用，請稍後再試',true);}}
+$('dQ').addEventListener('input',()=>{clearTimeout(acT);acT=setTimeout(runDD,200);});
+$('dQ').addEventListener('focus',()=>{if($('dQ').value.trim()&&$('dDD').hidden)runDD();});
+$('dQ').addEventListener('keydown',e=>{if($('dDD').hidden)return;
+  if(e.key==='ArrowDown'){e.preventDefault();if(DD.length){ddI=(ddI+1)%DD.length;markDD();}}
+  else if(e.key==='ArrowUp'){e.preventDefault();if(DD.length){ddI=(ddI-1+DD.length)%DD.length;markDD();}}
+  else if(e.key==='Enter'){e.preventDefault();if(ddI>=0)pickDD(ddI);}
+  else if(e.key==='Escape'){hideDD();}});
+$('dDD').addEventListener('mousedown',e=>e.preventDefault());
+$('dDD').addEventListener('click',e=>{const o=e.target.closest('.ddo');if(o)pickDD(+o.dataset.k);});
+document.addEventListener('click',e=>{if(!e.target.closest('.combo'))hideDD();});
 let acDest=-1;
 function drawMarkers(r){if(!gmap)return;if(acDest!==S.dest){acDest=S.dest;buildAC();}
   const keep=new Set(r.map(x=>x.id));const b=new google.maps.LatLngBounds();
