@@ -3,7 +3,7 @@
 <title>Outo 體驗元件地圖</title>
 <link rel="icon" href="favicon.ico?v=4" sizes="any"><link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png?v=4"><link rel="apple-touch-icon" href="favicon.png?v=3">
 <script src="config.js"></script>
-<script src="exp_data.js?v=7"></script>
+<script src="exp_data.js?v=8"></script>
 <style>
 @font-face{font-family:"Fields Display";src:url("fonts/Fields-Display-Semi-Bold.woff2") format("woff2");font-weight:600;font-display:swap}
 @font-face{font-family:"Fields";src:url("fonts/Fields-Regular.woff2") format("woff2");font-weight:400;font-display:swap}
@@ -154,6 +154,8 @@ input{font:inherit;font-weight:500;color:var(--ink);background:var(--surface);bo
 .chip.p1{background:var(--sun-100);color:var(--sun-700)}
 .chip.dist{background:var(--sun-50);color:var(--sun-700);border:1px solid var(--sun-500)}
 .chip.warn{background:var(--clay-100);color:var(--clay-600)}
+.chip.rg{background:#FCE4EC;color:#880E4F;font-weight:600}
+.rsb table{width:100%;border-collapse:collapse;font-size:13px;margin:6px 0}.rsb td,.rsb th{border-bottom:1px solid var(--line,#e6e1d6);padding:5px 6px;text-align:left;vertical-align:top}.rsb th{color:var(--muted);font-weight:500;width:9em}.rsb ol{margin:4px 0 0 1.2em;padding:0}
 .idesc{font-size:13.5px;color:var(--ink2);line-height:1.7}
 .imeta{font-size:12.5px;color:var(--muted)}
 .iacts{display:flex;gap:6px;flex-wrap:wrap}
@@ -526,7 +528,8 @@ const $=id=>document.getElementById(id);
 function esc(s){return String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));}
 const MAPS_KEY=(window.OUTO_CFG&&window.OUTO_CFG.MAPS_KEY)||'';
 const X=window.EXP||{dests:[],cats:[],items:[]};
-const CATCOL=['#2F8466','#3E6B8B','#A16A1B','#B85C3B','#E18C00','#7A5C99','#1B1A14'];
+const CATCOL=['#2F8466','#3E6B8B','#A16A1B','#B85C3B','#E18C00','#7A5C99','#1B1A14','#C2185B'];
+const rgChip=x=>x.rg?`<span class="chip rg">推薦程度 ${esc(x.rg.replace(/^\d\s*/,''))}</span>${x.ck?'<span class="chip">已電話確認</span>':'<span class="chip warn">網路初篩・未電話確認</span>'}`:'';
 const S={dest:0,dests:new Set([0]),reg:new Set(),cat:new Set(),seg:new Set(),pri:new Set(),off:new Set(),q:'',limit:40,mode:'DRIVE'};const OPEN=new Set();
 const BST=[0,100,200,300,500,750,1000,1500,2000,2500,3000,4000,5000,6000,8000,10000,15000];const bud={a:0,b:BST.length-1};
 const budOn=()=>bud.a>0||bud.b<BST.length-1;
@@ -587,7 +590,7 @@ function itemHtml(x){
   return `<article class="card item${origin&&origin.id===x.id?' on':''}" data-id="${esc(x.id)}">
   <div class="ithumb"><img loading="lazy" src="exp_img/${esc(x.id)}.jpg" alt="${esc(x.n)}" onerror="this.parentNode.classList.add('err')"></div>
   <div class="ibody"><div class="itop"><span class="iid">${esc(x.id)}</span><span class="inm">${esc(x.n)}</span><span class="ien">${esc(x.en)}</span></div>
-  <div class="chips"><span class="chip"><span class="dot" style="background:${CATCOL[x.c]}"></span>${esc(X.cats[x.c])}</span><span class="chip">${esc(x.r)}</span><span class="chip ${x.p.toLowerCase()}">${x.p}</span>${x.tw!==undefined?`<span class="chip tw">${x.tw===0?'免費':'約 '+twFmt(x.tw)}</span>`:''}${x.off?'<span class="chip">只有官網／社群接單</span>':''}${x.lo?'<span class="chip warn">座標待確認</span>':''}${distChip(x)}</div>
+  <div class="chips"><span class="chip"><span class="dot" style="background:${CATCOL[x.c]}"></span>${esc(X.cats[x.c])}</span><span class="chip">${esc(x.r)}</span><span class="chip ${x.p.toLowerCase()}">${x.p}</span>${x.tw!==undefined?`<span class="chip tw">${x.tw===0?'免費':'約 '+twFmt(x.tw)}</span>`:''}${x.off?'<span class="chip">只有官網／社群接單</span>':''}${x.lo?'<span class="chip warn">座標待確認</span>':''}${rgChip(x)}${distChip(x)}</div>
   ${x.ds?`<div class="idesc">${esc(x.ds)}</div>`:''}
   ${x.hl&&x.hl.length?`<ul class="ihl">${x.hl.map(t=>`<li>${esc(t)}</li>`).join('')}</ul>`:''}
   ${x.s&&x.s.length?`<div class="iseg"><span class="lbl">適合客群</span>${x.s.map((v,i)=>`<span class="sg s${v}" title="${SEGT[v]}">${SEGN[i]}</span>`).join('')}</div>`:''}
@@ -596,7 +599,7 @@ function itemHtml(x){
   <div class="det" data-det="${esc(x.id)}"${OPEN.has(x.id)?'':' hidden'}>${OPEN.has(x.id)?detHtml(x):''}</div>
 </article>`;}
 let DLOAD=null;
-function loadDet(){if(window.EXPD)return Promise.resolve();if(!DLOAD)DLOAD=new Promise((ok,no)=>{const sc=document.createElement('script');sc.src='exp_detail.js?v=2';sc.onload=ok;sc.onerror=()=>{DLOAD=null;no();};document.head.appendChild(sc);});return DLOAD;}
+function loadDet(){if(window.EXPD)return Promise.resolve();if(!DLOAD)DLOAD=new Promise((ok,no)=>{const sc=document.createElement('script');sc.src='exp_detail.js?v=3';sc.onload=ok;sc.onerror=()=>{DLOAD=null;no();};document.head.appendChild(sc);});return DLOAD;}
 async function toggleDet(x,b){const box=document.querySelector(`.det[data-det="${x.id}"]`);if(!box)return;
   if(OPEN.has(x.id)){OPEN.delete(x.id);box.hidden=true;box.innerHTML='';b.textContent='展開詳情';b.setAttribute('aria-expanded','false');return;}
   OPEN.add(x.id);box.hidden=false;b.textContent='收合詳情';b.setAttribute('aria-expanded','true');
@@ -639,6 +642,12 @@ function detHtml(x){
     ${g.topics&&g.topics.length?`<div class="hint">常被提到：${esc(g.topics.slice(0,8).join('、'))}</div>`:''}
     <div class="g2"><div><div class="dt">好評重點</div>${ul((g.up||[]).slice(0,3))}</div><div><div class="dt">負評重點</div>${ul((g.down||[]).slice(0,3))}</div></div>
     ${g.note?`<div class="hint">備註：${esc(g.note)}</div>`:''}</section>`;}
+  let rsb='';const R=D.rs;
+  if(R){const CL=['完整套餐','米其林或台灣客人肯定','體驗記憶點','接受訂位'],MX=[2,2,2,1];const v=(c,i)=>typeof c==='number'?`<b>${c}／${MX[i]}</b>`:`<span class="hint">${esc(c)}</span>`;
+    rsb=`<section class="blk rsb"><div class="bh"><b>餐廳篩選結果</b><span class="num">排序分 ${R.sc}／7 · 推薦程度 ${esc(R.g)}</span><span class="hint">${esc(R.st)}</span></div>
+    <table><tr><th>評分項目</th><td>${CL.map((l,i)=>l+' '+v(R.c[i],i)).join('　｜　')}</td></tr>
+    <tr><th>記憶點</th><td>${esc(R.memo)}</td></tr><tr><th>訂位方式</th><td>${esc(R.book)}</td></tr><tr><th>訂位風險</th><td>${esc(R.rk)}</td></tr>
+    <tr><th>待電話確認</th><td><ol>${R.q.map(t=>`<li>${esc(t)}</li>`).join('')}</ol></td></tr></table></section>`;}
   const vid=D.vid&&D.vid.length?`<ul>${D.vid.map(([t,u,m])=>`<li>${lk(t,u)} <span class="hint">${esc(m||'')}</span></li>`).join('')}</ul>`:'<span class="hint">—</span>';
   return `<div class="tx">${esc(D.desc||'')}</div>
   <dl class="dg">
@@ -651,7 +660,7 @@ function detHtml(x){
     <div><dt>可接洽供應商</dt><dd>${esc(D.vendors||'—')}</dd></div>
     <div><dt>社群／文章</dt><dd class="lks">${art.length?art.map(l=>lk(l[0],l[1])).join(''):'—'}</dd></div>
     <div class="w"><dt>影片</dt><dd>${vid}</dd></div>
-  </dl>${fe}${gg}${D.why?`<div class="why"><b>開發建議</b>　${esc(D.why)}</div>`:''}${ph}`;}
+  </dl>${rsb}${fe}${gg}${D.why?`<div class="why"><b>開發建議</b>　${esc(D.why)}</div>`:''}${ph}`;}
 let fitDest=true;
 function render(){
   chips();
@@ -1003,6 +1012,7 @@ function openInfo(x,m){const price=x.tw===undefined?'<span class="m">未查到�
   <div class="iwb"><b class="iwn">${esc(x.n)}</b><div class="m">${esc(x.en)}</div><div class="m">${esc(x.r)} · ${x.p}${x.tm?' · '+esc(x.tm):''}</div>
   ${x.s&&x.s.length?`<div class="iwp"><span class="k">適合客群</span><span class="iwseg">${x.s.map((v,i)=>`<span class="sg s${v}" title="${SEGT[v]}">${SEGN[i]}</span>`).join('')}</span></div>`:''}
   <div class="iwp"><span class="k">參考價格</span>${price}</div>
+  ${x.rg?`<div class="iwp"><span class="k">推薦程度</span><b>${esc(x.rg.replace(/^\d\s*/,''))}</b><span class="m">${x.ck?'已電話確認':'網路初篩，未電話確認'}</span></div>`:''}
   <div class="iwg" id="iwg-${esc(x.id)}">${hoursHtml(null,x,1)}</div>
   <div class="acts"><button type="button" onclick="setOrigin(BYID['${x.id}'])">設為起點</button><button type="button" onclick="setDestExp(BYID['${x.id}'])">加到路線</button><button type="button" onclick="scrollToItem('${x.id}')">看介紹</button></div></div></div>`);gInfo.open({map:gmap,anchor:m});
   gHours(x).then(h=>{const el=document.getElementById('iwg-'+x.id);if(el)el.innerHTML=hoursHtml(h,x);});}
