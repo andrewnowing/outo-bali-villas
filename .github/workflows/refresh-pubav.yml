@@ -22,16 +22,50 @@ jobs:
       - name: Record start time
         run: echo "START_TS=$(date -u +%s)" >> "$GITHUB_ENV"
       - uses: actions/checkout@v4
+      - name: Start from the latest pubav.js on the data branch
+        # pubav.js lives on the `data` branch so these 5-minute commits never create Vercel deployments
+        # (vercel.json: git.deploymentEnabled.data=false). main keeps the site code only.
+        run: |
+          cp pubav.js /tmp/pubav.main.js
+          if git fetch --depth=1 origin data:refs/remotes/origin/data; then
+            git show refs/remotes/origin/data:pubav.js > pubav.js
+            echo "HAVE_DATA=1" >> "$GITHUB_ENV"
+          else
+            echo "HAVE_DATA=0" >> "$GITHUB_ENV"
+          fi
       - name: Fetch booked dates from Villa Finder public pages
         run: python3 scripts/refresh_pubav.py
-      - name: Commit if changed
+      - name: Commit to the data branch if changed
         run: |
-          git config user.name "outo-bot"
-          git config user.email "andrew@outo.co"
-          if git diff --quiet -- pubav.js; then echo "no change"; exit 0; fi
+          git config --global user.name "outo-bot"
+          git config --global user.email "andrew@outo.co"
+          cp pubav.js /tmp/pubav.new.js
+          for i in 1 2 3; do
+            if git fetch --depth=1 origin data:refs/remotes/origin/data; then base=refs/remotes/origin/data; else base=HEAD; fi
+            rm -rf /tmp/data-wt; git worktree prune
+            git worktree add --detach /tmp/data-wt "$base"
+            cp /tmp/pubav.new.js /tmp/data-wt/pubav.js
+            cd /tmp/data-wt
+            if git diff --quiet -- pubav.js; then echo "no change"; exit 0; fi
+            git add pubav.js
+            git commit -q -m "pubav: refresh $(date -u +%Y-%m-%dT%H:%MZ)"
+            if git push origin HEAD:refs/heads/data; then exit 0; fi
+            cd "$GITHUB_WORKSPACE"; sleep 15
+          done
+          exit 1
+      - name: Transition only - hourly copy to main until the live site reads the data branch
+        # Remove this step once https://outo-bali-villas.vercel.app serves a build whose PUBAV_URL points at /data/.
+        # It stops by itself as soon as the live page references the data branch.
+        run: |
+          if curl -fsS --max-time 20 https://outo-bali-villas.vercel.app/ | grep -q 'outo-bali-villas/data/pubav.js'; then echo "live site reads the data branch; no copy to main"; exit 0; fi
+          age=$(python3 -c "import json,datetime as d;t=open('/tmp/pubav.main.js').read();u=json.loads(t[t.index('{'):t.rindex('}')+1])['updatedAt'];print(int((d.datetime.now(d.timezone.utc)-d.datetime.fromisoformat(u.replace('Z','+00:00'))).total_seconds()//60))" || echo 9999)
+          if [ "$age" -lt 55 ]; then echo "main copy is ${age} min old; skip"; exit 0; fi
+          cd "$GITHUB_WORKSPACE"
+          cp /tmp/pubav.new.js pubav.js
+          if git diff --quiet -- pubav.js; then exit 0; fi
           git add pubav.js
-          git commit -m "pubav: refresh $(date -u +%Y-%m-%dT%H:%MZ)"
-          for i in 1 2 3; do git pull --rebase -X theirs origin main && git push && break || sleep 20; done
+          git commit -q -m "pubav: hourly copy to main (transition)"
+          for i in 1 2 3; do git pull --rebase -X theirs origin main && git push origin HEAD:main && break || sleep 20; done
       - name: Pace to 5 minutes and dispatch the next run
         # always(): the chain must survive a failed fetch (Villa Finder down / blocked), otherwise it dies silently
         if: ${{ always() && github.event_name == 'workflow_dispatch' && github.event.inputs.chain != 'false' }}
