@@ -19,7 +19,7 @@
  * 同一種警報 6 小時內只寄一次；恢復正常時寄一封「已恢復」。
  */
 const REPO = 'andrewnowing/outo-bali-villas';
-const RAW = 'https://raw.githubusercontent.com/' + REPO + '/main/pubav.js';
+const RAW = 'https://raw.githubusercontent.com/' + REPO + '/data/pubav.js';  // pubav.js 在 data 分支（不觸發 Vercel 部署）
 const SITE = 'https://outo-bali-villas.vercel.app/';
 const AVAIL_URL = ''; // 118 間同業價房況的 Apps Script 網址（與 config.js 的 AVAIL_URL 相同）；留空則跳過檢查 E
 const STALE_MIN = 20;         // 官網房況多久沒更新算異常
