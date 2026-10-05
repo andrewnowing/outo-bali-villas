@@ -356,7 +356,7 @@ button:disabled{opacity:.45;cursor:not-allowed;transform:none;box-shadow:none}
       <h1 data-t="title">Outo 峇里島別墅空房查詢</h1>
       <div class="sub" data-t="sub">Villa Finder 同業房源 118 間 · 價格為對外售價（美金、含稅），不是 Outo 成本價</div>
     </div></div>
-    <div class="hdr-r"><span class="fresh" id="fresh" data-t="loading">房況資料載入中</span><button type="button" class="hbtn" id="helpBtn" data-t="helpBtn">操作說明</button><button type="button" class="hbtn" id="histBtn" data-t="histBtn">房況更新歷史紀錄</button><div class="lang" id="lang" role="group" data-t-aria="langGroup" aria-label="語言"><button type="button" data-lang="zh" aria-pressed="true" lang="zh-Hant">中文</button><span class="sep" aria-hidden="true">|</span><button type="button" data-lang="en" aria-pressed="false" lang="en">EN</button></div><div class="lang" id="cur" role="group" aria-label="currency"><button type="button" data-cur="USD" aria-pressed="true">USD</button><span class="sep" aria-hidden="true">|</span><button type="button" data-cur="TWD" aria-pressed="false">TWD</button></div></div>
+    <div class="hdr-r"><span class="fresh" id="fresh" data-t="loading">房況資料載入中</span><a class="hbtn" id="expLink" href="exp" hidden style="display:inline-flex;align-items:center;text-decoration:none">體驗元件地圖</a><button type="button" class="hbtn" id="helpBtn" data-t="helpBtn">操作說明</button><button type="button" class="hbtn" id="histBtn" data-t="histBtn">房況更新歷史紀錄</button><div class="lang" id="lang" role="group" data-t-aria="langGroup" aria-label="語言"><button type="button" data-lang="zh" aria-pressed="true" lang="zh-Hant">中文</button><span class="sep" aria-hidden="true">|</span><button type="button" data-lang="en" aria-pressed="false" lang="en">EN</button></div><div class="lang" id="cur" role="group" aria-label="currency"><button type="button" data-cur="USD" aria-pressed="true">USD</button><span class="sep" aria-hidden="true">|</span><button type="button" data-cur="TWD" aria-pressed="false">TWD</button></div></div>
   </header>
 
   <form class="search" id="f" autocomplete="off">
@@ -1202,7 +1202,7 @@ $('lang').addEventListener('click',e=>{const b=e.target.closest('button[data-lan
 $('cur').addEventListener('click',e=>{const b=e.target.closest('button[data-cur]');if(b)setCur(b.dataset.cur);});
 document.querySelectorAll('#cur button[data-cur]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.cur===CUR)));
 loadFx().then(()=>{if(CUR==='TWD')render();});
-const PUBAV_URL='https://raw.githubusercontent.com/andrewnowing/outo-bali-villas/main/pubav.js';
+const PUBAV_URL='https://raw.githubusercontent.com/andrewnowing/outo-bali-villas/data/pubav.js';
 async function refreshPubav(){if(!HOSTED||typeof PUBAV==='undefined')return;try{const r=await fetch(PUBAV_URL+'?t='+Math.floor(Date.now()/60000),{cache:'no-store'});if(!r.ok)return;const txt=await r.text();const m=txt.match(/^const PUBAV=(\{[\s\S]*\});\s*$/);if(!m)return;const j=JSON.parse(m[1]);if(j&&j.updatedAt&&Date.now()-new Date(j.updatedAt).getTime()>30*60e3)watchReport('stale_in_page','官網房況最後更新 '+j.updatedAt);if(j&&j.by&&j.updatedAt&&new Date(j.updatedAt)>new Date(PUBAV.updatedAt)){PUBAV.by=j.by;PUBAV.updatedAt=j.updatedAt;PUBAV.ok=j.ok;PUBAV.err=j.err;PUBAV.history=j.history;showFresh();render();if(!$('histDlg').hidden)renderHist();}}catch(e){}}
 refreshPubav();setInterval(refreshPubav,120000);
 
@@ -1251,5 +1251,5 @@ refreshPubav();setInterval(refreshPubav,120000);
 })();
 </script>
 
-<div id="lb" class="lb" role="dialog" data-t-aria="lbAria" aria-label="放大照片"><div></div></div>
+<div id="lb" class="lb" role="dialog" data-t-aria="lbAria" aria-label="放大照片"><div></div></div><script>try{if(!PUB&&!SHARE)document.getElementById('expLink').hidden=false;}catch(e){}</script>
 </body></html>

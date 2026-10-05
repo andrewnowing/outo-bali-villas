@@ -21,5 +21,10 @@
    "destination": "/index.html"
   }
  ],
- "ignoreCommand": "git diff --quiet HEAD^ HEAD -- . ':(exclude)pubav.js'"
+ "ignoreCommand": "git diff --quiet HEAD^ HEAD -- . ':(exclude)pubav.js'",
+ "git": {
+  "deploymentEnabled": {
+   "data": false
+  }
+ }
 }
