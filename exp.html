@@ -82,6 +82,7 @@ input{font:inherit;font-weight:500;color:var(--ink);background:var(--surface);bo
 .list{display:grid;gap:10px}
 .lhead{display:flex;flex-wrap:wrap;gap:8px 16px;align-items:center;justify-content:space-between}
 .lhead h2{font-size:17px;font-weight:600;margin:0}
+.item .det{cursor:auto}
 .item{padding:14px 18px;display:grid;gap:6px;cursor:pointer;transition:border-color var(--dur) var(--ease)}
 .item:hover{border-color:var(--ink-900)}
 .item.on{border-color:var(--sun-500);box-shadow:var(--ring)}
@@ -319,7 +320,7 @@ function detHtml(x){
   return `<div class="dtop">${ph}<div class="dintro"><div class="tx">${esc(D.desc||'')}</div>${D.hl&&D.hl.length?`<div class="dt">體驗亮點</div>${ul(D.hl)}`:''}</div></div>
   <dl class="dg">
     <div class="w"><dt>價格行情與訂購平台</dt><dd>${x.tw!==undefined?`<div><b>${x.tw===0?'免費':'約 '+twFmt(x.tw)}</b>${x.tr&&x.tr[1]>x.tr[0]?`<span class="hint">（各方案換算約 ${twFmt(x.tr[0])}–${twFmt(x.tr[1])}）</span>`:''}</div>`:''}<div>${esc(D.price||'未查到')}</div><div class="plats">${plat.join('')}</div></dd></div>
-    <div><dt>區域</dt><dd>${esc(D.area||x.r)}</dd></div>
+    <div><dt>區域／地圖</dt><dd>${esc(D.area||x.r)} · <a href="https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(D.map||(x.la+','+x.ln))}" target="_blank" rel="noopener">Google 地圖</a></dd></div>
     <div><dt>時間</dt><dd>${esc(D.time||'—')}</dd></div>
     <div><dt>適合客群</dt><dd class="sgs">${segs}</dd></div>
     <div><dt>社群提及／來源</dt><dd>${esc(D.social||'—')}</dd></div>
@@ -345,7 +346,8 @@ function render(){
 $('more').addEventListener('click',()=>{S.limit+=40;render();});
 $('calcAll').addEventListener('click',computeAll);
 $('list').addEventListener('click',e=>{const b=e.target.closest('button[data-act]');const card=e.target.closest('.item');
-  if(b){e.stopPropagation();const x=BYID[b.dataset.id];const a=b.dataset.act;if(a==='o')setOrigin(x);else if(a==='d')setDestExp(x);else if(a==='x')toggleDet(x,b);else focusExp(x,true);return;}});
+  if(b){e.stopPropagation();const x=BYID[b.dataset.id];const a=b.dataset.act;if(a==='o')setOrigin(x);else if(a==='d')setDestExp(x);else if(a==='x')toggleDet(x,b);else focusExp(x,true);return;}
+  if(!card||e.target.closest('a,input,select,textarea,.det'))return;const tb=card.querySelector('button[data-act="x"]');const x=BYID[card.dataset.id];if(x&&tb)toggleDet(x,tb);});
 
 function pickExp(val){const id=String(val||'').trim().split(/\s+/)[0];return BYID[id]&&BYID[id].d===S.dest?BYID[id]:null;}
 $('oIn').addEventListener('change',()=>{const x=pickExp($('oIn').value);if(x)setOrigin(x);});
