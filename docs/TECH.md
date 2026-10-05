@@ -23,7 +23,7 @@
       │                    ▲ git push 自動部署（pubav.js 單獨 commit 不觸發重新部署，見 vercel.json ignoreCommand）
       │
       ├─ 每 2 分鐘 fetch ──► Apps Script「118 間 iCal 房況」(AVAIL_URL)：回傳 {updatedAt, byIcal:{villa:[[from,to],…]}, fx:{rate,at,src}}
-      ├─ 每 2 分鐘 fetch ──► raw.githubusercontent.com/…/main/pubav.js：1,019 間官網房源的已訂日期
+      ├─ 每 2 分鐘 fetch ──► raw.githubusercontent.com/…/data/pubav.js：1,019 間官網房源的已訂日期
       ├─ 載入時 ──► Google Maps JavaScript API（圖磚、標記）；匯率 open.er-api.com（USD→TWD，失敗時用 31.9）
       └─ 偵測到異常時 POST ──► Apps Script「Outo villa watchdog」(WATCH_URL)
 
@@ -85,7 +85,7 @@ Apps Script（Andrew 的 Google 帳號）
    - 遇到 HTTP 429 退避 15／30／45 秒重試。
 4. 每次執行寫入 `history`（時間、成功數、失敗數、變動間數、noattr），保留 120 筆；網頁的「房況更新歷史紀錄」會把這些列出來。
 5. 排程：GitHub 的 cron（`*/5`）實測不可靠（連續一小時沒觸發），所以改成「自我接力」：每次 run 結束時等到距開始滿 300 秒，再用 `workflow_dispatch` 觸發下一次。接力步驟設 `if: always()`，抓取失敗也會排下一次；若 3 分鐘內已有另一條接力在跑則不重複。實測間隔 5 分 07 秒。
-6. 網頁每 2 分鐘從 `raw.githubusercontent.com` 讀最新 `pubav.js`（不等 Vercel 重新部署）；Vercel 的 `ignoreCommand` 讓只改 pubav.js 的 commit 不觸發部署，避免每天 288 次部署。
+6. 網頁每 2 分鐘從 `raw.githubusercontent.com/…/data/pubav.js` 讀最新房況（不等 Vercel 重新部署）。機器人只 commit 到 `data` 分支，`vercel.json` 的 `git.deploymentEnabled.data=false` 讓這些 commit 完全不建立 Vercel 部署。（2026-10-05 前機器人 commit 到 main，即使 `ignoreCommand` 跳過建置，每次仍算一次部署，一天約 288 次，超過免費方案每天 100 次上限，導致網站無法更新。）main 上的 pubav.js 只是初次載入用的備份。
 
 ### 4.3 「有空房」判定
 - `conflicts(v, ci, co)`：已訂區間與查詢區間重疊即「已被訂」。
