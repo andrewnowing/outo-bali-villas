@@ -450,38 +450,47 @@ function esc(s){return String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt
 const MAPS_KEY=(window.OUTO_CFG&&window.OUTO_CFG.MAPS_KEY)||'';
 const X=window.EXP||{dests:[],cats:[],items:[]};
 const CATCOL=['#2F8466','#3E6B8B','#A16A1B','#B85C3B','#E18C00','#7A5C99','#1B1A14'];
-const S={dest:0,reg:null,cat:null,seg:null,pri:null,off:null,q:'',limit:40,mode:'DRIVE'};const OPEN=new Set();
+const S={dest:0,dests:new Set([0]),reg:new Set(),cat:new Set(),seg:new Set(),pri:new Set(),off:new Set(),q:'',limit:40,mode:'DRIVE'};const OPEN=new Set();
 const BST=[0,100,200,300,500,750,1000,1500,2000,2500,3000,4000,5000,6000,8000,10000,15000];const bud={a:0,b:BST.length-1};
 const budOn=()=>bud.a>0||bud.b<BST.length-1;
 const twFmt=n=>'NT$'+Math.round(n).toLocaleString();
 const SEGN=['帶小孩','帶長輩','伴侶','好友'];
-try{const v=JSON.parse(localStorage.getItem('exp-filter')||'null');if(v&&typeof v.dest==='number'&&X.dests[v.dest])S.dest=v.dest;}catch(e){}
+try{const v=JSON.parse(localStorage.getItem('exp-filter')||'null');if(v&&typeof v.dest==='number'&&X.dests[v.dest])S.dest=v.dest;const ds=(v&&Array.isArray(v.dests)?v.dests:[S.dest]).filter(i=>X.dests[i]);S.dests=new Set(ds.length?ds:[S.dest]);if(!S.dests.has(S.dest))S.dest=[...S.dests][0];}catch(e){}
+function saveFilter(){try{localStorage.setItem('exp-filter',JSON.stringify({dest:S.dest,dests:[...S.dests]}));}catch(e){}}
 let origin=null,dest=null,by=null,req=0;
 const BYID={};X.items.forEach(x=>BYID[x.id]=x);
 
-function match(x,skip){const q=S.q.trim().toLowerCase();return x.d===S.dest&&(skip==='reg'||S.reg===null||x.ri===S.reg)&&(skip==='cat'||S.cat===null||x.c===S.cat)&&(skip==='seg'||S.seg===null||(x.s&&x.s[S.seg]===2))&&(skip==='pri'||S.pri===null||x.p===S.pri)&&(skip==='off'||S.off===null||(x.off?1:0)===S.off)&&(skip==='bud'||!budOn()||(x.tw!==undefined&&x.tw>=BST[bud.a]&&(bud.b===BST.length-1||x.tw<=BST[bud.b])))&&(!q||[x.id,x.n,x.en,x.r,x.ty||''].join(' ').toLowerCase().includes(q));}
+const has=(set,v)=>!set.size||set.has(v);
+function match(x,skip){const q=S.q.trim().toLowerCase();return S.dests.has(x.d)&&(skip==='reg'||has(S.reg,x.d+':'+x.ri))&&(skip==='cat'||has(S.cat,x.c))&&(skip==='seg'||[...S.seg].every(i=>x.s&&x.s[i]===2))&&(skip==='pri'||has(S.pri,x.p))&&(skip==='off'||has(S.off,x.off?1:0))&&(skip==='bud'||!budOn()||(x.tw!==undefined&&x.tw>=BST[bud.a]&&(bud.b===BST.length-1||x.tw<=BST[bud.b])))&&(!q||[x.id,x.n,x.en,x.r,x.ty||''].join(' ').toLowerCase().includes(q));}
 function rows(){return X.items.filter(x=>match(x));}
-function fCount(){const n=['reg','cat','seg','pri','off'].filter(k=>S[k]!==null).length+((bud.a!==0||bud.b!==BST.length-1)?1:0);$('fCnt').textContent=n+' 個條件';$('fCnt').hidden=!n;}
+function fCount(){const n=['reg','cat','seg','pri','off'].reduce((a,k)=>a+S[k].size,0)+((bud.a!==0||bud.b!==BST.length-1)?1:0);$('fCnt').textContent=n+' 個條件';$('fCnt').hidden=!n;}
 $('fTog').addEventListener('click',()=>{const f=document.querySelector('.filters');const o=!f.classList.contains('fopen');f.classList.toggle('fopen',o);$('fTog').setAttribute('aria-expanded',String(o));});
 function chips(){
-  const all=X.items.filter(x=>x.d===S.dest);
+  const all=X.items.filter(x=>S.dests.has(x.d));
   const n=(k,f)=>X.items.filter(x=>match(x,k)&&f(x)).length;
   const btn=(k,v,label,cnt,pressed,pre='')=>`<button type="button" data-k="${k}" data-v="${v}" aria-pressed="${pressed}">${pre}${esc(label)}${cnt===undefined?'':`<small>${cnt}</small>`}</button>`;
-  $('fDest').innerHTML='<span class="lbl">目的地</span>'+X.dests.map((d,i)=>btn('dest',i,d.name,X.items.filter(x=>x.d===i).length,S.dest===i)).join('');
-  $('fReg').innerHTML='<span class="lbl">地區</span>'+btn('reg','','全部',undefined,S.reg===null)+X.regs[S.dest].map((r,i)=>{const c=n('reg',x=>x.ri===i);return c||S.reg===i?btn('reg',i,r,c,S.reg===i):'';}).join('');
-  $('fCat').innerHTML='<span class="lbl">分類</span>'+btn('cat','','全部',undefined,S.cat===null)+X.cats.map((c,i)=>{const k=n('cat',x=>x.c===i);return k||S.cat===i?btn('cat',i,c,k,S.cat===i,`<span class="dot" style="background:${CATCOL[i]}"></span>`):'';}).join('');
-  $('fSeg').innerHTML='<span class="lbl">客群</span>'+btn('seg','','全部',undefined,S.seg===null)+SEGN.map((l,i)=>btn('seg',i,l+'適合',n('seg',x=>x.s&&x.s[i]===2),S.seg===i)).join('');
-  $('fPri').innerHTML='<span class="lbl">優先</span>'+btn('pri','','全部',undefined,S.pri===null)+['P0','P1','P2'].map(p=>btn('pri',p,p,n('pri',x=>x.p===p),S.pri===p)).join('');
-  $('fOff').innerHTML='<span class="lbl">通路</span>'+btn('off','','全部',undefined,S.off===null)+btn('off',0,'OTA 有上架',n('off',x=>!x.off),S.off===0)+btn('off',1,'只有官網／社群接單',n('off',x=>x.off),S.off===1);
+  const allBtn=k=>btn(k,'','全部',undefined,!S[k].size);
+  const ds=[...S.dests].sort((a,b)=>a-b),multi=ds.length>1;
+  $('fDest').innerHTML='<span class="lbl">目的地</span>'+btn('dest','','全部',undefined,S.dests.size===X.dests.length)+X.dests.map((d,i)=>btn('dest',i,d.name,X.items.filter(x=>x.d===i).length,S.dests.has(i))).join('');
+  $('fReg').innerHTML='<span class="lbl">地區</span>'+allBtn('reg')+ds.map(d=>X.regs[d].map((r,i)=>{const key=d+':'+i;const c=n('reg',x=>x.d===d&&x.ri===i);return c||S.reg.has(key)?btn('reg',key,(multi?X.dests[d].name+'・':'')+r,c,S.reg.has(key)):'';}).join('')).join('');
+  $('fCat').innerHTML='<span class="lbl">分類</span>'+allBtn('cat')+X.cats.map((c,i)=>{const k=n('cat',x=>x.c===i);return k||S.cat.has(i)?btn('cat',i,c,k,S.cat.has(i),`<span class="dot" style="background:${CATCOL[i]}"></span>`):'';}).join('');
+  $('fSeg').innerHTML='<span class="lbl">客群</span>'+allBtn('seg')+SEGN.map((l,i)=>btn('seg',i,l+'適合',n('seg',x=>x.s&&x.s[i]===2),S.seg.has(i))).join('')+(S.seg.size>1?'<span class="hint">同時適合所選客群</span>':'');
+  $('fPri').innerHTML='<span class="lbl">優先</span>'+allBtn('pri')+['P0','P1','P2'].map(p=>btn('pri',p,p,n('pri',x=>x.p===p),S.pri.has(p))).join('');
+  $('fOff').innerHTML='<span class="lbl">通路</span>'+allBtn('off')+btn('off',0,'OTA 有上架',n('off',x=>!x.off),S.off.has(0))+btn('off',1,'只有官網／社群接單',n('off',x=>x.off),S.off.has(1));
   drawBud();fCount();
   $('legend').innerHTML=X.cats.map((c,i)=>`<span><span class="dot" style="background:${CATCOL[i]}"></span>${esc(c)}</span>`).join('');
   $('expList').innerHTML=all.map(x=>`<option value="${esc(x.id+' '+x.n)}">${esc(x.r)}</option>`).join('');
 }
 document.querySelector('.filters').addEventListener('click',e=>{const b=e.target.closest('button[data-k]');if(!b)return;const k=b.dataset.k,v=b.dataset.v;
-  if(k==='dest'){const nv=+v;if(nv!==S.dest){if(STOPS.length&&dirty&&!confirm('目前的行程還沒儲存，切換目的地會開新行程。確定要切換？'))return;switchDest(nv);PLAN=newPlan();dirty=false;clearDest(true);fillSettings();saveDraft();}}
-  else S[k]=v===''?null:(k==='pri'?v:+v);
-  fitDest=true;
-  S.limit=40;try{localStorage.setItem('exp-filter',JSON.stringify({dest:S.dest}));}catch(e){}render();});
+  if(k==='dest'){
+    if(v==='')S.dests=new Set(S.dests.size===X.dests.length?[S.dest]:X.dests.map((_,i)=>i));
+    else{const nv=+v;if(S.dests.has(nv)){if(S.dests.size>1)S.dests.delete(nv);}else{S.dests.add(nv);if(!STOPS.length)S.dest=nv;}}
+    [...S.reg].forEach(key=>{if(!S.dests.has(+key.split(':')[0]))S.reg.delete(key);});
+    if(!S.dests.has(S.dest)){if(!STOPS.length)S.dest=[...S.dests][0];}
+    fillSettings();saveFilter();}
+  else if(v==='')S[k].clear();
+  else{const val=(k==='pri'||k==='reg')?v:+v;S[k].has(val)?S[k].delete(val):S[k].add(val);}
+  fitDest=true;S.limit=40;render();});
 $('q').addEventListener('input',e=>{S.q=e.target.value;S.limit=40;render();});
 function drawBud(){const n=BST.length-1;$('bLo').max=n;$('bHi').max=n;$('bLo').value=bud.a;$('bHi').value=bud.b;
   $('rngFill').style.left=(bud.a/n*100)+'%';$('rngFill').style.right=(100-bud.b/n*100)+'%';
@@ -576,7 +585,7 @@ function render(){
   $('more').hidden=r.length<=S.limit;$('more').textContent=`顯示更多（還有 ${r.length-S.limit} 個）`;
   $('lt').textContent=(dest&&by)?`體驗清單（依到「${dest.name}」的${S.mode==='WALK'?'步行':'車程'}排序）`:'體驗清單';
   $('lc').textContent=`${r.length} 個`;
-  $('mapN').textContent=`${r.length} 個體驗 · ${X.dests[S.dest].name}`;
+  $('mapN').textContent=`${r.length} 個體驗 · ${[...S.dests].sort((a,b)=>a-b).map(i=>X.dests[i].name).join('、')}`;
   drawMarkers(r);
 }
 $('more').addEventListener('click',()=>{S.limit+=40;render();});
@@ -585,7 +594,7 @@ $('list').addEventListener('click',e=>{const b=e.target.closest('button[data-act
   if(b){e.stopPropagation();const x=BYID[b.dataset.id];const a=b.dataset.act;if(a==='o')setOrigin(x);else if(a==='d')setDestExp(x);else if(a==='x')toggleDet(x,b);else focusExp(x,true);return;}
   if(!card||e.target.closest('a,input,select,textarea,.det'))return;const tb=card.querySelector('button[data-act="x"]');const x=BYID[card.dataset.id];if(x&&tb)toggleDet(x,tb);});
 
-function pickExp(val){const id=String(val||'').trim().split(/\s+/)[0];return BYID[id]&&BYID[id].d===S.dest?BYID[id]:null;}
+function pickExp(val){const id=String(val||'').trim().split(/\s+/)[0];return BYID[id]&&S.dests.has(BYID[id].d)?BYID[id]:null;}
 $('plan').addEventListener('click',e=>{const b=e.target.closest('button[data-mode]');if(!b)return;S.mode=b.dataset.mode;setModeBtns();if(dest)by=CACHE[ck()]||null;changed(false);showRoute();render();});
 function setModeBtns(){document.querySelectorAll('button[data-mode]').forEach(x=>x.setAttribute('aria-pressed',String(x.dataset.mode===S.mode)));}
 document.querySelector('.mtabs').addEventListener('click',e=>{const b=e.target.closest('button[data-tab]');if(!b)return;showTab(b.dataset.tab);});
@@ -703,7 +712,7 @@ function openPlan(p,keepId=true,isDirty=false){if(!p)return;const nd=+p.dest;if(
   PLAN=Object.assign(newPlan(),{id:keepId?p.id||'':'',name:p.name||'',date:p.date||'',start:p.start||'08:00',end:p.end||'20:00',ad:p.ad??2,ch:p.ch??0,car:p.car??null});
   STOPS=(p.stops||[]).filter(d=>d&&isFinite(d.lat)&&isFinite(d.lng)).map(d=>Object.assign({},d));LEGS=[];S.mode=p.mode==='WALK'?'WALK':'DRIVE';setModeBtns();adding=!STOPS.length;dirty=isDirty;
   fillSettings();fitDest=true;syncStops();render();showRoute();saveDraft();}
-function switchDest(nv){S.dest=nv;bud.a=0;bud.b=BST.length-1;S.reg=null;S.cat=null;S.seg=null;S.pri=null;S.off=null;try{localStorage.setItem('exp-filter',JSON.stringify({dest:S.dest}));}catch(e){}}
+function switchDest(nv){S.dest=nv;if(!S.dests.has(nv)){S.dests=new Set([nv]);bud.a=0;bud.b=BST.length-1;['reg','cat','seg','pri','off'].forEach(k=>S[k].clear());}saveFilter();}
 $('pSave').addEventListener('click',()=>savePlan(false));
 $('pSaveAs').addEventListener('click',()=>savePlan(true));
 $('pNew').addEventListener('click',()=>{if(dirty&&STOPS.length&&!confirm('目前的行程還沒儲存，確定要開新行程？'))return;openPlan(Object.assign(newPlan(),{dest:S.dest,stops:[]}),false);});
@@ -783,7 +792,7 @@ function drawDD(q,ex,pl,loading){DD=[...ex,...(pl||[])];ddI=DD.length?0:-1;let h
   $('dDD').innerHTML=h;$('dDD').hidden=false;document.querySelector('.combo').setAttribute('aria-expanded','true');markDD();}
 function markDD(){$('dDD').querySelectorAll('.ddo').forEach(e=>e.classList.toggle('on',+e.dataset.k===ddI));const on=$('dDD').querySelector('.ddo.on');if(on)on.scrollIntoView({block:'nearest'});}
 async function runDD(){const q=$('dQ').value.trim();const my=++acSeq;if(!q){hideDD();return;}const ql=q.toLowerCase();
-  const ex=X.items.filter(x=>x.d===S.dest&&[x.id,x.n,x.en,x.r,x.gp].some(v=>v&&String(v).toLowerCase().includes(ql))).slice(0,6).map(x=>({t:'exp',x}));
+  const ex=X.items.filter(x=>(x.d===S.dest||S.dests.has(x.d))&&[x.id,x.n,x.en,x.r,x.gp].some(v=>v&&String(v).toLowerCase().includes(ql))).slice(0,6).map(x=>({t:'exp',x}));
   drawDD(q,ex,null,!!PL);if(!PL)return;
   let pl=[];try{if(!acTok)acTok=new PL.AutocompleteSessionToken();const d=X.dests[S.dest];
     const r=await PL.AutocompleteSuggestion.fetchAutocompleteSuggestions({input:q,includedRegionCodes:[d.cc],locationBias:d.b,sessionToken:acTok,language:'zh-TW'});
