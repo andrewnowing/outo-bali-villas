@@ -799,8 +799,10 @@ function drawMap(){
   const withG=VILLAS.filter(v=>v.g).length;$('mapN').textContent=t('mapN',n,withG);
 }
 let gmap=null,gmarkers=new Map(),gInfo=null,gState='idle';
+function watchReport(kind,msg){try{const url=(typeof WATCH_URL!=='undefined')&&WATCH_URL;if(!url||!HOSTED)return;const k='watch_'+kind;const last=+(localStorage.getItem(k)||0);if(Date.now()-last<6*3600e3)return;localStorage.setItem(k,String(Date.now()));fetch(url,{method:'POST',mode:'no-cors',headers:{'Content-Type':'text/plain'},body:JSON.stringify({kind,msg:String(msg||'').slice(0,300),page:location.pathname})});}catch(e){}}
+window.gm_authFailure=function(){watchReport('gm_auth','Google Maps 回報金鑰／帳務／網域限制錯誤');};
 function useDyn(){return HOSTED&&MAPS_KEY;}
-function loadGMaps(){if(gState!=='idle')return;gState='loading';window.__gmReady=()=>{gState='ready';const cl=document.createElement('script');cl.src='https://unpkg.com/@googlemaps/markerclusterer@2.5.3/dist/index.min.js';cl.onload=()=>{initGMap();};cl.onerror=()=>{initGMap();};document.head.appendChild(cl);};const sc=document.createElement('script');sc.src='https://maps.googleapis.com/maps/api/js?key='+encodeURIComponent(MAPS_KEY)+'&v=weekly&loading=async&callback=__gmReady';sc.async=true;sc.onerror=()=>{gState='fail';$('gmap').hidden=true;$('mapTabs').hidden=false;$('smap').hidden=false;};document.head.appendChild(sc);}
+function loadGMaps(){if(gState!=='idle')return;gState='loading';window.__gmReady=()=>{gState='ready';const cl=document.createElement('script');cl.src='https://unpkg.com/@googlemaps/markerclusterer@2.5.3/dist/index.min.js';cl.onload=()=>{initGMap();};cl.onerror=()=>{initGMap();};document.head.appendChild(cl);};const sc=document.createElement('script');sc.src='https://maps.googleapis.com/maps/api/js?key='+encodeURIComponent(MAPS_KEY)+'&v=weekly&loading=async&callback=__gmReady';sc.async=true;sc.onerror=()=>{gState='fail';watchReport('gm_load','maps.googleapis.com 載入失敗');$('gmap').hidden=true;$('mapTabs').hidden=false;$('smap').hidden=false;};document.head.appendChild(sc);}
 const GPIN_CACHE={};
 function gpin(c){if(GPIN_CACHE[c])return GPIN_CACHE[c];const svg=`<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20"><circle cx="10" cy="10" r="7.5" fill="${c}" stroke="#fff" stroke-width="2"/></svg>`;const o={url:'data:image/svg+xml;charset=utf-8,'+encodeURIComponent(svg),scaledSize:new google.maps.Size(20,20),anchor:new google.maps.Point(10,10)};GPIN_CACHE[c]=o;return o;}
 let gcluster=null;
@@ -1185,7 +1187,7 @@ $('cur').addEventListener('click',e=>{const b=e.target.closest('button[data-cur]
 document.querySelectorAll('#cur button[data-cur]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.cur===CUR)));
 loadFx().then(()=>{if(CUR==='TWD')render();});
 const PUBAV_URL='https://raw.githubusercontent.com/andrewnowing/outo-bali-villas/main/pubav.js';
-async function refreshPubav(){if(!HOSTED||typeof PUBAV==='undefined')return;try{const r=await fetch(PUBAV_URL+'?t='+Math.floor(Date.now()/60000),{cache:'no-store'});if(!r.ok)return;const txt=await r.text();const m=txt.match(/^const PUBAV=(\{[\s\S]*\});\s*$/);if(!m)return;const j=JSON.parse(m[1]);if(j&&j.by&&j.updatedAt&&new Date(j.updatedAt)>new Date(PUBAV.updatedAt)){PUBAV.by=j.by;PUBAV.updatedAt=j.updatedAt;PUBAV.ok=j.ok;PUBAV.err=j.err;PUBAV.history=j.history;showFresh();render();if(!$('histDlg').hidden)renderHist();}}catch(e){}}
+async function refreshPubav(){if(!HOSTED||typeof PUBAV==='undefined')return;try{const r=await fetch(PUBAV_URL+'?t='+Math.floor(Date.now()/60000),{cache:'no-store'});if(!r.ok)return;const txt=await r.text();const m=txt.match(/^const PUBAV=(\{[\s\S]*\});\s*$/);if(!m)return;const j=JSON.parse(m[1]);if(j&&j.updatedAt&&Date.now()-new Date(j.updatedAt).getTime()>30*60e3)watchReport('stale_in_page','官網房況最後更新 '+j.updatedAt);if(j&&j.by&&j.updatedAt&&new Date(j.updatedAt)>new Date(PUBAV.updatedAt)){PUBAV.by=j.by;PUBAV.updatedAt=j.updatedAt;PUBAV.ok=j.ok;PUBAV.err=j.err;PUBAV.history=j.history;showFresh();render();if(!$('histDlg').hidden)renderHist();}}catch(e){}}
 refreshPubav();setInterval(refreshPubav,120000);
 
 (function init(){
