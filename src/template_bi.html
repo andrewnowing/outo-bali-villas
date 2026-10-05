@@ -356,7 +356,7 @@ button:disabled{opacity:.45;cursor:not-allowed;transform:none;box-shadow:none}
       <h1 data-t="title">Outo 峇里島別墅空房查詢</h1>
       <div class="sub" data-t="sub">Villa Finder 同業房源 118 間 · 價格為對外售價（美金、含稅），不是 Outo 成本價</div>
     </div></div>
-    <div class="hdr-r"><span class="fresh" id="fresh" data-t="loading">房況資料載入中</span><a class="hbtn" id="expLink" href="exp" hidden style="display:inline-flex;align-items:center;text-decoration:none">體驗元件地圖</a><button type="button" class="hbtn" id="helpBtn" data-t="helpBtn">操作說明</button><button type="button" class="hbtn" id="histBtn" data-t="histBtn">房況更新歷史紀錄</button><div class="lang" id="lang" role="group" data-t-aria="langGroup" aria-label="語言"><button type="button" data-lang="zh" aria-pressed="true" lang="zh-Hant">中文</button><span class="sep" aria-hidden="true">|</span><button type="button" data-lang="en" aria-pressed="false" lang="en">EN</button></div><div class="lang" id="cur" role="group" aria-label="currency"><button type="button" data-cur="USD" aria-pressed="true">USD</button><span class="sep" aria-hidden="true">|</span><button type="button" data-cur="TWD" aria-pressed="false">TWD</button></div></div>
+    <div class="hdr-r"><span class="fresh" id="fresh" data-t="loading">房況資料載入中</span><button type="button" class="hbtn" id="helpBtn" data-t="helpBtn">操作說明</button><button type="button" class="hbtn" id="histBtn" data-t="histBtn">房況更新歷史紀錄</button><div class="lang" id="lang" role="group" data-t-aria="langGroup" aria-label="語言"><button type="button" data-lang="zh" aria-pressed="true" lang="zh-Hant">中文</button><span class="sep" aria-hidden="true">|</span><button type="button" data-lang="en" aria-pressed="false" lang="en">EN</button></div><div class="lang" id="cur" role="group" aria-label="currency"><button type="button" data-cur="USD" aria-pressed="true">USD</button><span class="sep" aria-hidden="true">|</span><button type="button" data-cur="TWD" aria-pressed="false">TWD</button></div></div>
   </header>
 
   <form class="search" id="f" autocomplete="off">
@@ -465,6 +465,7 @@ zh:{
 </ol><div class="tip">價格是 Villa Finder 的公告價（Published Rate），不是淨價；同業後台顯示的價格已含促銷，沒有另外的隱藏費用。床型、評價、地址是定期整理的資料，不會即時變動；床型未確認的別墅請在送單前向 Villa Finder 確認。</div>`,
   ci:'入住日', co:'退房日', dr:'入住日 → 退房日', drPickCi:'點選入住日', drPickCo:'再點選退房日', drClr:'清除', drOk:'完成', drNights:n=>n+' 晚', wd:['日','一','二','三','四','五','六'], ym:(y,m)=>y+' 年 '+m+' 月', guN:n=>n+' 人', guMax:'20 人以上', br:'至少幾房', br1:'1 房', br2:'2 房', br3:'3 房', br4:'4 房', br5:'5 房', br6:'6 房以上',
   gu:'入住人數', any:'不限', area:'區域', areaAll:'全部區域', srcL:'價格類型', srcAll:'全部', srcPortal:'有同業優惠價', srcPub:'只有官網直售價', lblPromo:'促銷價', chipPortal:'同業優惠', chipPub:'官網直售', srcPortalT:'Villa Finder 同業後台房源：有同業優惠價與促銷，房況每 5 分鐘同步', srcPubT:'Villa Finder 公開網站房源：官網直售價，同業佣金 10%；房況每 5 分鐘從公開頁面更新，價格以 Villa Finder 頁面為準', vfRateT:'Villa Finder 住客評分（滿分 5）', lblEst:'同業價（估算）', dlCom:(c)=>`扣佣金 ${c}%`, estNoComShort:'佣金率未知，同業價請洽 Villa Finder', estNote:(c)=>`同業價＝官網價扣 ${c}% 佣金，依 Villa Finder 同業帳號看到的佣金率計算；下訂時以 Villa Finder 回覆為準`, estNoCom:'這間在同業帳號下看不到佣金率，同業價請向 Villa Finder 確認', liveChk:'向 Villa Finder 即時確認…', liveOk:(p)=>`Villa Finder 即時確認：有空房，這段日期官網總價 ${p}`, liveAgent:(p,c)=>`；同業估 ${p}（扣佣金 ${c}%）`, liveBusy:'Villa Finder 即時確認：這段日期沒有空房', liveReq:'Villa Finder 即時確認：需向屋主確認（on request）', liveErr:'即時確認失敗，請到 Villa Finder 頁面查看', pubPolSrc:'政策文字取自 Villa Finder 公開頁面（英文原文）',
+  btnOms:'複製 OMS 回填資料', btnOmsDone:'已複製（JSON）',
   bed:'房型（可複選，全部都要有）', chipTw:'雙床房', chipDb:'雙人房', chipQd:'四人房', chipBk:'上下舖', chipUnk:'含床型未確認',
   dt:'開車到市區', dt10:'10 分鐘內', dt15:'15 分鐘內', dt20:'20 分鐘內', dt30:'30 分鐘內',
   sort:'排序', sortPrice:'總價低到高', sortPriceDesc:'總價高到低', sortDist:'離市區最近', sortRate:'Google 評分高到低', rateT:'Google 評價（點開看評論）', rateN:(n)=>`${n} 則`, rateNoN:'評論數未顯示', rateNone:'Google 無評價', sortName:'名稱', onlyFree:'只看有空房', mapT:'地圖', mapN:(n,m)=>`此區顯示 ${n} 間`, mapFoot:'圖釘只顯示目前篩選結果；點圖釘跳到該筆。滾輪或 ＋－ 可放大到 3 倍並拖曳，更細的範圍請切換上方區域。', mapGo:'看這筆', reg_all:'全島', reg_south:'南部', reg_seminyak:'水明漾一帶', reg_canggu:'倉古一帶', reg_ubud:'烏布', reg_bukit:'烏魯瓦圖／賓金', reg_east:'坎迪達薩', reg_north:'羅威那', qL:'搜尋別墅名稱', qPh:'例：Chands、Omah Bumbak、Lange', qHit:(n)=>`名稱符合 ${n} 間（其他條件照常套用）`, qMiss:'沒有名稱符合的別墅，請檢查拼法或清除搜尋',
@@ -554,6 +555,7 @@ en:{
 </ol><div class="tip">Prices are Villa Finder's Published Rates, not net; the portal price already includes any promotion and there are no hidden fees. Bed types, ratings and addresses are compiled periodically and do not update live; confirm unconfirmed bed types with Villa Finder before sending.</div>`,
   ci:'Check-in', co:'Check-out', dr:'Check-in → Check-out', drPickCi:'Pick check-in date', drPickCo:'Now pick check-out date', drClr:'Clear', drOk:'Done', drNights:n=>n+(n===1?' night':' nights'), wd:['Su','Mo','Tu','We','Th','Fr','Sa'], ym:(y,m)=>['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'][m-1]+' '+y, guN:n=>n+(n===1?' guest':' guests'), guMax:'20+ guests', br:'Min. bedrooms', br1:'1 BR', br2:'2 BR', br3:'3 BR', br4:'4 BR', br5:'5 BR', br6:'6+ BR',
   gu:'Guests', any:'Any', area:'Area', areaAll:'All areas', srcL:'Price type', srcAll:'All', srcPortal:'Partner rate available', srcPub:'Published rate only', lblPromo:'Promo rate', chipPortal:'Partner rate', chipPub:'Published rate', srcPortalT:'Villa Finder partner portal listing: partner rates and promotions, availability synced every 5 min', srcPubT:'Villa Finder public website listing: published rate, 10% agent commission; availability re-read from the public page every 5 minutes, price as shown on the Villa Finder page', vfRateT:'Villa Finder guest rating (out of 5)', lblEst:'Partner rate (est.)', dlCom:(c)=>`minus ${c}% commission`, estNoComShort:'Commission unknown; ask Villa Finder', estNote:(c)=>`Partner rate = published rate minus ${c}% commission as shown to the Outo agent account; Villa Finder confirmation prevails`, estNoCom:'Commission not visible for this villa; ask Villa Finder for the partner rate', liveChk:'Checking live with Villa Finder…', liveOk:(p)=>`Villa Finder live check: available, published total ${p}`, liveAgent:(p,c)=>`; partner est. ${p} (minus ${c}% commission)`, liveBusy:'Villa Finder live check: not available for these dates', liveReq:'Villa Finder live check: on request', liveErr:'Live check failed; see the Villa Finder page', pubPolSrc:'Policy text from the Villa Finder public page (English)',
+  btnOms:'Copy OMS payload', btnOmsDone:'Copied (JSON)',
   bed:'Room types (multi-select, villa must have all)', chipTw:'Twin room', chipDb:'Double room', chipQd:'Quad room (sleeps 4)', chipBk:'Bunk beds', chipUnk:'Include unconfirmed',
   dt:'Drive to town', dt10:'Within 10 min', dt15:'Within 15 min', dt20:'Within 20 min', dt30:'Within 30 min',
   sort:'Sort by', sortPrice:'Total price: low to high', sortPriceDesc:'Total price: high to low', sortDist:'Closest to town', sortRate:'Google rating: high to low', rateT:'Google rating (open reviews)', rateN:(n)=>`${n} review${n===1?'':'s'}`, rateNoN:'review count not shown', rateNone:'No Google reviews', sortName:'Name', onlyFree:'Available only', mapT:'Map', mapN:(n,m)=>`${n} in this view`, mapFoot:'Pins show the current filter results only; click a pin to jump to the listing. Scroll or use ＋/－ to zoom up to 3× and drag to pan; switch regions above for finer detail.', mapGo:'Jump to listing', reg_all:'Whole island', reg_south:'South Bali', reg_seminyak:'Seminyak area', reg_canggu:'Canggu area', reg_ubud:'Ubud', reg_bukit:'Uluwatu / Bingin', reg_east:'Candidasa', reg_north:'Lovina', qL:'Search by villa name', qPh:'e.g. Chands, Omah Bumbak, Lange', qHit:(n)=>`${n} villa name match${n===1?'':'es'} (other filters still apply)`, qMiss:'No villa name matches — check the spelling or clear the search',
@@ -677,6 +679,8 @@ function bookedRanges(v){if(v.i)return avail.byIcal[v.i]||[];return (typeof PUBA
 function conflicts(v,ci,co){return bookedRanges(v).filter(([s,e])=>s<co&&e>ci);}
 function longBlock(v){const lim=addDays(drToday(),90);return bookedRanges(v).some(([s,e])=>(k2d(e)-k2d(s))/864e5>180&&k2d(s)<=lim);}
 
+function omsPayload(x,ciD,coD,nights){const v=x.v,q=x.q||{};const pc=(!q.missing&&!q.dynamic)?promoCalc(v,q,ciD,nights):null;const pub=isPub(v);const pubTotal=q.missing?null:(q.est||q.dynamic)?null:q.total;const best=pc&&pc.best?pc.best.total:pubTotal;const com=pub?(v.com||10):null;const net=best!=null&&com!=null?Math.round(best*(100-com))/100:null;const bal=addDays(ciD,-60);
+  return {source:'villa-finder',villa_slug:v.s,villa_name:v.n,area:v.a,rate_type:pub?'public':'portal',checkin:toInput(ciD),checkout:toInput(coD),nights,bedrooms:q.br||null,guests:+($('gu').value||0)||null,currency:'USD',published_total:pubTotal,promo_total:pc&&pc.best?pc.best.total:null,promo_label:pc&&pc.best?pc.best.label:null,nightly_from:(q.est||q.dynamic)?q.lo:null,commission_pct:com,net_to_vf:net,deposit_pct:50,deposit_amount:best!=null?Math.round(best*50)/100:null,balance_due:toInput(bal),cancellation_policy:'VF-STD-2026-10-05',availability:x.free===true?'available':x.free===false?'booked':'unknown',availability_checked_at:avail.updatedAt||null,outo_ref:OMS_REF||null,villa_finder_url:v.url||('https://www.villa-finder.com/en/villa/'+v.s),page_url:location.origin+location.pathname+'?ci='+toInput(ciD)+'&co='+toInput(coD)+'&br='+(q.br||'')+'&q='+encodeURIComponent(v.n)};}
 function quote(v,ciD,nights,minBr){
   const idx=v.b.findIndex(b=>b>=minBr); if(idx<0) return null;
   const br=v.b[idx];
@@ -795,7 +799,7 @@ function drawMap(){
     pins.appendChild(d);}
   const withG=VILLAS.filter(v=>v.g).length;$('mapN').textContent=t('mapN',n,withG);
 }
-let gmap=null,gmarkers=new Map(),gInfo=null,gState='idle';
+let gmap=null,gmarkers=new Map(),gInfo=null,gState='idle';let OMS_REF='';
 function watchReport(kind,msg){try{const url=(typeof WATCH_URL!=='undefined')&&WATCH_URL;if(!url||!HOSTED)return;const k='watch_'+kind;const last=+(localStorage.getItem(k)||0);if(Date.now()-last<6*3600e3)return;localStorage.setItem(k,String(Date.now()));fetch(url,{method:'POST',mode:'no-cors',headers:{'Content-Type':'text/plain'},body:JSON.stringify({kind,msg:String(msg||'').slice(0,300),page:location.pathname})});}catch(e){}}
 window.gm_authFailure=function(){watchReport('gm_auth','Google Maps 回報金鑰／帳務／網域限制錯誤');};
 function useDyn(){return HOSTED&&MAPS_KEY;}
@@ -1044,7 +1048,8 @@ function fillBody(b,x,ciD,coD,nights){
   ${promoSec}
   ${polSec}${rulesSec}
   <div class="secNotes"><p class="sec">${t('secNotes')}</p><ul class="notes">${notes.map(([c,x])=>`<li class="${c}">${esc(x)}</li>`).join('')}</ul></div>
-  <div class="actions"><a class="btnlink" href="${vfReq(v,ciD,coD)}" target="_blank" rel="noopener">${t('btnVf')}</a><button type="button" class="book ghost">${t('btnEmail')}</button><button type="button" class="bookwa ghost">${t('btnWa')}</button><p class="acthint">${t('actHint')}</p></div>`;
+  <div class="actions"><a class="btnlink" href="${vfReq(v,ciD,coD)}" target="_blank" rel="noopener">${t('btnVf')}</a><button type="button" class="book ghost">${t('btnEmail')}</button><button type="button" class="bookwa ghost">${t('btnWa')}</button><button type="button" class="oms ghost">${t('btnOms')}</button><p class="acthint">${t('actHint')}</p></div>`;
+  b.querySelector('.oms').addEventListener('click',(ev)=>{const j=omsPayload(x,ciD,coD,nights);navigator.clipboard.writeText(JSON.stringify(j,null,2)).then(()=>{ev.target.textContent=t('btnOmsDone');setTimeout(()=>ev.target.textContent=t('btnOms'),2000);});});
   b.querySelector('.book').addEventListener('click',()=>openBooking(x,ciD,coD,nights,'email'));
   b.querySelector('.bookwa').addEventListener('click',()=>openBooking(x,ciD,coD,nights,'wa'));
   loadGallery(v,b.querySelector('.galWrap'));
@@ -1089,7 +1094,7 @@ function dlgInfoHTML(){
   const dup=bookings.filter(b=>b.slug===v.s&&b.ci<key(coD)&&b.co>key(ciD));
   return `${esc(v.n)} · ${esc(areaName(v.a))} · ${t('dlgInfo',fmt(ciD),fmt(coD),nights,q.br)}`+(x.free===false?`<div class="msg warn" style="margin-top:8px">${t('dlgBusy')}</div>`:'')+(dup.length?`<div class="msg warn" style="margin-top:8px">${t('dlgDup',dup.length)}</div>`:'');
 }
-function openBooking(x,ciD,coD,nights,mode){
+function openBooking(x,ciD,coD,nights,mode){if(OMS_REF&&!$('bRef').value)$('bRef').value=OMS_REF;
   mode=mode||'email';cur={x,ciD,coD,nights,mode};$('dlg').classList.toggle('m-wa',mode==='wa');$('dlg').classList.toggle('m-email',mode!=='wa');$('dlgT').textContent=t(mode==='wa'?'dlgTWa':'dlgT');$('bMsg').innerHTML='';$('waMsg').innerHTML='';$('bSend').disabled=false;$('bSend').textContent=t('bSend');
   const {v}=x;
   $('dlgInfo').innerHTML=dlgInfoHTML();
@@ -1190,7 +1195,7 @@ $('lang').addEventListener('click',e=>{const b=e.target.closest('button[data-lan
 $('cur').addEventListener('click',e=>{const b=e.target.closest('button[data-cur]');if(b)setCur(b.dataset.cur);});
 document.querySelectorAll('#cur button[data-cur]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.cur===CUR)));
 loadFx().then(()=>{if(CUR==='TWD')render();});
-const PUBAV_URL='https://raw.githubusercontent.com/andrewnowing/outo-bali-villas/data/pubav.js';
+const PUBAV_URL='https://raw.githubusercontent.com/andrewnowing/outo-bali-villas/main/pubav.js';
 async function refreshPubav(){if(!HOSTED||typeof PUBAV==='undefined')return;try{const r=await fetch(PUBAV_URL+'?t='+Math.floor(Date.now()/60000),{cache:'no-store'});if(!r.ok)return;const txt=await r.text();const m=txt.match(/^const PUBAV=(\{[\s\S]*\});\s*$/);if(!m)return;const j=JSON.parse(m[1]);if(j&&j.updatedAt&&Date.now()-new Date(j.updatedAt).getTime()>30*60e3)watchReport('stale_in_page','官網房況最後更新 '+j.updatedAt);if(j&&j.by&&j.updatedAt&&new Date(j.updatedAt)>new Date(PUBAV.updatedAt)){PUBAV.by=j.by;PUBAV.updatedAt=j.updatedAt;PUBAV.ok=j.ok;PUBAV.err=j.err;PUBAV.history=j.history;showFresh();render();if(!$('histDlg').hidden)renderHist();}}catch(e){}}
 refreshPubav();setInterval(refreshPubav,120000);
 
@@ -1202,7 +1207,9 @@ refreshPubav();setInterval(refreshPubav,120000);
   applyStatic();
   const t0=new Date(),base=new Date(Date.UTC(t0.getUTCFullYear(),t0.getUTCMonth(),t0.getUTCDate()));
   let saved={};try{saved=JSON.parse(localStorage.getItem('vf-search')||'{}');}catch(e){}
-  if(QUOTE&&/^\d{4}-\d{2}-\d{2}$/.test(URLP.get('ci')||'')&&/^\d{4}-\d{2}-\d{2}$/.test(URLP.get('co')||'')){saved={ci:URLP.get('ci'),co:URLP.get('co'),br:URLP.get('br')||saved.br};}
+  if(/^\d{4}-\d{2}-\d{2}$/.test(URLP.get('ci')||'')&&/^\d{4}-\d{2}-\d{2}$/.test(URLP.get('co')||'')){saved=Object.assign({},saved,{ci:URLP.get('ci'),co:URLP.get('co')});if(URLP.get('br'))saved.br=URLP.get('br');if(URLP.get('gu'))saved.gu=URLP.get('gu');}
+  if(URLP.get('ref'))OMS_REF=URLP.get('ref').slice(0,40);
+  if(URLP.get('q'))$('q').value=URLP.get('q').slice(0,80);
   $('ci').value=saved.ci&&saved.ci>=toInput(base)?saved.ci:toInput(addDays(base,30));
   $('co').value=saved.co&&saved.co>$('ci').value?saved.co:toInput(addDays(fromInput($('ci').value),4));
   for(const k of ['br','gu','area','sort','dt']) if(saved[k]!=null) $(k).value=saved[k];
@@ -1239,4 +1246,4 @@ refreshPubav();setInterval(refreshPubav,120000);
 })();
 </script>
 
-<div id="lb" class="lb" role="dialog" data-t-aria="lbAria" aria-label="放大照片"><div></div></div><script>try{if(!PUB&&!SHARE)document.getElementById('expLink').hidden=false;}catch(e){}</script>
+<div id="lb" class="lb" role="dialog" data-t-aria="lbAria" aria-label="放大照片"><div></div></div>
