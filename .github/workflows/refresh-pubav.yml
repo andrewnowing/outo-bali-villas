@@ -1,10 +1,16 @@
 name: Refresh public-site availability
 on:
   schedule:
-    - cron: '*/5 * * * *'   # every 5 minutes (GitHub may delay a few minutes at busy times)
+    - cron: '*/5 * * * *'   # backup trigger; GitHub cron is best-effort and often late
   workflow_dispatch:
+    inputs:
+      chain:
+        description: 'Re-dispatch itself 5 minutes after start (self-paced loop)'
+        required: false
+        default: 'true'
 permissions:
   contents: write
+  actions: write
 concurrency:
   group: refresh-pubav
   cancel-in-progress: false
@@ -13,6 +19,8 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 15
     steps:
+      - name: Record start time
+        run: echo "START_TS=$(date -u +%s)" >> "$GITHUB_ENV"
       - uses: actions/checkout@v4
       - name: Fetch booked dates from Villa Finder public pages
         run: python3 scripts/refresh_pubav.py
@@ -22,5 +30,21 @@ jobs:
           git config user.email "andrew@outo.co"
           if git diff --quiet -- pubav.js; then echo "no change"; exit 0; fi
           git add pubav.js
-          git commit -m "pubav: daily refresh $(date -u +%Y-%m-%dT%H:%MZ)"
+          git commit -m "pubav: refresh $(date -u +%Y-%m-%dT%H:%MZ)"
           for i in 1 2 3; do git pull --rebase -X theirs origin main && git push && break || sleep 20; done
+      - name: Pace to 5 minutes and dispatch the next run
+        if: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.chain != 'false' }}
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          # If GitHub's own cron fired within the last 12 minutes, let the cron carry on and stop chaining.
+          recent=$(gh run list -R ${{ github.repository }} -w refresh-pubav.yml --event schedule -L 1 --json createdAt -q '.[0].createdAt' 2>/dev/null || true)
+          if [ -n "$recent" ]; then
+            age=$(( $(date -u +%s) - $(date -u -d "$recent" +%s) ))
+            if [ "$age" -lt 720 ]; then echo "cron is alive (last schedule run ${age}s ago); not chaining"; exit 0; fi
+          fi
+          # pace from this job's own start time
+          now=$(date -u +%s); elapsed=$(( now - START_TS ))
+          sleep_for=$(( 300 - elapsed )); if [ "$sleep_for" -gt 0 ]; then sleep "$sleep_for"; fi
+          gh workflow run refresh-pubav.yml -R ${{ github.repository }} -f chain=true
+        shell: bash
