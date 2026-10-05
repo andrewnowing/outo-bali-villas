@@ -191,6 +191,64 @@ input{font:inherit;font-weight:500;color:var(--ink);background:var(--surface);bo
 .rreset{height:24px;font-size:12px;padding:0 10px}
 .chip.tw{background:var(--ink-900);color:var(--paper-50)}
 .foot{font-size:12px;color:var(--muted);line-height:1.8}
+.bnote summary{cursor:pointer;color:var(--ink2);width:max-content}
+.acwrap,.adder{min-width:0;max-width:100%}
+.adder{grid-template-columns:minmax(0,1fr)}
+.acwrap gmp-place-autocomplete{max-width:100%;min-width:0}
+@media (max-width:640px){
+  body{padding-block:16px 48px;font-size:14.5px}
+  .wrap{gap:14px}
+  header{gap:10px}
+  .brand{gap:12px}.logo{width:72px}
+  h1{font-size:22px}
+  .sub{font-size:12.5px;line-height:1.6}
+  .hbtn{height:30px;font-size:12px}
+  /* filters: search first, each filter one swipeable line */
+  .filters{padding:14px 0;gap:10px}
+  .filters>*{padding-inline:16px}
+  .qrow{order:-1}
+  .qrow .lbl{display:none}
+  .qrow .q{flex-basis:100%;height:42px}
+  #fDest,#fReg,#fCat,#fSeg,#fPri,#fOff{flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none;-webkit-overflow-scrolling:touch;gap:6px;-webkit-mask-image:linear-gradient(90deg,#000 calc(100% - 28px),transparent);mask-image:linear-gradient(90deg,#000 calc(100% - 28px),transparent);padding-right:28px}
+  #fDest::-webkit-scrollbar,#fReg::-webkit-scrollbar,#fCat::-webkit-scrollbar,#fSeg::-webkit-scrollbar,#fPri::-webkit-scrollbar,#fOff::-webkit-scrollbar{display:none}
+  .filters .frow>button{flex:none;white-space:nowrap;height:32px;padding:0 11px}
+  .filters .lbl{min-width:36px;flex:none;letter-spacing:.08em}
+  .budget{margin-inline:16px;padding-inline:0}
+  .bhead{flex-wrap:wrap;gap:2px 12px}
+  /* map */
+  .mhead{padding:12px 16px;gap:6px 10px}
+  .legend{margin-left:0;width:100%;flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none;gap:4px 12px;white-space:nowrap}
+  .legend::-webkit-scrollbar{display:none}
+  .route{padding:12px 16px 14px;gap:12px}
+  .rgrid{gap:14px}
+  .route .frow{gap:6px 8px}
+  #calcAll{order:3}
+  #calcHint{flex-basis:100%;order:4;line-height:1.5}
+  .stop{gap:4px;padding-left:6px}
+  .stop .grip{display:none}
+  .stop button{width:32px;height:32px}
+  .addrow{gap:8px 12px}
+  .addbtn{flex:1 1 auto}
+  .legs .lg{grid-template-columns:1fr;gap:2px;padding:8px 10px}
+  .legs .num{white-space:normal;color:var(--ink)}
+  .gmap{height:62vh;min-height:360px}
+  /* experience cards: photo + title on top, everything else full width */
+  .lhead h2{font-size:16px}
+  .item{grid-template-columns:84px minmax(0,1fr);column-gap:12px;row-gap:8px;padding:12px 14px}
+  .ithumb{width:84px;grid-row:1;align-self:start}
+  .ibody{display:contents}
+  .ibody>.itop{grid-column:2;grid-row:1;align-self:center;display:grid;gap:0;line-height:1.45}
+  .ithumb.err~.ibody>.itop{grid-column:1/-1}
+  .ibody>:not(.itop){grid-column:1/-1}
+  .inm{font-size:15.5px}
+  .ien{font-size:12px}
+  .imeta{font-size:12px;line-height:1.6;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+  .ihl{font-size:13px;padding-left:16px}
+  .iacts{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}
+  .iacts button,.iacts a{height:34px;padding:0 4px;justify-content:center;font-size:12.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .iacts a{grid-column:span 2}
+  .det .dg{gap:10px}
+}
 </style></head><body>
 <div class="wrap">
   <header>
@@ -212,9 +270,9 @@ input{font:inherit;font-weight:500;color:var(--ink);background:var(--surface);bo
     <div class="budget" id="budgetBox"><div class="bhead"><span class="lbl">預算（每人，台幣）</span><b class="bval num" id="bVal"></b></div>
       <div class="rng"><div class="track"><div class="fill" id="rngFill"></div></div><input type="range" id="bLo" min="0" max="16" step="1" value="0" aria-label="最低預算"><input type="range" id="bHi" min="0" max="16" step="1" value="16" aria-label="最高預算"></div>
       <div class="rlbl num"><span id="bMinL"></span><button type="button" class="rreset" id="bReset" hidden>重設</button><span id="bMaxL"></span></div>
-      <div class="hint">以第一個查到的報價換算台幣（匯率：IDR 10,000≈NT$20、VND 10,000≈NT$12、THB 1≈NT$0.95、USD 1≈NT$32），多數為每人價，少數是每團或雙人價，以詳情裡的原文為準。拉動預算時，沒有價格的體驗不顯示。</div>
+      <details class="hint bnote"><summary>價格怎麼換算</summary>以第一個查到的報價換算台幣（匯率：IDR 10,000≈NT$20、VND 10,000≈NT$12、THB 1≈NT$0.95、USD 1≈NT$32），多數為每人價，少數是每團或雙人價，以詳情裡的原文為準。拉動預算時，沒有價格的體驗不顯示。</details>
     </div>
-    <div class="frow"><span class="lbl">搜尋</span><input class="q" id="q" type="search" placeholder="名稱、英文名、地區…" aria-label="搜尋體驗"></div>
+    <div class="frow qrow"><span class="lbl">搜尋</span><input class="q" id="q" type="search" placeholder="名稱、英文名、地區…" aria-label="搜尋體驗"></div>
   </section>
 
   <section class="card mapwrap" aria-label="地圖">
