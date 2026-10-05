@@ -319,7 +319,9 @@ input{font:inherit;font-weight:500;color:var(--ink);background:var(--surface);bo
 .pname{height:40px;font-weight:600;font-size:15px}
 .pbtns{display:flex;flex-wrap:wrap;gap:6px}
 .pbtns button{height:30px;font-size:12.5px;padding:0 10px}
-.pbtns .pri{background:var(--ink-900);color:var(--paper-50);border-color:var(--ink-900)}
+.pact{display:flex;flex-wrap:wrap;gap:8px;padding-top:4px;border-top:1px solid var(--line-subtle)}
+.pact button{height:36px;font-size:13px;padding:0 14px}
+.pact .pri{background:var(--ink-900);color:var(--paper-50);border-color:var(--ink-900);min-width:88px}
 .pstat{font-size:12px;color:var(--muted);min-height:1em}
 .pstat .dirty{color:var(--clay-600)}
 .plist{display:grid;gap:4px;border:1px solid var(--line);border-radius:var(--r-md);padding:6px;background:var(--surface);max-height:300px;overflow:auto}
@@ -424,7 +426,7 @@ input{font:inherit;font-weight:500;color:var(--ink);background:var(--surface);bo
       <aside class="plan route" id="plan" aria-label="行程草稿">
         <div class="phead">
           <input id="pName" class="pname" type="text" maxlength="60" placeholder="未命名行程（輸入名稱）" aria-label="行程名稱">
-          <div class="pbtns"><button type="button" id="pSave" class="pri">儲存</button><button type="button" id="pSaveAs">另存新行程</button><button type="button" id="pList" aria-expanded="false">我的行程 <span id="pCnt"></span></button><button type="button" id="pNew">新行程</button><button type="button" id="pShare">複製分享連結</button></div>
+          <div class="pbtns"><button type="button" id="pList" aria-expanded="false">我的行程 <span id="pCnt"></span></button><button type="button" id="pNew">＋ 新行程</button></div>
           <div class="pstat" id="pStat"></div>
           <div class="plist" id="pListBox" hidden></div>
         </div>
@@ -450,6 +452,7 @@ input{font:inherit;font-weight:500;color:var(--ink);background:var(--surface);bo
         <div class="frow"><span class="lbl">交通</span><button type="button" data-mode="DRIVE" aria-pressed="true">開車</button><button type="button" data-mode="WALK" aria-pressed="false">步行</button><button type="button" id="calcAll" hidden>清單依到最後一站的時間排序</button></div>
         <div class="msg" id="msg"></div>
         <div class="psum" id="psum"></div>
+        <div class="pact"><button type="button" id="pSave" class="pri" title="存到目前這份行程（覆蓋上一次的內容）">儲存</button><button type="button" id="pSaveAs" title="把目前內容複製成另一份行程，原本那份不受影響，適合做 A／B 版本比較">另存為新版本</button><button type="button" id="pShare" title="產生連結給同事，對方打開會看到同一份行程">複製分享連結</button></div>
       </aside>
     </div>
   </section>
@@ -729,7 +732,7 @@ function saveDraft(){try{localStorage.setItem(DKEY,JSON.stringify(Object.assign(
 function changed(mark=true){if(mark)dirty=true;saveDraft();drawPlanHead();}
 const fmtDT=t=>{const d=new Date(t);return `${d.getMonth()+1}/${d.getDate()} ${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}`;};
 function drawPlanHead(){const a=loadPlans();$('pCnt').textContent=a.length?`(${a.length})`:'';if(document.activeElement!==$('pName'))$('pName').value=PLAN.name||'';
-  $('pStat').innerHTML=!STOPS.length&&!PLAN.id?'把體驗或地點加進路線，就會算出時間與費用；按「儲存」用自訂名稱存起來。':PLAN.id?(dirty?'<span class="dirty">有變更還沒儲存</span>':'已儲存'):(STOPS.length?'<span class="dirty">還沒儲存</span>':'');
+  $('pStat').innerHTML=!STOPS.length&&!PLAN.id?'把體驗或地點加進路線，就會算出時間與費用；排好後按最下方的「儲存」。':PLAN.id?(dirty?'<span class="dirty">有變更還沒儲存</span>':'已儲存'):(STOPS.length?'<span class="dirty">還沒儲存</span>':'');
   if(!$('pListBox').hidden)drawPlanList();}
 function drawPlanList(){const a=loadPlans();$('pListBox').innerHTML=a.length?a.map(p=>`<div class="pli${p.id===PLAN.id?' on':''}"><button type="button" class="plo" data-open="${esc(p.id)}"><b>${esc(p.name||'未命名行程')}</b><small>${esc((X.dests[p.dest]||{}).name||'')} · ${(p.stops||[]).length} 站${p.date?' · '+esc(p.date):''} · 更新 ${fmtDT(p.updated)}</small></button><button type="button" class="pld" data-del="${esc(p.id)}" aria-label="刪除">刪除</button></div>`).join(''):'<div class="m">還沒有存過行程</div>';}
 function savePlan(asNew){const name=$('pName').value.trim()||`${X.dests[S.dest].name} ${PLAN.date||new Date().toISOString().slice(0,10)} 行程`;PLAN.name=name;
@@ -753,7 +756,7 @@ $('pName').addEventListener('input',()=>{PLAN.name=$('pName').value;changed();})
 function b64e(o){return btoa(unescape(encodeURIComponent(JSON.stringify(o)))).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,'');}
 function b64d(t){let b=t.replace(/-/g,'+').replace(/_/g,'/');while(b.length%4)b+='=';return JSON.parse(decodeURIComponent(escape(atob(b))));}
 $('pShare').addEventListener('click',()=>{if(!STOPS.length){setMsg('路線是空的，先加幾站再分享',true);return;}const s=snapshot();delete s.id;const url=location.origin+location.pathname+'#plan='+b64e(s);
-  const ok=()=>setMsg('已複製分享連結。對方打開後會看到同一份行程，可以按「另存新行程」存成自己的。');
+  const ok=()=>setMsg('已複製分享連結。對方打開後會看到同一份行程，可以按「另存為新版本」存成自己的。');
   if(navigator.clipboard&&navigator.clipboard.writeText)navigator.clipboard.writeText(url).then(ok).catch(()=>prompt('複製這個連結',url));else prompt('複製這個連結',url);});
 document.addEventListener('click',e=>{if(!$('pListBox').hidden&&!e.target.closest('#pListBox,#pList')){$('pListBox').hidden=true;$('pList').setAttribute('aria-expanded','false');}});
 
@@ -881,7 +884,7 @@ function focusExp(x,open){if(!gmap)return;const m=gmarkers.get(x.id);gmap.panTo(
   if(m){try{p=b64d(m[1]);fromHash=true;}catch(e){}}
   if(!p){try{p=JSON.parse(localStorage.getItem(DKEY)||'null');}catch(e){}}
   fillSettings();
-  if(p&&p.stops){openPlan(p,!fromHash,fromHash?true:!!p.dirty);if(fromHash){history.replaceState(null,'',location.pathname);setMsg('已打開分享的行程。按「另存新行程」可以存成自己的。');showTab('plan');}}
+  if(p&&p.stops){openPlan(p,!fromHash,fromHash?true:!!p.dirty);if(fromHash){history.replaceState(null,'',location.pathname);setMsg('已打開分享的行程。按「另存為新版本」可以存成自己的。');showTab('plan');}}
   else{render();drawStops();}})();
 loadGMaps();
 </script>
