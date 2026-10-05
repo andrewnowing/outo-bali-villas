@@ -70,6 +70,26 @@ input{font:inherit;font-weight:500;color:var(--ink);background:var(--surface);bo
 .hint{font-size:12px;color:var(--muted)}
 .acwrap gmp-place-autocomplete{display:block;width:100%;color-scheme:light;--gmp-mat-color-surface:#FFFFFF;--gmp-mat-color-on-surface:#1B1A14;--gmp-mat-color-on-surface-variant:#8C8674;--gmp-mat-color-outline:#C9BCA1;--gmp-mat-color-primary:#1B1A14;--gmp-mat-color-info:#A16A1B;--gmp-mat-font-family:'JinXuanNaTi','Fields','Noto Sans TC',sans-serif;--gmp-mat-font-body-medium:500 14px/1.4 'JinXuanNaTi','Fields','Noto Sans TC',sans-serif;border-radius:var(--r-md)}
 .msg{font-size:13px;color:var(--ink2);min-height:1.2em}
+.stops{list-style:none;margin:0;padding:0;display:grid;gap:6px}
+.stops:empty{display:none}
+.stop{display:flex;align-items:center;gap:8px;min-height:44px;padding:4px 6px 4px 8px;border:1px solid var(--ink-900);border-radius:var(--r-md);background:var(--surface)}
+.stop.drag{opacity:.45}
+.stop.over{box-shadow:0 -3px 0 var(--sun-500)}
+.stop .no{flex:none;width:24px;height:24px;border-radius:50%;background:var(--sun-500);color:var(--ink-900);font-size:12px;font-weight:700;display:grid;place-items:center}
+.stop .nm{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.stop .grip{cursor:grab;color:var(--muted);user-select:none;padding:0 2px}
+.stop button{height:30px;width:30px;padding:0;border:0;color:var(--ink2);font-size:15px;line-height:1;flex:none}
+.stop button:hover:not(:disabled){background:var(--paper-200)}
+.stop button:disabled{opacity:.25;cursor:default}
+.adder{display:grid;gap:8px}
+.addrow{display:flex;flex-wrap:wrap;gap:8px 14px;align-items:center}
+.addbtn{border-style:dashed}
+.linkbtn{border:0;background:none;padding:0;height:auto;font-size:12px;color:var(--muted);text-decoration:underline}
+.legs{display:grid;gap:4px;font-size:13px;color:var(--ink2)}
+.legs .lg{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:4px 12px;padding:6px 10px;border-radius:var(--r-md);background:var(--paper-100)}
+.legs .lg b{font-weight:600;color:var(--ink)}
+.legs .tot{background:none;border-top:1px solid var(--line);border-radius:0}
+.legs .num{white-space:nowrap}
 .msg.err{color:var(--clay-600)}
 .msg b{color:var(--ink);font-weight:600}
 .gmap{height:560px;border-top:1px solid var(--line)}
@@ -175,7 +195,7 @@ input{font:inherit;font-weight:500;color:var(--ink);background:var(--surface);bo
     <div class="brand"><img class="logo" src="logo.png" alt="Outo 奧拓" width="1558" height="674"><div>
       <div class="eyebrow">Experiences · Internal</div>
       <h1>Outo 體驗元件地圖</h1>
-      <div class="sub" id="sub">峇里島、富國島、胡志明市周邊、清邁清萊、曼谷周邊的體驗元件 · 選起點和終點算車程與步行距離</div>
+      <div class="sub" id="sub">峇里島、富國島、胡志明市周邊、清邁清萊、曼谷周邊的體驗元件 · 選起點、加一個或多個目的地，算各段車程與路線</div>
     </div></div>
     <div><a class="hbtn" href="./">← 別墅空房查詢</a></div>
   </header>
@@ -203,15 +223,19 @@ input{font:inherit;font-weight:500;color:var(--ink);background:var(--surface);bo
           <input id="oIn" list="expList" autocomplete="off" placeholder="輸入或選擇體驗，也可以點地圖上的點">
           <div class="sel" id="oSel" hidden><span id="oName"></span><button type="button" id="oClr" aria-label="清除起點">×</button></div>
         </div>
-        <div class="rcol"><span class="lbl">終點（任何地點或另一個體驗）</span>
-          <div class="acwrap" id="dAc"></div>
-          <input id="dExp" list="expList" autocomplete="off" placeholder="或選另一個體驗">
-          <div class="sel" id="dSel" hidden><span id="dName"></span><button type="button" id="dClr" aria-label="清除終點">×</button></div>
+        <div class="rcol"><span class="lbl">目的地（可加多個，依順序走）</span>
+          <ol class="stops" id="stops"></ol>
+          <div class="adder" id="adder">
+            <div class="acwrap" id="dAc"></div>
+            <input id="dExp" list="expList" autocomplete="off" placeholder="或選另一個體驗">
+          </div>
+          <div class="addrow"><button type="button" id="addStop" class="addbtn" hidden>＋ 新增目的地</button><button type="button" id="clrStops" class="linkbtn" hidden>清除全部目的地</button></div>
         </div>
       </div>
       <datalist id="expList"></datalist>
-      <div class="frow"><span class="lbl">交通</span><button type="button" data-mode="DRIVE" aria-pressed="true">開車</button><button type="button" data-mode="WALK" aria-pressed="false">步行</button><button type="button" id="calcAll" hidden>算清單內體驗到終點的時間</button><span class="hint" id="calcHint">選好終點後，可以把目前篩選的體驗依到終點的時間排序</span></div>
+      <div class="frow"><span class="lbl">交通</span><button type="button" data-mode="DRIVE" aria-pressed="true">開車</button><button type="button" data-mode="WALK" aria-pressed="false">步行</button><button type="button" id="calcAll" hidden>算清單內體驗到最後一站的時間</button><span class="hint" id="calcHint">加好目的地後，可以把目前篩選的體驗依到最後一站的時間排序</span></div>
       <div class="msg" id="msg"></div>
+      <div class="legs" id="legs" hidden></div>
     </div>
     <div id="gmap" class="gmap"></div>
   </section>
@@ -273,7 +297,7 @@ $('bReset').addEventListener('click',()=>{bud.a=0;bud.b=BST.length-1;S.limit=40;
 
 
 function fmtMin(s){return Math.max(1,Math.round(s/60));}
-function distChip(x){if(!dest||!by)return '';const r=by[x.id];if(r===undefined)return '';if(!r)return `<span class="chip dist">到終點：無法計算</span>`;return `<span class="chip dist">到 ${esc(dest.name)} ${S.mode==='WALK'?'步行':'車程'} ${fmtMin(r.s)} 分 · ${(r.d/1000).toFixed(1)} km</span>`;}
+function distChip(x){if(!dest||!by)return '';const r=by[x.id];if(r===undefined)return '';if(!r)return `<span class="chip dist">到最後一站：無法計算</span>`;return `<span class="chip dist">到 ${esc(dest.name)} ${S.mode==='WALK'?'步行':'車程'} ${fmtMin(r.s)} 分 · ${(r.d/1000).toFixed(1)} km</span>`;}
 function itemHtml(x){
   const g=x.gr?`Google ${x.gr}／${Number(x.gc||0).toLocaleString()} 則`:'';
   return `<article class="card item${origin&&origin.id===x.id?' on':''}" data-id="${esc(x.id)}">
@@ -284,7 +308,7 @@ function itemHtml(x){
   ${x.hl&&x.hl.length?`<ul class="ihl">${x.hl.map(t=>`<li>${esc(t)}</li>`).join('')}</ul>`:''}
   ${x.s&&x.s.length?`<div class="iseg"><span class="lbl">適合客群</span>${x.s.map((v,i)=>`<span class="sg s${v}" title="${SEGT[v]}">${SEGN[i]}</span>`).join('')}</div>`:''}
   <div class="imeta">${[x.tm?'時間：'+x.tm:'',x.pr?'原文價格：'+x.pr:'',g,x.gp?'標示地點：'+x.gp:''].filter(Boolean).map(esc).join(' ｜ ')}</div>
-  <div class="iacts"><button type="button" data-act="x" data-id="${esc(x.id)}" aria-expanded="${OPEN.has(x.id)}">${OPEN.has(x.id)?'收合詳情':'展開詳情'}</button><button type="button" data-act="o" data-id="${esc(x.id)}">設為起點</button><button type="button" data-act="d" data-id="${esc(x.id)}">設為終點</button><button type="button" data-act="z" data-id="${esc(x.id)}">在地圖上看</button><a href="https://www.google.com/maps/search/?api=1&query=${x.la},${x.ln}" target="_blank" rel="noopener">Google 地圖 →</a></div></div>
+  <div class="iacts"><button type="button" data-act="x" data-id="${esc(x.id)}" aria-expanded="${OPEN.has(x.id)}">${OPEN.has(x.id)?'收合詳情':'展開詳情'}</button><button type="button" data-act="o" data-id="${esc(x.id)}">設為起點</button><button type="button" data-act="d" data-id="${esc(x.id)}">加為目的地</button><button type="button" data-act="z" data-id="${esc(x.id)}">在地圖上看</button><a href="https://www.google.com/maps/search/?api=1&query=${x.la},${x.ln}" target="_blank" rel="noopener">Google 地圖 →</a></div></div>
   <div class="det" data-det="${esc(x.id)}"${OPEN.has(x.id)?'':' hidden'}>${OPEN.has(x.id)?detHtml(x):''}</div>
 </article>`;}
 let DLOAD=null;
@@ -367,20 +391,36 @@ function pickExp(val){const id=String(val||'').trim().split(/\s+/)[0];return BYI
 $('oIn').addEventListener('change',()=>{const x=pickExp($('oIn').value);if(x)setOrigin(x);});
 $('dExp').addEventListener('change',()=>{const x=pickExp($('dExp').value);if(x)setDestExp(x);});
 $('oClr').addEventListener('click',()=>{clearOrigin();render();});
-$('dClr').addEventListener('click',()=>{clearDest();render();});
-document.querySelector('.route').addEventListener('click',e=>{const b=e.target.closest('button[data-mode]');if(!b)return;S.mode=b.dataset.mode;document.querySelectorAll('button[data-mode]').forEach(x=>x.setAttribute('aria-pressed',String(x===b)));if(dest){by=CACHE[ck()]||null;if(origin)showRoute();render();}});
+document.querySelector('.route').addEventListener('click',e=>{const b=e.target.closest('button[data-mode]');if(!b)return;S.mode=b.dataset.mode;document.querySelectorAll('button[data-mode]').forEach(x=>x.setAttribute('aria-pressed',String(x===b)));if(dest)by=CACHE[ck()]||null;showRoute();render();});
 
 function setMsg(h,err){$('msg').innerHTML=h;$('msg').classList.toggle('err',!!err);}
+// ---- stops (multiple destinations, ordered) ----
+let STOPS=[];let adding=true;
+function syncStops(){dest=STOPS.length?STOPS[STOPS.length-1]:null;by=dest?(CACHE[ck()]||null):null;$('calcAll').hidden=!dest;drawStops();drawStopMarkers();}
+function drawStops(){
+  $('stops').innerHTML=STOPS.map((d,i)=>`<li class="stop" draggable="true" data-i="${i}"><span class="grip" title="拖曳調整順序">⋮⋮</span><span class="no">${i+1}</span><span class="nm" title="${esc(d.name)}">${esc(d.name)}</span><button type="button" data-sa="up" data-i="${i}" aria-label="往前移"${i===0?' disabled':''}>↑</button><button type="button" data-sa="down" data-i="${i}" aria-label="往後移"${i===STOPS.length-1?' disabled':''}>↓</button><button type="button" data-sa="del" data-i="${i}" aria-label="移除這個目的地">×</button></li>`).join('');
+  const showAdder=!STOPS.length||adding;$('adder').hidden=!showAdder;$('addStop').hidden=showAdder||STOPS.length>=20;$('clrStops').hidden=STOPS.length<2;}
+function addStop(d){if(STOPS.length>=20){setMsg('最多 20 個目的地',true);return;}STOPS.push(d);adding=false;$('dExp').value='';buildAC();syncStops();render();showRoute();}
+function setDest(d){addStop(d);}
+function setDestExp(x){addStop({name:x.n,lat:x.la,lng:x.ln,id:x.id});}
+function moveStop(a,b){if(b<0||b>=STOPS.length||a===b)return;const [d]=STOPS.splice(a,1);STOPS.splice(b,0,d);syncStops();render();showRoute();}
+function removeStop(i){STOPS.splice(i,1);if(!STOPS.length)adding=true;syncStops();render();showRoute();}
+function clearDest(silent){STOPS=[];adding=true;req++;syncStops();clearRoute();if(!silent)showRoute();}
+$('stops').addEventListener('click',e=>{const b=e.target.closest('button[data-sa]');if(!b)return;const i=+b.dataset.i;if(b.dataset.sa==='up')moveStop(i,i-1);else if(b.dataset.sa==='down')moveStop(i,i+1);else removeStop(i);});
+let dragI=-1;
+$('stops').addEventListener('dragstart',e=>{const li=e.target.closest('.stop');if(!li)return;dragI=+li.dataset.i;li.classList.add('drag');e.dataTransfer.effectAllowed='move';try{e.dataTransfer.setData('text/plain',String(dragI));}catch(_){}});
+$('stops').addEventListener('dragover',e=>{const li=e.target.closest('.stop');if(!li||dragI<0)return;e.preventDefault();document.querySelectorAll('.stop.over').forEach(x=>x.classList.remove('over'));li.classList.add('over');});
+$('stops').addEventListener('dragend',()=>{dragI=-1;document.querySelectorAll('.stop.drag,.stop.over').forEach(x=>x.classList.remove('drag','over'));});
+$('stops').addEventListener('drop',e=>{const li=e.target.closest('.stop');if(!li||dragI<0)return;e.preventDefault();const to=+li.dataset.i,from=dragI;dragI=-1;moveStop(from,to);});
+$('addStop').addEventListener('click',()=>{adding=true;drawStops();const ac=document.querySelector('#dAc gmp-place-autocomplete');if(ac)try{ac.focus();}catch(e){}});
+$('clrStops').addEventListener('click',()=>{clearDest();render();});
+let stopMarkers=[];
+function drawStopMarkers(){stopMarkers.forEach(m=>m.setMap(null));stopMarkers=[];if(!gmap)return;
+  STOPS.forEach((d,i)=>stopMarkers.push(new google.maps.Marker({map:gmap,position:{lat:d.lat,lng:d.lng},title:`${i+1}. ${d.name}`,label:{text:String(i+1),color:'#1B1A14',fontSize:'12px',fontWeight:'700'},icon:{path:google.maps.SymbolPath.CIRCLE,scale:12,fillColor:'#FEA600',fillOpacity:1,strokeColor:'#1B1A14',strokeWeight:2},zIndex:20+i})));}
+
 function setOrigin(x){origin=x;$('oName').textContent=x.id+' '+x.n;$('oSel').hidden=false;$('oIn').hidden=true;$('oIn').value='';
-  if(dest)showRoute();else{setMsg(`起點：<b>${esc(x.n)}</b>。再選一個終點就會算出時間和距離。`);focusExp(x,false);}render();}
-function clearOrigin(silent){origin=null;$('oSel').hidden=true;$('oIn').hidden=false;clearRoute();if(!silent)setMsg(dest?`終點：<b>${esc(dest.name)}</b>。選一個起點就會畫出路線。`:'');}
-function setDest(d){dest=d;by=null;$('dName').textContent=d.name;$('dSel').hidden=false;$('dAc').hidden=true;$('dExp').hidden=true;$('dExp').value='';
-  if(gmap){if(destMarker)destMarker.setMap(null);destMarker=new google.maps.Marker({map:gmap,position:{lat:d.lat,lng:d.lng},title:d.name,icon:{path:google.maps.SymbolPath.CIRCLE,scale:9,fillColor:'#FEA600',fillOpacity:1,strokeColor:'#1B1A14',strokeWeight:2},zIndex:20});}
-  by=CACHE[ck()]||null;$('calcAll').hidden=false;
-  if(origin)showRoute();else setMsg(`終點：<b>${esc(d.name)}</b>。選一個起點就會畫出路線；或按「算清單內體驗到終點的時間」排序。`);render();}
-function setDestExp(x){setDest({name:x.n,lat:x.la,lng:x.ln,id:x.id});}
-function clearDest(silent){dest=null;by=null;req++;$('calcAll').hidden=true;$('dSel').hidden=true;$('dAc').hidden=false;$('dExp').hidden=false;const ac=document.querySelector('#dAc gmp-place-autocomplete');if(ac){try{ac.value='';}catch(e){}}
-  if(destMarker){destMarker.setMap(null);destMarker=null;}clearRoute();if(!silent)setMsg(origin?`起點：<b>${esc(origin.n)}</b>。再選一個終點就會算出時間和距離。`:'');}
+  if(STOPS.length)showRoute();else{setMsg(`起點：<b>${esc(x.n)}</b>。再加一個或多個目的地就會算出各段時間和路線。`);focusExp(x,false);}render();}
+function clearOrigin(silent){origin=null;$('oSel').hidden=true;$('oIn').hidden=false;if(!silent)showRoute();}
 
 const ll=(la,ln)=>({waypoint:{location:{latLng:{latitude:la,longitude:ln}}}});
 const CACHE={};const ck=()=>dest?[S.dest,dest.lat.toFixed(5),dest.lng.toFixed(5),S.mode].join('|'):'';
@@ -390,37 +430,46 @@ async function computeAll(){if(!dest)return;const my=++req;const key=ck();const 
     if(!r.ok){setMsg('Google 路線服務目前無法使用（'+r.status+'）',true);return;}const arr=await r.json();if(my!==req)return;
     for(const e of (Array.isArray(arr)?arr:[])){const x=chunk[e.originIndex];if(!x)continue;res[x.id]=(e.condition==='ROUTE_EXISTS'&&e.duration)?{s:parseInt(e.duration),d:e.distanceMeters||0}:null;}}
   if(my!==req)return;by=res;const ok=Object.values(res).filter(Boolean).length;
-  if(origin)showRoute();else setMsg(`已算出 ${ok} 個體驗到「<b>${esc(dest.name)}</b>」的${S.mode==='WALK'?'步行':'車程'}，清單已由近到遠排列；選一個起點就會畫出路線。`);
+  setMsg(`已算出 ${ok} 個體驗到最後一站「<b>${esc(dest.name)}</b>」的${S.mode==='WALK'?'步行':'車程'}，清單已由近到遠排列。`);
   render();}
 
 let routeLine=null,routeLine2=null,routeInfo=null;
-function clearRoute(){if(routeLine){routeLine.setMap(null);routeLine=null;}if(routeLine2){routeLine2.setMap(null);routeLine2=null;}if(routeInfo){routeInfo.close();routeInfo=null;}}
-function dirUrl(){return `https://www.google.com/maps/dir/?api=1&origin=${origin.la},${origin.ln}&destination=${dest.lat},${dest.lng}&travelmode=${S.mode==='WALK'?'walking':'driving'}`;}
-async function showRoute(){if(!origin||!dest||!gmap)return;const my=req;setMsg(`計算「${esc(origin.n)}」到「${esc(dest.name)}」的路線…`);
-  const mk=mode=>{const b={origin:{location:{latLng:{latitude:origin.la,longitude:origin.ln}}},destination:{location:{latLng:{latitude:dest.lat,longitude:dest.lng}}},travelMode:mode};if(mode==='DRIVE')b.routingPreference='TRAFFIC_UNAWARE';return fetch('https://routes.googleapis.com/directions/v2:computeRoutes',{method:'POST',headers:{'Content-Type':'application/json','X-Goog-Api-Key':MAPS_KEY,'X-Goog-FieldMask':'routes.duration,routes.distanceMeters,routes.polyline.encodedPolyline'},body:JSON.stringify(b)}).then(r=>r.ok?r.json():null).catch(()=>null);};
+function clearRoute(){if(routeLine){routeLine.setMap(null);routeLine=null;}if(routeLine2){routeLine2.setMap(null);routeLine2=null;}if(routeInfo){routeInfo.close();routeInfo=null;}$('legs').hidden=true;$('legs').innerHTML='';}
+function routePts(){const p=STOPS.map(d=>({name:d.name,lat:d.lat,lng:d.lng}));if(origin)p.unshift({name:origin.n,lat:origin.la,lng:origin.ln,o:1});return p;}
+function dirUrl(pts){pts=pts||routePts();const f=x=>x.lat+','+x.lng;const mid=pts.slice(1,-1).map(f).join('|');return `https://www.google.com/maps/dir/?api=1&origin=${f(pts[0])}&destination=${f(pts[pts.length-1])}${mid?'&waypoints='+encodeURIComponent(mid):''}&travelmode=${S.mode==='WALK'?'walking':'driving'}`;}
+const km=m=>((m||0)/1000).toFixed(1);
+async function showRoute(){const pts=routePts();const my=++req;
+  if(pts.length<2){clearRoute();if(!pts.length)setMsg('');else if(origin)setMsg(`起點：<b>${esc(origin.n)}</b>。再加一個或多個目的地就會算出各段時間和路線。`);else setMsg(`目的地：<b>${esc(pts[0].name)}</b>。選一個起點，或再加一個目的地，就會畫出路線；也可以按「算清單內體驗到最後一站的時間」排序。`);return;}
+  if(!gmap)return;
+  setMsg(`計算 ${pts.length-1} 段路線…`);
+  const wp=x=>({location:{latLng:{latitude:x.lat,longitude:x.lng}}});
+  const mk=mode=>{const b={origin:wp(pts[0]),destination:wp(pts[pts.length-1]),travelMode:mode};if(pts.length>2)b.intermediates=pts.slice(1,-1).map(wp);if(mode==='DRIVE')b.routingPreference='TRAFFIC_UNAWARE';return fetch('https://routes.googleapis.com/directions/v2:computeRoutes',{method:'POST',headers:{'Content-Type':'application/json','X-Goog-Api-Key':MAPS_KEY,'X-Goog-FieldMask':'routes.duration,routes.distanceMeters,routes.polyline.encodedPolyline,routes.legs.duration,routes.legs.distanceMeters'},body:JSON.stringify(b)}).then(r=>r.ok?r.json():null).catch(()=>null);};
   const [jd,jw]=await Promise.all([mk('DRIVE'),mk('WALK')]);if(my!==req)return;const rd=jd&&jd.routes&&jd.routes[0],rw=jw&&jw.routes&&jw.routes[0];const rt=S.mode==='WALK'?(rw||rd):(rd||rw);
-  if(!rt){setMsg('找不到路線（可能隔海或需要搭船），請在 Google 地圖確認。 <a href="'+dirUrl()+'" target="_blank" rel="noopener">在 Google 地圖開啟 →</a>',true);return;}
-  const dm=rd?fmtMin(parseInt(rd.duration)):'—',dk=rd?((rd.distanceMeters||0)/1000).toFixed(1):'—',wm=rw?fmtMin(parseInt(rw.duration)):'—',wk=rw?((rw.distanceMeters||0)/1000).toFixed(1):'—';
-  const {encoding}=await google.maps.importLibrary('geometry');const path=encoding.decodePath(rt.polyline.encodedPolyline);
+  if(!rt){clearRoute();setMsg('找不到路線（可能隔海或需要搭船），請在 Google 地圖確認。 <a href="'+dirUrl(pts)+'" target="_blank" rel="noopener">在 Google 地圖開啟 →</a>',true);return;}
+  const {encoding}=await google.maps.importLibrary('geometry');if(my!==req)return;const path=encoding.decodePath(rt.polyline.encodedPolyline);
   clearRoute();routeLine=new google.maps.Polyline({map:gmap,path,strokeColor:'#1B1A14',strokeOpacity:.9,strokeWeight:5});
-  if(rd&&rw&&rt===rd){const wp=encoding.decodePath(rw.polyline.encodedPolyline);routeLine2=new google.maps.Polyline({map:gmap,path:wp,strokeColor:'#2F8466',strokeOpacity:0,strokeWeight:4,icons:[{icon:{path:'M 0,-1 0,1',strokeOpacity:.9,strokeColor:'#2F8466',scale:3},offset:'0',repeat:'14px'}]});}
+  if(rd&&rw&&rt===rd){const wpath=encoding.decodePath(rw.polyline.encodedPolyline);routeLine2=new google.maps.Polyline({map:gmap,path:wpath,strokeColor:'#2F8466',strokeOpacity:0,strokeWeight:4,icons:[{icon:{path:'M 0,-1 0,1',strokeOpacity:.9,strokeColor:'#2F8466',scale:3},offset:'0',repeat:'14px'}]});}
   const bb=new google.maps.LatLngBounds();path.forEach(p=>bb.extend(p));gmap.fitBounds(bb,60);
-  routeInfo=new google.maps.InfoWindow({position:{lat:origin.la,lng:origin.ln},content:`<div class="gm-iw"><b>${esc(origin.n)}</b><div>→ ${esc(dest.name)}</div><div>開車 ${dm} 分 · ${dk} km</div><div>步行 ${wm} 分 · ${wk} km</div><div><a href="${dirUrl()}" target="_blank" rel="noopener">在 Google 地圖開啟路線 →</a></div></div>`});routeInfo.open({map:gmap});
-  setMsg(`<b>${esc(origin.n)}</b> → <b>${esc(dest.name)}</b>：開車 ${dm} 分 · ${dk} km ｜ 步行 ${wm} 分 · ${wk} km · <a href="${dirUrl()}" target="_blank" rel="noopener">在 Google 地圖開啟路線 →</a>`);}
+  const lab=i=>i===0&&pts[0].o?'起點':String(origin?i:i+1);
+  const legs=pts.slice(1).map((p,i)=>{const d=rd&&rd.legs&&rd.legs[i],w=rw&&rw.legs&&rw.legs[i];
+    return `<div class="lg"><span><b>${lab(i)}</b> ${esc(pts[i].name)} → <b>${lab(i+1)}</b> ${esc(p.name)}</span><span class="num">開車 ${d&&d.duration?fmtMin(parseInt(d.duration))+' 分 · '+km(d.distanceMeters)+' km':'—'} ｜ 步行 ${w&&w.duration?fmtMin(parseInt(w.duration))+' 分 · '+km(w.distanceMeters)+' km':'—'}</span></div>`;}).join('');
+  const tot=`<div class="lg tot"><span><b>全程 ${pts.length-1} 段</b></span><span class="num">開車 ${rd?fmtMin(parseInt(rd.duration))+' 分 · '+km(rd.distanceMeters)+' km':'—'} ｜ 步行 ${rw?fmtMin(parseInt(rw.duration))+' 分 · '+km(rw.distanceMeters)+' km':'—'}</span></div>`;
+  $('legs').innerHTML=legs+(pts.length>2?tot:'');$('legs').hidden=false;
+  setMsg(`路線：${pts.map((p,i)=>`<b>${esc(p.name)}</b>`).join(' → ')} · <a href="${dirUrl(pts)}" target="_blank" rel="noopener">在 Google 地圖開啟路線 →</a>`);}
 
 // ---- Google Maps ----
-let gmap=null,gInfo=null,gcluster=null,destMarker=null;const gmarkers=new Map();const PIN={};
+let gmap=null,gInfo=null,gcluster=null;const gmarkers=new Map();const PIN={};
 function pin(c,big){const k=c+(big?'b':'');if(PIN[k])return PIN[k];const z=big?28:20,r=big?11:7.5,h=z/2;const svg=`<svg xmlns="http://www.w3.org/2000/svg" width="${z}" height="${z}" viewBox="0 0 ${z} ${z}"><circle cx="${h}" cy="${h}" r="${r}" fill="${c}" stroke="${big?'#FEA600':'#fff'}" stroke-width="${big?3:2}"/></svg>`;return PIN[k]={url:'data:image/svg+xml;charset=utf-8,'+encodeURIComponent(svg),scaledSize:new google.maps.Size(z,z),anchor:new google.maps.Point(h,h)};}
 const CL={};function clIcon(sz){if(CL[sz])return CL[sz];const h=sz/2;const svg=`<svg xmlns="http://www.w3.org/2000/svg" width="${sz}" height="${sz}" viewBox="0 0 ${sz} ${sz}"><circle cx="${h}" cy="${h}" r="${h-2}" fill="#1B1A14" fill-opacity=".9" stroke="#fff" stroke-width="2"/></svg>`;return CL[sz]={url:'data:image/svg+xml;charset=utf-8,'+encodeURIComponent(svg),scaledSize:new google.maps.Size(sz,sz),anchor:new google.maps.Point(h,h)};}
 function loadGMaps(){if(!MAPS_KEY){setMsg('沒有地圖金鑰，無法載入 Google 地圖',true);return;}window.__gmReady=()=>{const cl=document.createElement('script');cl.src='https://unpkg.com/@googlemaps/markerclusterer@2.5.3/dist/index.min.js';cl.onload=initMap;cl.onerror=initMap;document.head.appendChild(cl);};
   const sc=document.createElement('script');sc.src='https://maps.googleapis.com/maps/api/js?key='+encodeURIComponent(MAPS_KEY)+'&v=weekly&loading=async&callback=__gmReady';sc.async=true;sc.onerror=()=>setMsg('Google 地圖載入失敗，請重新整理',true);document.head.appendChild(sc);}
 function initMap(){gmap=new google.maps.Map($('gmap'),{center:{lat:X.dests[S.dest].c[0],lng:X.dests[S.dest].c[1]},zoom:10,mapTypeControl:false,streetViewControl:false,fullscreenControl:true,gestureHandling:'greedy'});gInfo=new google.maps.InfoWindow();
   if(typeof markerClusterer!=='undefined')gcluster=new markerClusterer.MarkerClusterer({map:gmap,markers:[],renderer:{render:({count,position})=>{const sz=count<10?28:count<100?36:46;return new google.maps.Marker({position,icon:clIcon(sz),label:{text:String(count),color:'#F6F1E7',fontSize:'11px',fontWeight:'600'},zIndex:1000+count});}},algorithm:new markerClusterer.SuperClusterAlgorithm({radius:50,maxZoom:14})});
-  initAC();render();}
+  initAC();drawStopMarkers();render();showRoute();}
 let acEl=null;
 async function initAC(){try{const {PlaceAutocompleteElement}=await google.maps.importLibrary('places');buildAC(PlaceAutocompleteElement);}catch(e){$('dAc').innerHTML='<span class="hint">Google 地點搜尋目前無法使用，可改選另一個體驗當終點。</span>';}}
 let ACC=null;function buildAC(C){ACC=C||ACC;if(!ACC)return;const d=X.dests[S.dest];acEl=new ACC({includedRegionCodes:[d.cc],locationBias:d.b});acEl.setAttribute('placeholder','例：飯店名稱、餐廳、地址');$('dAc').innerHTML='';$('dAc').appendChild(acEl);
-  acEl.addEventListener('gmp-select',async ev=>{try{const place=ev.placePrediction.toPlace();await place.fetchFields({fields:['displayName','location']});if(!place.location){setMsg('這個地點沒有座標',true);return;}setDest({name:place.displayName||'自訂地點',lat:place.location.lat(),lng:place.location.lng()});}catch(e){setMsg('Google 地點搜尋目前無法使用，請稍後再試',true);}});}
+  acEl.addEventListener('gmp-select',async ev=>{try{const place=ev.placePrediction.toPlace();await place.fetchFields({fields:['displayName','location']});if(!place.location){setMsg('這個地點沒有座標',true);return;}addStop({name:place.displayName||'自訂地點',lat:place.location.lat(),lng:place.location.lng()});}catch(e){setMsg('Google 地點搜尋目前無法使用，請稍後再試',true);}});}
 let acDest=-1;
 function drawMarkers(r){if(!gmap)return;if(acDest!==S.dest){acDest=S.dest;buildAC();}
   const keep=new Set(r.map(x=>x.id));const b=new google.maps.LatLngBounds();
@@ -429,7 +478,7 @@ function drawMarkers(r){if(!gmap)return;if(acDest!==S.dest){acDest=S.dest;buildA
   const vis=[...keep].map(id=>gmarkers.get(id));
   if(gcluster){gcluster.clearMarkers(true);gcluster.addMarkers(vis);}else{for(const [id,m] of gmarkers)m.setMap(keep.has(id)?gmap:null);}
   if(fitDest&&r.length){fitDest=false;if(dest)b.extend({lat:dest.lat,lng:dest.lng});gmap.fitBounds(b,40);}}
-function openInfo(x,m){gInfo.setContent(`<div class="gm-iw"><b>${esc(x.n)}</b><div class="m">${esc(x.en)}</div><div class="m">${esc(X.cats[x.c])} · ${esc(x.r)} · ${x.p}</div>${x.tm?`<div class="m">${esc(x.tm)}</div>`:''}<div class="acts"><button type="button" onclick="setOrigin(BYID['${x.id}'])">設為起點</button><button type="button" onclick="setDestExp(BYID['${x.id}'])">設為終點</button><button type="button" onclick="scrollToItem('${x.id}')">看介紹</button></div></div>`);gInfo.open({map:gmap,anchor:m});}
+function openInfo(x,m){gInfo.setContent(`<div class="gm-iw"><b>${esc(x.n)}</b><div class="m">${esc(x.en)}</div><div class="m">${esc(X.cats[x.c])} · ${esc(x.r)} · ${x.p}</div>${x.tm?`<div class="m">${esc(x.tm)}</div>`:''}<div class="acts"><button type="button" onclick="setOrigin(BYID['${x.id}'])">設為起點</button><button type="button" onclick="setDestExp(BYID['${x.id}'])">加為目的地</button><button type="button" onclick="scrollToItem('${x.id}')">看介紹</button></div></div>`);gInfo.open({map:gmap,anchor:m});}
 function scrollToItem(id){const r=rows();let idx=r.findIndex(x=>x.id===id);if(dest&&by){const s=r.slice().sort((a,b)=>((by[a.id]||{s:1e12}).s)-((by[b.id]||{s:1e12}).s));idx=s.findIndex(x=>x.id===id);}if(idx>=S.limit){S.limit=idx+10;render();}const el=document.querySelector(`.item[data-id="${id}"]`);if(el){const tb=el.querySelector('button[data-act="x"]');if(tb&&!OPEN.has(id))toggleDet(BYID[id],tb);el.scrollIntoView({behavior:'smooth',block:'start'});el.classList.add('on');setTimeout(()=>{if(!origin||origin.id!==id)el.classList.remove('on');},1600);}}
 function focusExp(x,open){if(!gmap)return;const m=gmarkers.get(x.id);gmap.panTo({lat:x.la,lng:x.ln});if(gmap.getZoom()<13)gmap.setZoom(13);if(open&&m)setTimeout(()=>openInfo(x,m),250);$('gmap').scrollIntoView({behavior:'smooth',block:'center'});}
 
