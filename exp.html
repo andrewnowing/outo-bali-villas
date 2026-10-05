@@ -365,6 +365,18 @@ input{font:inherit;font-weight:500;color:var(--ink);background:var(--surface);bo
 .psum .k{font-size:11px;font-weight:600;letter-spacing:.06em;color:var(--sun-deep)}
 .psum b{font-size:16px;font-weight:600}
 .psum .m{font-size:12px;color:var(--muted);line-height:1.6}
+.ctab{border:1px solid var(--line);border-radius:var(--r-md);padding:8px 10px}
+.ctab summary{cursor:pointer;font-size:12.5px;font-weight:600;color:var(--ink)}
+.ctw{overflow-x:auto;margin:6px 0}
+.ctab table{width:100%;border-collapse:collapse;font-size:12px}
+.ctab th{text-align:left;font-weight:600;color:var(--muted);font-size:11px;padding:4px 6px;border-bottom:1px solid var(--line)}
+.ctab td{padding:5px 6px;border-bottom:1px solid var(--line-subtle);vertical-align:top;color:var(--ink2)}
+.ctab td.num,.ctab th:nth-child(n+2){text-align:right;white-space:nowrap}
+.ctab td small{display:block;font-size:11.5px;color:var(--muted);margin:1px 0 0 26px}
+.ctab td:first-child{color:var(--ink)}
+.ctab .cn{display:inline-block;min-width:26px;font-size:10.5px;font-weight:700;color:var(--sun-deep)}
+.ctab tr.na td{color:var(--muted)}
+.ctab tfoot td{font-weight:700;color:var(--ink);border-bottom:0;border-top:1.5px solid var(--ink-900)}
 @media (max-width:900px){
   .mtabs{display:flex;gap:6px;padding:0 16px 10px}
   .mtabs button{flex:1;height:36px}
@@ -660,6 +672,15 @@ function drawStops(){const T=timeline(),n=STOPS.length;
       ${ws.length?`<ul class="sw">${ws.map(t=>`<li>${esc(t)}</li>`).join('')}</ul>`:''}</li>`;}).join('');
   const showAdder=!n||adding;$('adder').hidden=!showAdder;$('addStop').hidden=n>=20;$('addStop').textContent=n?`＋ 新增第 ${n} 站`:'＋ 新增起點';$('dQ').placeholder=n?`搜尋第 ${n} 站：飯店、餐廳、地址或體驗`:'搜尋起點：飯店、餐廳、地址或體驗';$('clrStops').hidden=n<2;$('optStops').hidden=n<4||S.mode==='WALK';
   $('tabN').textContent=n?`(${n})`:'';drawSummary(T);drawPlanHead();fetchHours();}
+function costTable(n,sum,car,total){const carDef=PLAN.car==null||PLAN.car==='';
+  const rows=STOPS.map((d,i)=>{const x=itemOf(d);if(!x)return '';const p=priceOf(d),b=pbOf(d),c=costOf(d),lab=i===0?'起點':i;
+    if(p==null)return `<tr class="na"><td><span class="cn">${lab}</span>${esc(x.n)}<small>未查到價格，未計入</small></td><td class="num">—</td><td class="num">—</td></tr>`;
+    const calc=p===0?'免費':b==='g'?`${twFmt(p)}／團`:b==='2'?`${twFmt(p)}／兩人 × ${Math.ceil(n/2)}`:`${twFmt(p)}／人 × ${n}`;
+    return `<tr><td><span class="cn">${lab}</span>${esc(x.n)}<small>${calc}</small></td><td class="num">${twFmt(c)}</td><td class="num">${twFmt(c/n)}</td></tr>`;}).join('');
+  return `<details class="ctab" open><summary>費用明細（${n} 人）</summary><div class="ctw"><table><thead><tr><th>項目／計算方式</th><th>合計</th><th>每人</th></tr></thead><tbody>${rows}
+    <tr><td><span class="cn">車</span>包車（1 天）<small>${twFmt(car)}／天，${n} 人分攤${carDef?'・預設值，可在上方修改':''}</small></td><td class="num">${twFmt(car)}</td><td class="num">${twFmt(car/n)}</td></tr></tbody>
+    <tfoot><tr><td>總計</td><td class="num">${twFmt(total)}</td><td class="num">${twFmt(total/n)}</td></tr></tfoot></table></div>
+    <div class="m">不含：餐費、導遊、住宿、機票、小費；地點（飯店、餐廳）沒有價格資料，未計入。</div></details>`;}
 function drawSummary(T){if(!STOPS.length){$('psum').innerHTML='';return;}const n=paxN();let sum=0;const miss=[];
   STOPS.forEach(d=>{const c=costOf(d);if(c==null){if(itemOf(d))miss.push(d.name);}else sum+=c;});
   const car=PLAN.car==null||PLAN.car===''?CARDEF[S.dest]:+PLAN.car,total=sum+car;
@@ -669,7 +690,7 @@ function drawSummary(T){if(!STOPS.length){$('psum').innerHTML='';return;}const n
   $('psum').innerHTML=`<div class="pt"><div><span class="k">時間</span><b class="num">${hm(start)} 出發 → ${hm(end)} 結束</b><span class="m">共 ${dur(span)}・${S.mode==='WALK'?'步行':'車程'}合計 ${dur(drive)}${dist?'・'+km(dist)+' km':''}</span></div>
     <div><span class="k">每人費用（參考，不是報價）</span><b class="num">約 ${twFmt(total/n)}</b><span class="m">${n} 人合計 ${twFmt(total)}＝體驗 ${twFmt(sum)}＋包車 ${twFmt(car)}${PLAN.car==null||PLAN.car===''?'（預設值，可改）':''}</span></div></div>
     ${g.length?`<ul class="sw">${g.map(t=>`<li>${esc(t)}</li>`).join('')}</ul>`:''}
-    ${miss.length?`<div class="m">沒有價格、未計入：${miss.map(esc).join('、')}</div>`:''}
+    ${costTable(n,sum,car,total)}
     <div class="m">停留時間與價格都是依元件資料推估：價格是第一個查到的報價換算台幣，小孩以大人價計；導遊、餐費、門票是否已含在行程價格內，請以業者報價為準。</div>`;}
 function addStop(d){if(STOPS.length>=20){setMsg('最多 20 站',true);return;}STOPS.push(d);adding=false;$('dQ').value='';hideDD();acTok=null;changed();syncStops();render();showRoute();}
 function setDest(d){addStop(d);}
