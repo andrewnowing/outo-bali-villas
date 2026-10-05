@@ -120,6 +120,11 @@ input{font:inherit;font-weight:500;color:var(--ink);background:var(--surface);bo
 .iwwk summary{cursor:pointer;color:var(--ink-900)}
 .iwwk .td{font-weight:600;color:var(--ink-900)}
 .iwwarn{flex-basis:100%;font-size:11.5px;color:var(--clay-600)}
+.iwseg{display:flex;flex-wrap:wrap;gap:4px}.iwseg .sg{font-size:11.5px;padding:0 8px}
+.grate{flex-basis:100%;display:flex;align-items:center;gap:6px}
+.grate b{font-size:15px;font-weight:600}
+.stars{position:relative;font-size:13px;letter-spacing:1px;color:var(--line-strong);line-height:1}
+.stars::before{content:"★★★★★";position:absolute;left:0;top:0;width:var(--p);overflow:hidden;color:#F2A100;white-space:nowrap}
 .list{display:grid;gap:10px}
 .lhead{display:flex;flex-wrap:wrap;gap:8px 16px;align-items:center;justify-content:space-between}
 .lhead h2{font-size:17px;font-weight:600;margin:0}
@@ -631,25 +636,30 @@ function drawMarkers(r){if(!gmap)return;if(acDest!==S.dest){acDest=S.dest;buildA
 function openInfo(x,m){const price=x.tw===undefined?'<span class="m">未查到價格</span>':x.tw===0?'<b>免費</b>':`<b>約 ${twFmt(x.tw)}</b>${x.tr&&x.tr[1]>x.tr[0]?`<span class="m">（各方案 ${twFmt(x.tr[0])}–${twFmt(x.tr[1])}）</span>`:''}`;
   gInfo.setContent(`<div class="gm-iw iw2"><div class="iwph"><img src="exp_img/${esc(x.id)}.jpg" alt="" onerror="this.parentNode.remove()"><span class="iwcat"><span class="dot" style="background:${CATCOL[x.c]}"></span>${esc(X.cats[x.c])}</span></div>
   <div class="iwb"><b class="iwn">${esc(x.n)}</b><div class="m">${esc(x.en)}</div><div class="m">${esc(x.r)} · ${x.p}${x.tm?' · '+esc(x.tm):''}</div>
+  ${x.s&&x.s.length?`<div class="iwp"><span class="k">適合客群</span><span class="iwseg">${x.s.map((v,i)=>`<span class="sg s${v}" title="${SEGT[v]}">${SEGN[i]}</span>`).join('')}</span></div>`:''}
   <div class="iwp"><span class="k">參考價格</span>${price}</div>
-  <div class="iwg" id="iwg-${esc(x.id)}"><span class="k">Google 營業</span><span class="m">查詢中…</span></div>
+  <div class="iwg" id="iwg-${esc(x.id)}">${hoursHtml(null,x,1)}</div>
   <div class="acts"><button type="button" onclick="setOrigin(BYID['${x.id}'])">設為起點</button><button type="button" onclick="setDestExp(BYID['${x.id}'])">加到路線</button><button type="button" onclick="scrollToItem('${x.id}')">看介紹</button></div></div></div>`);gInfo.open({map:gmap,anchor:m});
-  gHours(x).then(h=>{const el=document.getElementById('iwg-'+x.id);if(el)el.innerHTML=hoursHtml(h);});}
+  gHours(x).then(h=>{const el=document.getElementById('iwg-'+x.id);if(el)el.innerHTML=hoursHtml(h,x);});}
 // ---- live Google opening hours / business status (fetched when a pin is opened, cached 7 days) ----
-const GH={};const GHK='exp-gh-v1';try{Object.assign(GH,JSON.parse(localStorage.getItem(GHK)||'{}'));}catch(e){}
+const GH={};const GHK='exp-gh-v2';try{Object.assign(GH,JSON.parse(localStorage.getItem(GHK)||'{}'));}catch(e){}
 async function gHours(x){const c=GH[x.id];if(c&&Date.now()-c.t<7*864e5)return c;
   try{const {Place}=await google.maps.importLibrary('places');await google.maps.importLibrary('geometry');
-    const {places}=await Place.searchByText({textQuery:x.gp||x.en||x.n,fields:['displayName','businessStatus','regularOpeningHours','googleMapsURI','userRatingCount','location'],locationBias:{center:{lat:x.la,lng:x.ln},radius:500},maxResultCount:1,language:'zh-TW'});
+    const {places}=await Place.searchByText({textQuery:x.gp||x.en||x.n,fields:['displayName','rating','businessStatus','regularOpeningHours','googleMapsURI','userRatingCount','location'],locationBias:{center:{lat:x.la,lng:x.ln},radius:500},maxResultCount:1,language:'zh-TW'});
     const p=places&&places[0];let h={t:Date.now(),ok:!!p};
     if(p){const dist=p.location?google.maps.geometry?google.maps.geometry.spherical.computeDistanceBetween(p.location,new google.maps.LatLng(x.la,x.ln)):0:0;
-      h=Object.assign(h,{name:p.displayName||'',st:p.businessStatus||'',wk:(p.regularOpeningHours&&p.regularOpeningHours.weekdayDescriptions)||[],url:p.googleMapsURI||'',n:p.userRatingCount||0,far:dist>1500});}
+      h=Object.assign(h,{name:p.displayName||'',st:p.businessStatus||'',wk:(p.regularOpeningHours&&p.regularOpeningHours.weekdayDescriptions)||[],url:p.googleMapsURI||'',n:p.userRatingCount||0,r:p.rating||0,far:dist>1500});}
     GH[x.id]=h;try{localStorage.setItem(GHK,JSON.stringify(GH));}catch(e){}return h;}catch(e){return {err:1};}}
-function hoursHtml(h){if(!h||h.err)return '<span class="k">Google 營業</span><span class="m">目前查不到</span>';if(!h.ok)return '<span class="k">Google 營業</span><span class="m">Google 上找不到這個地點</span>';
+function rateHtml(r,n){if(!r)return '';const f=Math.round(r*2)/2;return `<span class="grate"><b class="num">${Number(r).toFixed(1)}</b><span class="stars" style="--p:${(r/5*100).toFixed(0)}%">★★★★★</span><span class="m num">${Number(n||0).toLocaleString()} 則評論</span></span>`;}
+function hoursHtml(h,x,loading){const K='<span class="k">Google 評價與營業</span>';const stored=x&&x.gr?rateHtml(x.gr,x.gc):'';
+  if(loading)return K+(stored||'')+'<span class="m">營業時間查詢中…</span>';
+  if(!h||h.err)return K+(stored||'')+'<span class="m">營業時間目前查不到</span>';if(!h.ok)return K+(stored||'')+'<span class="m">Google 上找不到這個地點</span>';
+  const rt=h.r?rateHtml(h.r,h.n):stored;
   const ST={OPERATIONAL:['營業中','ok'],CLOSED_TEMPORARILY:['暫停營業','bad'],CLOSED_PERMANENTLY:['永久停業','bad']};const st=ST[h.st]||['狀態不明','warn'];
   const di=(new Date().getDay()+6)%7;const today=h.wk[di]?h.wk[di].replace(/^[^:：]+[:：]\s*/,''):'';
   const wk=h.wk.length?`<details class="iwwk"><summary>今天：${esc(today||'—')}</summary>${h.wk.map((d,i)=>`<div${i===di?' class="td"':''}>${esc(d)}</div>`).join('')}</details>`:'<div class="m">Google 沒有營業時間</div>';
   const warn=h.far?'<div class="iwwarn">對到的地點離元件標示位置超過 1.5 公里，可能不是同一個地方</div>':'';
-  return `<span class="k">Google 營業</span><span class="gst ${st[1]}">${st[0]}</span>${h.url?`<a class="m" href="${esc(h.url)}" target="_blank" rel="noopener">${esc(h.name)} ↗</a>`:`<span class="m">${esc(h.name)}</span>`}${wk}${warn}`;}
+  return `${K}${rt}<span class="gst ${st[1]}">${st[0]}</span>${h.url?`<a class="m" href="${esc(h.url)}" target="_blank" rel="noopener">${esc(h.name)} ↗</a>`:`<span class="m">${esc(h.name)}</span>`}${wk}${warn}`;}
 function scrollToItem(id){const r=rows();let idx=r.findIndex(x=>x.id===id);if(dest&&by){const s=r.slice().sort((a,b)=>((by[a.id]||{s:1e12}).s)-((by[b.id]||{s:1e12}).s));idx=s.findIndex(x=>x.id===id);}if(idx>=S.limit){S.limit=idx+10;render();}const el=document.querySelector(`.item[data-id="${id}"]`);if(el){const tb=el.querySelector('button[data-act="x"]');if(tb&&!OPEN.has(id))toggleDet(BYID[id],tb);el.scrollIntoView({behavior:'smooth',block:'start'});el.classList.add('on');setTimeout(()=>{if(!origin||origin.id!==id)el.classList.remove('on');},1600);}}
 function focusExp(x,open){if(!gmap)return;const m=gmarkers.get(x.id);gmap.panTo({lat:x.la,lng:x.ln});if(gmap.getZoom()<13)gmap.setZoom(13);if(open&&m)setTimeout(()=>openInfo(x,m),250);$('gmap').scrollIntoView({behavior:'smooth',block:'center'});}
 
