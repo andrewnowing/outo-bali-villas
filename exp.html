@@ -249,6 +249,27 @@ input{font:inherit;font-weight:500;color:var(--ink);background:var(--surface);bo
   .iacts a{grid-column:span 2}
   .det .dg{gap:10px}
 }
+.ftog{display:none}
+@media (max-width:640px){
+  header{flex-wrap:nowrap;align-items:center;padding-bottom:0}
+  .brand{align-items:center;gap:10px;min-width:0}
+  .logo{width:52px;margin-top:0}
+  .eyebrow,.sub{display:none}
+  h1{font-size:19px;line-height:1.3;white-space:nowrap}
+  header .hbtn{height:30px;padding:0 10px;font-size:12px;white-space:nowrap}
+  .filters{gap:8px;padding-block:12px}
+  .filters .frow>button{height:30px;font-size:12.5px;padding:0 10px}
+  .filters .lbl{font-size:10.5px;min-width:32px}
+  .ftog{display:flex;align-items:center;gap:8px;margin-inline:16px;height:38px;border-radius:var(--r-md);padding:0 12px;background:var(--paper-100);border:1px solid var(--line);color:var(--ink);font-weight:600;font-size:13px;text-align:left}
+  .ftog .hint{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-weight:500}
+  .ftog .fcnt{background:var(--ink-900);color:var(--paper-50);border-radius:999px;padding:0 8px;font-size:11px;line-height:20px;flex:none}
+  .ftog .car{transition:transform var(--dur) var(--ease)}
+  .fopen .ftog .car{transform:rotate(180deg)}
+  .fopen .ftog .hint{visibility:hidden}
+  .filters:not(.fopen) #fReg,.filters:not(.fopen) #fCat,.filters:not(.fopen) #fSeg,.filters:not(.fopen) #fPri,.filters:not(.fopen) #fOff,.filters:not(.fopen) #budgetBox{display:none}
+  .budget{border-top:0;padding-top:0}
+  .bhead{padding-top:2px}
+}
 </style></head><body>
 <div class="wrap">
   <header>
@@ -262,6 +283,7 @@ input{font:inherit;font-weight:500;color:var(--ink);background:var(--surface);bo
 
   <section class="card filters" aria-label="篩選">
     <div class="frow" id="fDest"><span class="lbl">目的地</span></div>
+    <button type="button" class="ftog" id="fTog" aria-expanded="false"><span>更多篩選</span><span class="fcnt" id="fCnt" hidden></span><span class="hint">地區、分類、客群、優先、通路、預算</span><span class="car">▾</span></button>
     <div class="frow" id="fReg"><span class="lbl">地區</span></div>
     <div class="frow" id="fCat"><span class="lbl">分類</span></div>
     <div class="frow" id="fSeg"><span class="lbl">客群</span></div>
@@ -325,6 +347,8 @@ const BYID={};X.items.forEach(x=>BYID[x.id]=x);
 
 function match(x,skip){const q=S.q.trim().toLowerCase();return x.d===S.dest&&(skip==='reg'||S.reg===null||x.ri===S.reg)&&(skip==='cat'||S.cat===null||x.c===S.cat)&&(skip==='seg'||S.seg===null||(x.s&&x.s[S.seg]===2))&&(skip==='pri'||S.pri===null||x.p===S.pri)&&(skip==='off'||S.off===null||(x.off?1:0)===S.off)&&(skip==='bud'||!budOn()||(x.tw!==undefined&&x.tw>=BST[bud.a]&&(bud.b===BST.length-1||x.tw<=BST[bud.b])))&&(!q||[x.id,x.n,x.en,x.r,x.ty||''].join(' ').toLowerCase().includes(q));}
 function rows(){return X.items.filter(x=>match(x));}
+function fCount(){const n=['reg','cat','seg','pri','off'].filter(k=>S[k]!==null).length+((bud.a!==0||bud.b!==BST.length-1)?1:0);$('fCnt').textContent=n+' 個條件';$('fCnt').hidden=!n;}
+$('fTog').addEventListener('click',()=>{const f=document.querySelector('.filters');const o=!f.classList.contains('fopen');f.classList.toggle('fopen',o);$('fTog').setAttribute('aria-expanded',String(o));});
 function chips(){
   const all=X.items.filter(x=>x.d===S.dest);
   const n=(k,f)=>X.items.filter(x=>match(x,k)&&f(x)).length;
@@ -335,7 +359,7 @@ function chips(){
   $('fSeg').innerHTML='<span class="lbl">客群</span>'+btn('seg','','全部',undefined,S.seg===null)+SEGN.map((l,i)=>btn('seg',i,l+'適合',n('seg',x=>x.s&&x.s[i]===2),S.seg===i)).join('');
   $('fPri').innerHTML='<span class="lbl">優先</span>'+btn('pri','','全部',undefined,S.pri===null)+['P0','P1','P2'].map(p=>btn('pri',p,p,n('pri',x=>x.p===p),S.pri===p)).join('');
   $('fOff').innerHTML='<span class="lbl">通路</span>'+btn('off','','全部',undefined,S.off===null)+btn('off',0,'OTA 有上架',n('off',x=>!x.off),S.off===0)+btn('off',1,'只有官網／社群接單',n('off',x=>x.off),S.off===1);
-  drawBud();
+  drawBud();fCount();
   $('legend').innerHTML=X.cats.map((c,i)=>`<span><span class="dot" style="background:${CATCOL[i]}"></span>${esc(c)}</span>`).join('');
   $('expList').innerHTML=all.map(x=>`<option value="${esc(x.id+' '+x.n)}">${esc(x.r)}</option>`).join('');
 }
