@@ -103,6 +103,23 @@ input{font:inherit;font-weight:500;color:var(--ink);background:var(--surface);bo
 .gm-iw .m{color:var(--ink-600);font-size:12px}
 .gm-iw .acts{display:flex;gap:6px;flex-wrap:wrap;margin-top:6px}
 .gm-iw .acts button{height:26px;font-size:12px;padding:0 10px}
+.gm-iw.iw2{max-width:290px;width:290px}
+.iwph{position:relative;margin:-2px 0 8px;border-radius:8px;overflow:hidden;aspect-ratio:16/9;background:var(--paper-200)}
+.iwph img{width:100%;height:100%;object-fit:cover;display:block}
+.iwcat{position:absolute;left:8px;bottom:8px;background:rgba(255,255,255,.92);border-radius:999px;padding:1px 9px;font-size:11.5px;color:var(--ink-900)}
+.iwcat .dot{width:8px;height:8px;margin-right:5px}
+.iwb{display:grid;gap:2px}
+.iwn{font-size:14.5px;line-height:1.4}
+.iwp,.iwg{display:flex;flex-wrap:wrap;align-items:baseline;gap:2px 8px;margin-top:6px;padding-top:6px;border-top:1px solid var(--line-subtle)}
+.iwp b{font-size:14px}
+.gm-iw .k{font-size:11px;font-weight:600;letter-spacing:.08em;color:var(--sun-deep);flex-basis:100%}
+.gst{font-size:12px;font-weight:600;border-radius:999px;padding:0 8px}
+.gst.ok{background:var(--jade-100);color:var(--jade-700)}.gst.bad{background:var(--clay-100);color:var(--clay-600)}.gst.warn{background:var(--sun-50);color:var(--sun-700)}
+.iwg a.m{text-decoration:none}.iwg a.m:hover{text-decoration:underline}
+.iwwk{flex-basis:100%;font-size:12px;color:var(--ink-600)}
+.iwwk summary{cursor:pointer;color:var(--ink-900)}
+.iwwk .td{font-weight:600;color:var(--ink-900)}
+.iwwarn{flex-basis:100%;font-size:11.5px;color:var(--clay-600)}
 .list{display:grid;gap:10px}
 .lhead{display:flex;flex-wrap:wrap;gap:8px 16px;align-items:center;justify-content:space-between}
 .lhead h2{font-size:17px;font-weight:600;margin:0}
@@ -611,7 +628,28 @@ function drawMarkers(r){if(!gmap)return;if(acDest!==S.dest){acDest=S.dest;buildA
   const vis=[...keep].map(id=>gmarkers.get(id));
   if(gcluster){gcluster.clearMarkers(true);gcluster.addMarkers(vis);}else{for(const [id,m] of gmarkers)m.setMap(keep.has(id)?gmap:null);}
   if(fitDest&&r.length){fitDest=false;if(dest)b.extend({lat:dest.lat,lng:dest.lng});gmap.fitBounds(b,40);}}
-function openInfo(x,m){gInfo.setContent(`<div class="gm-iw"><b>${esc(x.n)}</b><div class="m">${esc(x.en)}</div><div class="m">${esc(X.cats[x.c])} · ${esc(x.r)} · ${x.p}</div>${x.tm?`<div class="m">${esc(x.tm)}</div>`:''}<div class="acts"><button type="button" onclick="setOrigin(BYID['${x.id}'])">設為起點</button><button type="button" onclick="setDestExp(BYID['${x.id}'])">加到路線</button><button type="button" onclick="scrollToItem('${x.id}')">看介紹</button></div></div>`);gInfo.open({map:gmap,anchor:m});}
+function openInfo(x,m){const price=x.tw===undefined?'<span class="m">未查到價格</span>':x.tw===0?'<b>免費</b>':`<b>約 ${twFmt(x.tw)}</b>${x.tr&&x.tr[1]>x.tr[0]?`<span class="m">（各方案 ${twFmt(x.tr[0])}–${twFmt(x.tr[1])}）</span>`:''}`;
+  gInfo.setContent(`<div class="gm-iw iw2"><div class="iwph"><img src="exp_img/${esc(x.id)}.jpg" alt="" onerror="this.parentNode.remove()"><span class="iwcat"><span class="dot" style="background:${CATCOL[x.c]}"></span>${esc(X.cats[x.c])}</span></div>
+  <div class="iwb"><b class="iwn">${esc(x.n)}</b><div class="m">${esc(x.en)}</div><div class="m">${esc(x.r)} · ${x.p}${x.tm?' · '+esc(x.tm):''}</div>
+  <div class="iwp"><span class="k">參考價格</span>${price}</div>
+  <div class="iwg" id="iwg-${esc(x.id)}"><span class="k">Google 營業</span><span class="m">查詢中…</span></div>
+  <div class="acts"><button type="button" onclick="setOrigin(BYID['${x.id}'])">設為起點</button><button type="button" onclick="setDestExp(BYID['${x.id}'])">加到路線</button><button type="button" onclick="scrollToItem('${x.id}')">看介紹</button></div></div></div>`);gInfo.open({map:gmap,anchor:m});
+  gHours(x).then(h=>{const el=document.getElementById('iwg-'+x.id);if(el)el.innerHTML=hoursHtml(h);});}
+// ---- live Google opening hours / business status (fetched when a pin is opened, cached 7 days) ----
+const GH={};const GHK='exp-gh-v1';try{Object.assign(GH,JSON.parse(localStorage.getItem(GHK)||'{}'));}catch(e){}
+async function gHours(x){const c=GH[x.id];if(c&&Date.now()-c.t<7*864e5)return c;
+  try{const {Place}=await google.maps.importLibrary('places');await google.maps.importLibrary('geometry');
+    const {places}=await Place.searchByText({textQuery:x.gp||x.en||x.n,fields:['displayName','businessStatus','regularOpeningHours','googleMapsURI','userRatingCount','location'],locationBias:{center:{lat:x.la,lng:x.ln},radius:500},maxResultCount:1,language:'zh-TW'});
+    const p=places&&places[0];let h={t:Date.now(),ok:!!p};
+    if(p){const dist=p.location?google.maps.geometry?google.maps.geometry.spherical.computeDistanceBetween(p.location,new google.maps.LatLng(x.la,x.ln)):0:0;
+      h=Object.assign(h,{name:p.displayName||'',st:p.businessStatus||'',wk:(p.regularOpeningHours&&p.regularOpeningHours.weekdayDescriptions)||[],url:p.googleMapsURI||'',n:p.userRatingCount||0,far:dist>1500});}
+    GH[x.id]=h;try{localStorage.setItem(GHK,JSON.stringify(GH));}catch(e){}return h;}catch(e){return {err:1};}}
+function hoursHtml(h){if(!h||h.err)return '<span class="k">Google 營業</span><span class="m">目前查不到</span>';if(!h.ok)return '<span class="k">Google 營業</span><span class="m">Google 上找不到這個地點</span>';
+  const ST={OPERATIONAL:['營業中','ok'],CLOSED_TEMPORARILY:['暫停營業','bad'],CLOSED_PERMANENTLY:['永久停業','bad']};const st=ST[h.st]||['狀態不明','warn'];
+  const di=(new Date().getDay()+6)%7;const today=h.wk[di]?h.wk[di].replace(/^[^:：]+[:：]\s*/,''):'';
+  const wk=h.wk.length?`<details class="iwwk"><summary>今天：${esc(today||'—')}</summary>${h.wk.map((d,i)=>`<div${i===di?' class="td"':''}>${esc(d)}</div>`).join('')}</details>`:'<div class="m">Google 沒有營業時間</div>';
+  const warn=h.far?'<div class="iwwarn">對到的地點離元件標示位置超過 1.5 公里，可能不是同一個地方</div>':'';
+  return `<span class="k">Google 營業</span><span class="gst ${st[1]}">${st[0]}</span>${h.url?`<a class="m" href="${esc(h.url)}" target="_blank" rel="noopener">${esc(h.name)} ↗</a>`:`<span class="m">${esc(h.name)}</span>`}${wk}${warn}`;}
 function scrollToItem(id){const r=rows();let idx=r.findIndex(x=>x.id===id);if(dest&&by){const s=r.slice().sort((a,b)=>((by[a.id]||{s:1e12}).s)-((by[b.id]||{s:1e12}).s));idx=s.findIndex(x=>x.id===id);}if(idx>=S.limit){S.limit=idx+10;render();}const el=document.querySelector(`.item[data-id="${id}"]`);if(el){const tb=el.querySelector('button[data-act="x"]');if(tb&&!OPEN.has(id))toggleDet(BYID[id],tb);el.scrollIntoView({behavior:'smooth',block:'start'});el.classList.add('on');setTimeout(()=>{if(!origin||origin.id!==id)el.classList.remove('on');},1600);}}
 function focusExp(x,open){if(!gmap)return;const m=gmarkers.get(x.id);gmap.panTo({lat:x.la,lng:x.ln});if(gmap.getZoom()<13)gmap.setZoom(13);if(open&&m)setTimeout(()=>openInfo(x,m),250);$('gmap').scrollIntoView({behavior:'smooth',block:'center'});}
 
