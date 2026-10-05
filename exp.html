@@ -447,10 +447,13 @@ async function showRoute(){const pts=routePts();const my=++req;
   const [jd,jw]=await Promise.all([mk('DRIVE'),mk('WALK')]);if(my!==req)return;const rd=jd&&jd.routes&&jd.routes[0],rw=jw&&jw.routes&&jw.routes[0];const rt=S.mode==='WALK'?(rw||rd):(rd||rw);
   // whole-trip drive fails if any leg crosses water: fall back to driving each leg on its own
   let dl=rd&&rd.legs?rd.legs:null;
-  if(!rd&&pts.length>2){const one=(a,b)=>{const q={origin:wp(a),destination:wp(b),travelMode:'DRIVE',routingPreference:'TRAFFIC_UNAWARE'};return fetch('https://routes.googleapis.com/directions/v2:computeRoutes',{method:'POST',headers:{'Content-Type':'application/json','X-Goog-Api-Key':MAPS_KEY,'X-Goog-FieldMask':'routes.duration,routes.distanceMeters'},body:JSON.stringify(q)}).then(r=>r.ok?r.json():null).then(j=>j&&j.routes&&j.routes[0]||null).catch(()=>null);};
+  if(!rd&&pts.length>2){const one=(a,b)=>{const q={origin:wp(a),destination:wp(b),travelMode:'DRIVE',routingPreference:'TRAFFIC_UNAWARE'};return fetch('https://routes.googleapis.com/directions/v2:computeRoutes',{method:'POST',headers:{'Content-Type':'application/json','X-Goog-Api-Key':MAPS_KEY,'X-Goog-FieldMask':'routes.duration,routes.distanceMeters,routes.polyline.encodedPolyline'},body:JSON.stringify(q)}).then(r=>r.ok?r.json():null).then(j=>j&&j.routes&&j.routes[0]||null).catch(()=>null);};
     dl=await Promise.all(pts.slice(1).map((p,i)=>one(pts[i],p)));if(my!==req)return;}
-  if(!rt){clearRoute();setMsg('找不到路線（可能隔海或需要搭船），請在 Google 地圖確認。 <a href="'+dirUrl(pts)+'" target="_blank" rel="noopener">在 Google 地圖開啟 →</a>',true);return;}
-  const {encoding}=await google.maps.importLibrary('geometry');if(my!==req)return;const path=encoding.decodePath(rt.polyline.encodedPolyline);
+  const partial=!rt&&dl&&dl.some(Boolean);
+  if(!rt&&!partial){clearRoute();setMsg('找不到路線（可能隔海或需要搭船），請在 Google 地圖確認。 <a href="'+dirUrl(pts)+'" target="_blank" rel="noopener">在 Google 地圖開啟 →</a>',true);return;}
+  const {encoding}=await google.maps.importLibrary('geometry');if(my!==req)return;let path;
+  if(rt)path=encoding.decodePath(rt.polyline.encodedPolyline);
+  else{path=[];pts.slice(1).forEach((p,i)=>{const d=dl[i];if(d&&d.polyline)path.push(...encoding.decodePath(d.polyline.encodedPolyline));else path.push(new google.maps.LatLng(pts[i].lat,pts[i].lng),new google.maps.LatLng(p.lat,p.lng));});}
   clearRoute();routeLine=new google.maps.Polyline({map:gmap,path,strokeColor:'#1B1A14',strokeOpacity:.9,strokeWeight:5});
   if(rd&&rw&&rt===rd){const wpath=encoding.decodePath(rw.polyline.encodedPolyline);routeLine2=new google.maps.Polyline({map:gmap,path:wpath,strokeColor:'#2F8466',strokeOpacity:0,strokeWeight:4,icons:[{icon:{path:'M 0,-1 0,1',strokeOpacity:.9,strokeColor:'#2F8466',scale:3},offset:'0',repeat:'14px'}]});}
   const bb=new google.maps.LatLngBounds();path.forEach(p=>bb.extend(p));gmap.fitBounds(bb,60);
@@ -459,7 +462,7 @@ async function showRoute(){const pts=routePts();const my=++req;
     return `<div class="lg"><span><b>${lab(i)}</b> ${esc(pts[i].name)} → <b>${lab(i+1)}</b> ${esc(p.name)}</span><span class="num">開車 ${d&&d.duration?fmtMin(parseInt(d.duration))+' 分 · '+km(d.distanceMeters)+' km':'無法開車（可能要搭船）'} ｜ 步行 ${w&&w.duration?fmtMin(parseInt(w.duration))+' 分 · '+km(w.distanceMeters)+' km':'—'}</span></div>`;}).join('');
   const tot=`<div class="lg tot"><span><b>全程 ${pts.length-1} 段</b></span><span class="num">開車 ${rd?fmtMin(parseInt(rd.duration))+' 分 · '+km(rd.distanceMeters)+' km':(dl&&dl.some(Boolean)?'含無法開車路段':'—')} ｜ 步行 ${rw?fmtMin(parseInt(rw.duration))+' 分 · '+km(rw.distanceMeters)+' km':'—'}</span></div>`;
   $('legs').innerHTML=legs+(pts.length>2?tot:'');$('legs').hidden=false;
-  setMsg(`路線：${pts.map((p,i)=>`<b>${esc(p.name)}</b>`).join(' → ')} · <a href="${dirUrl(pts)}" target="_blank" rel="noopener">在 Google 地圖開啟路線 →</a>`);}
+  setMsg(`${partial?'有路段無法開車（可能要搭船），地圖上以直線表示。':''}路線：${pts.map((p,i)=>`<b>${esc(p.name)}</b>`).join(' → ')} · <a href="${dirUrl(pts)}" target="_blank" rel="noopener">在 Google 地圖開啟路線 →</a>`);}
 
 // ---- Google Maps ----
 let gmap=null,gInfo=null,gcluster=null;const gmarkers=new Map();const PIN={};
