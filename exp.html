@@ -3,7 +3,7 @@
 <title>Outo 體驗元件地圖</title>
 <link rel="icon" href="favicon.ico?v=4" sizes="any"><link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png?v=4"><link rel="apple-touch-icon" href="favicon.png?v=3">
 <script src="config.js"></script>
-<script src="exp_data.js?v=6"></script>
+<script src="exp_data.js?v=7"></script>
 <style>
 @font-face{font-family:"Fields Display";src:url("fonts/Fields-Display-Semi-Bold.woff2") format("woff2");font-weight:600;font-display:swap}
 @font-face{font-family:"Fields";src:url("fonts/Fields-Regular.woff2") format("woff2");font-weight:400;font-display:swap}
@@ -344,7 +344,13 @@ input{font:inherit;font-weight:500;color:var(--ink);background:var(--surface);bo
 .stop .s3 input{height:28px;width:56px;padding:0 6px;font-size:12.5px;border-radius:var(--r-sm)}
 .stop .s3 input[data-f="price"]{width:74px}
 .stop .s3 select{height:28px;font:inherit;font-size:12px;border:1px solid var(--line-strong);border-radius:var(--r-sm);background:var(--surface);padding:0 2px}
-.stop .s3 .amt{margin-left:auto;color:var(--ink)}
+.stop .s3 .amt{color:var(--ink)}
+.stop .s3 b{font-weight:600;color:var(--ink)}
+.stop .s3 .m{color:var(--muted)}
+.stop .s3 .more{color:var(--sun-deep);font-weight:600;margin-left:auto;font-size:11.5px;white-space:nowrap}
+.stop.link{cursor:pointer;transition:background var(--dur) var(--ease)}
+.stop.link:hover{background:var(--paper-50)}
+.stop.link button,.stop.link .grip{cursor:pointer}
 .stop .s2 input{height:28px;width:64px;padding:0 6px;font-size:12.5px;border-radius:var(--r-sm)}
 .stop .s2 input[data-f="price"]{width:78px}
 .stop .s2 select{height:28px;font:inherit;font-size:12px;border:1px solid var(--line-strong);border-radius:var(--r-sm);background:var(--surface);padding:0 4px}
@@ -611,9 +617,10 @@ const toMin=t=>{const m=String(t||'').match(/(\d{1,2}):(\d{2})/);return m?+m[1]*
 const hm=v=>{v=Math.round(v);const d=Math.floor(v/1440);v=((v%1440)+1440)%1440;return String(Math.floor(v/60)).padStart(2,'0')+':'+String(v%60).padStart(2,'0')+(d>0?'（+'+d+'）':'');};
 const dur=v=>{v=Math.round(v);return v>=60?Math.floor(v/60)+' 小時'+(v%60?' '+v%60+' 分':''):v+' 分';};
 const itemOf=d=>d&&d.id?BYID[d.id]||null:null;
-function stayOf(d,i){if(d.stay!=null&&d.stay!=='')return +d.stay;const x=itemOf(d);return x?(x.du||0):(i===0?0:60);}
-function priceOf(d){if(d.price!=null&&d.price!=='')return +d.price;const x=itemOf(d);return x&&x.tw!=null?x.tw:null;}
-function pbOf(d){return d.pb||(itemOf(d)||{}).pb||'p';}
+function stayOf(d,i){const x=itemOf(d);return x?(x.du||0):(i===0?0:60);}
+function priceOf(d){const x=itemOf(d);return x&&x.tw!=null?x.tw:null;}
+function pbOf(d){return (itemOf(d)||{}).pb||'p';}
+const PBL={p:'每人',2:'每兩人',g:'每團'};
 function paxN(){return Math.max(1,(+PLAN.ad||0)+(+PLAN.ch||0));}
 function planDay(){const d=PLAN.date?new Date(PLAN.date+'T00:00'):new Date();return isNaN(d)?(new Date().getDay()+6)%7:(d.getDay()+6)%7;}
 function legSec(l){if(!l)return null;return S.mode==='WALK'?(l.ws??l.s):(l.s??null);}
@@ -639,7 +646,7 @@ function warnsOf(r){const w=[],x=r.x,a=r.arrive%1440,l=a+r.stay;
     else{const rg=gRanges(body);if(rg.length&&!rg.some(([o,c])=>a>=o&&l<=c))w.push(`Google 營業時間：星期${WD[di]} ${body}`);}}
   if(x.c===6&&/夜|酒吧|晚|火舞|現場音樂/.test(x.n+(x.ty||''))&&a<16*60)w.push('夜間活動排在白天');
   if(/日出/.test(x.n)&&a>7*60)w.push('日出行程應該排在清晨');
-  if(x.dud)w.push('停留時間是預設值，請確認');
+  
   return w;}
 function costOf(d){const p=priceOf(d);if(p==null)return null;const b=pbOf(d),n=paxN();return b==='g'?p:b==='2'?p*Math.ceil(n/2):p*n;}
 let hTimer=0;function fetchHours(){if(!window.google||!google.maps||!google.maps.importLibrary)return;STOPS.forEach(d=>{const x=itemOf(d);if(x&&!GH[x.id]&&!x._gh){x._gh=1;gHours(x).then(()=>{clearTimeout(hTimer);hTimer=setTimeout(drawStops,300);});}});}
@@ -647,9 +654,9 @@ function syncStops(){origin=STOPS.length&&STOPS[0].id?BYID[STOPS[0].id]||null:nu
 function drawStops(){const T=timeline(),n=STOPS.length;
   $('stops').innerHTML=T.rows.map(r=>{const d=r.d,i=r.i,x=r.x,ws=warnsOf(r),c=costOf(d),pb=pbOf(d),pr=priceOf(d);
     const leg=i>0?`<li class="legrow"><span>↓</span>${r.legsOk?(legSec(r.leg)!=null?`${S.mode==='WALK'?'步行':'開車'} ${dur(r.lm)} · ${km(legM(r.leg))} km`:'無法開車（可能要搭船）'):'計算中…'}</li>`:'';
-    return leg+`<li class="stop" data-i="${i}"><div class="s1"><span class="grip" draggable="true" title="拖曳調整順序">⋮⋮</span><span class="no${i===0?' st':''}">${i===0?'起點':i}</span><span class="nm" title="${esc(d.name)}">${esc(d.name)}${x?` <small>${esc(x.id)}</small>`:''}</span><button type="button" data-sa="up" data-i="${i}" aria-label="往前移"${i===0?' disabled':''}>↑</button><button type="button" data-sa="down" data-i="${i}" aria-label="往後移"${i===n-1?' disabled':''}>↓</button><button type="button" data-sa="del" data-i="${i}" aria-label="移除">×</button></div>
+    return leg+`<li class="stop${x?' link':''}" data-i="${i}"${x?` data-id="${esc(x.id)}" title="點一下看「${esc(x.n)}」的詳細資訊"`:''}><div class="s1"><span class="grip" draggable="true" title="拖曳調整順序">⋮⋮</span><span class="no${i===0?' st':''}">${i===0?'起點':i}</span><span class="nm" title="${esc(d.name)}">${esc(d.name)}${x?` <small>${esc(x.id)}</small>`:''}</span><button type="button" data-sa="up" data-i="${i}" aria-label="往前移"${i===0?' disabled':''}>↑</button><button type="button" data-sa="down" data-i="${i}" aria-label="往後移"${i===n-1?' disabled':''}>↓</button><button type="button" data-sa="del" data-i="${i}" aria-label="移除">×</button></div>
       <div class="s2"><span class="tt num">${hm(r.arrive)}–${hm(r.leave)}</span>${r.wait?`<span class="wt">先等 ${dur(r.wait)}，場次 ${hm(r.arrive)}</span>`:''}</div>
-      <div class="s3"><label>停留<input type="number" data-f="stay" data-i="${i}" min="0" step="15" value="${r.stay}" aria-label="停留分鐘">分</label><label>NT$<input type="number" data-f="price" data-i="${i}" min="0" step="10" value="${pr??''}" placeholder="${x?'未查到':'0'}" aria-label="費用"></label><select data-f="pb" data-i="${i}" aria-label="價格計法"><option value="p"${pb==='p'?' selected':''}>每人</option><option value="2"${pb==='2'?' selected':''}>每兩人</option><option value="g"${pb==='g'?' selected':''}>每團</option></select><span class="amt num">${c==null?'':'小計 '+twFmt(c)}</span></div>
+      <div class="s3"><span>停留約 ${dur(r.stay)}${x&&x.dud?'（預設）':''}</span>${x?(pr==null?'<span class="m">未查到價格</span>':`<span>參考價 <b class="num">${pr===0?'免費':twFmt(pr)}</b>${pr?'／'+PBL[pb]:''}</span>`):''}<span class="amt num">${c?'小計 '+twFmt(c):''}</span>${x?'<span class="more">看詳細 →</span>':''}</div>
       ${ws.length?`<ul class="sw">${ws.map(t=>`<li>${esc(t)}</li>`).join('')}</ul>`:''}</li>`;}).join('');
   const showAdder=!n||adding;$('adder').hidden=!showAdder;$('addStop').hidden=n>=20;$('addStop').textContent=n?`＋ 新增第 ${n} 站`:'＋ 新增起點';$('dQ').placeholder=n?`搜尋第 ${n} 站：飯店、餐廳、地址或體驗`:'搜尋起點：飯店、餐廳、地址或體驗';$('clrStops').hidden=n<2;$('optStops').hidden=n<4||S.mode==='WALK';
   $('tabN').textContent=n?`(${n})`:'';drawSummary(T);drawPlanHead();fetchHours();}
@@ -663,14 +670,14 @@ function drawSummary(T){if(!STOPS.length){$('psum').innerHTML='';return;}const n
     <div><span class="k">每人費用（參考，不是報價）</span><b class="num">約 ${twFmt(total/n)}</b><span class="m">${n} 人合計 ${twFmt(total)}＝體驗 ${twFmt(sum)}＋包車 ${twFmt(car)}${PLAN.car==null||PLAN.car===''?'（預設值，可改）':''}</span></div></div>
     ${g.length?`<ul class="sw">${g.map(t=>`<li>${esc(t)}</li>`).join('')}</ul>`:''}
     ${miss.length?`<div class="m">沒有價格、未計入：${miss.map(esc).join('、')}</div>`:''}
-    <div class="m">價格是第一個查到的報價換算台幣，小孩以大人價計；導遊、餐費、門票是否已含在行程價格內，請以業者報價為準。</div>`;}
+    <div class="m">停留時間與價格都是依元件資料推估：價格是第一個查到的報價換算台幣，小孩以大人價計；導遊、餐費、門票是否已含在行程價格內，請以業者報價為準。</div>`;}
 function addStop(d){if(STOPS.length>=20){setMsg('最多 20 站',true);return;}STOPS.push(d);adding=false;$('dQ').value='';hideDD();acTok=null;changed();syncStops();render();showRoute();}
 function setDest(d){addStop(d);}
 function setDestExp(x){addStop({name:x.n,lat:x.la,lng:x.ln,id:x.id});}
 function moveStop(a,b){if(b<0||b>=STOPS.length||a===b)return;const [d]=STOPS.splice(a,1);STOPS.splice(b,0,d);changed();syncStops();render();showRoute();}
 function removeStop(i){STOPS.splice(i,1);if(!STOPS.length)adding=true;changed();syncStops();render();showRoute();}
 function clearDest(silent){STOPS=[];LEGS=[];adding=true;req++;syncStops();clearRoute();if(!silent){changed();showRoute();}}
-$('stops').addEventListener('click',e=>{const b=e.target.closest('button[data-sa]');if(!b)return;const i=+b.dataset.i;if(b.dataset.sa==='up')moveStop(i,i-1);else if(b.dataset.sa==='down')moveStop(i,i+1);else removeStop(i);});
+$('stops').addEventListener('click',e=>{const b=e.target.closest('button[data-sa]');if(!b){const li=e.target.closest('.stop.link');if(li&&!e.target.closest('.grip')){const x=BYID[li.dataset.id];if(x){showTab('map');if(rows().some(y=>y.id===x.id))scrollToItem(x.id);else{focusExp(x,true);setMsg('這個體驗被目前的篩選條件藏起來了，已在地圖上打開；按「看介紹」前請先放寬篩選。');}}}return;}const i=+b.dataset.i;if(b.dataset.sa==='up')moveStop(i,i-1);else if(b.dataset.sa==='down')moveStop(i,i+1);else removeStop(i);});
 $('stops').addEventListener('change',e=>{const f=e.target.dataset.f;if(!f)return;const d=STOPS[+e.target.dataset.i];if(!d)return;const v=e.target.value;d[f]=v===''?null:(f==='pb'?v:Math.max(0,+v));changed();drawStops();});
 let dragI=-1;
 $('stops').addEventListener('dragstart',e=>{const li=e.target.closest('.stop');if(!li)return;dragI=+li.dataset.i;li.classList.add('drag');e.dataTransfer.effectAllowed='move';try{e.dataTransfer.setData('text/plain',String(dragI));}catch(_){}});
