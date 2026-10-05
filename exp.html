@@ -3,7 +3,7 @@
 <title>Outo 體驗元件地圖</title>
 <link rel="icon" href="favicon-32.png">
 <script src="config.js"></script>
-<script src="exp_data.js?v=4"></script>
+<script src="exp_data.js?v=5"></script>
 <style>
 @font-face{font-family:"Fields Display";src:url("fonts/Fields-Display-Semi-Bold.woff2") format("woff2");font-weight:600;font-display:swap}
 @font-face{font-family:"Fields";src:url("fonts/Fields-Regular.woff2") format("woff2");font-weight:400;font-display:swap}
@@ -312,7 +312,7 @@ function itemHtml(x){
   <div class="det" data-det="${esc(x.id)}"${OPEN.has(x.id)?'':' hidden'}>${OPEN.has(x.id)?detHtml(x):''}</div>
 </article>`;}
 let DLOAD=null;
-function loadDet(){if(window.EXPD)return Promise.resolve();if(!DLOAD)DLOAD=new Promise((ok,no)=>{const sc=document.createElement('script');sc.src='exp_detail.js?v=1';sc.onload=ok;sc.onerror=()=>{DLOAD=null;no();};document.head.appendChild(sc);});return DLOAD;}
+function loadDet(){if(window.EXPD)return Promise.resolve();if(!DLOAD)DLOAD=new Promise((ok,no)=>{const sc=document.createElement('script');sc.src='exp_detail.js?v=2';sc.onload=ok;sc.onerror=()=>{DLOAD=null;no();};document.head.appendChild(sc);});return DLOAD;}
 async function toggleDet(x,b){const box=document.querySelector(`.det[data-det="${x.id}"]`);if(!box)return;
   if(OPEN.has(x.id)){OPEN.delete(x.id);box.hidden=true;box.innerHTML='';b.textContent='展開詳情';b.setAttribute('aria-expanded','false');return;}
   OPEN.add(x.id);box.hidden=false;b.textContent='收合詳情';b.setAttribute('aria-expanded','true');
@@ -445,15 +445,19 @@ async function showRoute(){const pts=routePts();const my=++req;
   const wp=x=>({location:{latLng:{latitude:x.lat,longitude:x.lng}}});
   const mk=mode=>{const b={origin:wp(pts[0]),destination:wp(pts[pts.length-1]),travelMode:mode};if(pts.length>2)b.intermediates=pts.slice(1,-1).map(wp);if(mode==='DRIVE')b.routingPreference='TRAFFIC_UNAWARE';return fetch('https://routes.googleapis.com/directions/v2:computeRoutes',{method:'POST',headers:{'Content-Type':'application/json','X-Goog-Api-Key':MAPS_KEY,'X-Goog-FieldMask':'routes.duration,routes.distanceMeters,routes.polyline.encodedPolyline,routes.legs.duration,routes.legs.distanceMeters'},body:JSON.stringify(b)}).then(r=>r.ok?r.json():null).catch(()=>null);};
   const [jd,jw]=await Promise.all([mk('DRIVE'),mk('WALK')]);if(my!==req)return;const rd=jd&&jd.routes&&jd.routes[0],rw=jw&&jw.routes&&jw.routes[0];const rt=S.mode==='WALK'?(rw||rd):(rd||rw);
+  // whole-trip drive fails if any leg crosses water: fall back to driving each leg on its own
+  let dl=rd&&rd.legs?rd.legs:null;
+  if(!rd&&pts.length>2){const one=(a,b)=>{const q={origin:wp(a),destination:wp(b),travelMode:'DRIVE',routingPreference:'TRAFFIC_UNAWARE'};return fetch('https://routes.googleapis.com/directions/v2:computeRoutes',{method:'POST',headers:{'Content-Type':'application/json','X-Goog-Api-Key':MAPS_KEY,'X-Goog-FieldMask':'routes.duration,routes.distanceMeters'},body:JSON.stringify(q)}).then(r=>r.ok?r.json():null).then(j=>j&&j.routes&&j.routes[0]||null).catch(()=>null);};
+    dl=await Promise.all(pts.slice(1).map((p,i)=>one(pts[i],p)));if(my!==req)return;}
   if(!rt){clearRoute();setMsg('找不到路線（可能隔海或需要搭船），請在 Google 地圖確認。 <a href="'+dirUrl(pts)+'" target="_blank" rel="noopener">在 Google 地圖開啟 →</a>',true);return;}
   const {encoding}=await google.maps.importLibrary('geometry');if(my!==req)return;const path=encoding.decodePath(rt.polyline.encodedPolyline);
   clearRoute();routeLine=new google.maps.Polyline({map:gmap,path,strokeColor:'#1B1A14',strokeOpacity:.9,strokeWeight:5});
   if(rd&&rw&&rt===rd){const wpath=encoding.decodePath(rw.polyline.encodedPolyline);routeLine2=new google.maps.Polyline({map:gmap,path:wpath,strokeColor:'#2F8466',strokeOpacity:0,strokeWeight:4,icons:[{icon:{path:'M 0,-1 0,1',strokeOpacity:.9,strokeColor:'#2F8466',scale:3},offset:'0',repeat:'14px'}]});}
   const bb=new google.maps.LatLngBounds();path.forEach(p=>bb.extend(p));gmap.fitBounds(bb,60);
   const lab=i=>i===0&&pts[0].o?'起點':String(origin?i:i+1);
-  const legs=pts.slice(1).map((p,i)=>{const d=rd&&rd.legs&&rd.legs[i],w=rw&&rw.legs&&rw.legs[i];
-    return `<div class="lg"><span><b>${lab(i)}</b> ${esc(pts[i].name)} → <b>${lab(i+1)}</b> ${esc(p.name)}</span><span class="num">開車 ${d&&d.duration?fmtMin(parseInt(d.duration))+' 分 · '+km(d.distanceMeters)+' km':'—'} ｜ 步行 ${w&&w.duration?fmtMin(parseInt(w.duration))+' 分 · '+km(w.distanceMeters)+' km':'—'}</span></div>`;}).join('');
-  const tot=`<div class="lg tot"><span><b>全程 ${pts.length-1} 段</b></span><span class="num">開車 ${rd?fmtMin(parseInt(rd.duration))+' 分 · '+km(rd.distanceMeters)+' km':'—'} ｜ 步行 ${rw?fmtMin(parseInt(rw.duration))+' 分 · '+km(rw.distanceMeters)+' km':'—'}</span></div>`;
+  const legs=pts.slice(1).map((p,i)=>{const d=dl&&dl[i],w=rw&&rw.legs&&rw.legs[i];
+    return `<div class="lg"><span><b>${lab(i)}</b> ${esc(pts[i].name)} → <b>${lab(i+1)}</b> ${esc(p.name)}</span><span class="num">開車 ${d&&d.duration?fmtMin(parseInt(d.duration))+' 分 · '+km(d.distanceMeters)+' km':'無法開車（可能要搭船）'} ｜ 步行 ${w&&w.duration?fmtMin(parseInt(w.duration))+' 分 · '+km(w.distanceMeters)+' km':'—'}</span></div>`;}).join('');
+  const tot=`<div class="lg tot"><span><b>全程 ${pts.length-1} 段</b></span><span class="num">開車 ${rd?fmtMin(parseInt(rd.duration))+' 分 · '+km(rd.distanceMeters)+' km':(dl&&dl.some(Boolean)?'含無法開車路段':'—')} ｜ 步行 ${rw?fmtMin(parseInt(rw.duration))+' 分 · '+km(rw.distanceMeters)+' km':'—'}</span></div>`;
   $('legs').innerHTML=legs+(pts.length>2?tot:'');$('legs').hidden=false;
   setMsg(`路線：${pts.map((p,i)=>`<b>${esc(p.name)}</b>`).join(' → ')} · <a href="${dirUrl(pts)}" target="_blank" rel="noopener">在 Google 地圖開啟路線 →</a>`);}
 
