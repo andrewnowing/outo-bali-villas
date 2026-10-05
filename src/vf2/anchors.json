@@ -1,0 +1,44 @@
+{
+  "points": {
+    "seminyak": [-8.6830, 115.1565],
+    "legian": [-8.7080, 115.1715],
+    "canggu": [-8.6585, 115.1300],
+    "berawa": [-8.6650, 115.1385],
+    "pererenan": [-8.6440, 115.1215],
+    "ubud": [-8.5065, 115.2625],
+    "bingin": [-8.8060, 115.1120],
+    "uluwatu": [-8.8110, 115.1030],
+    "jimbaran": [-8.7760, 115.1660],
+    "sanur": [-8.6895, 115.2620],
+    "nusadua": [-8.7995, 115.2300],
+    "candidasa": [-8.5090, 115.5660],
+    "lovina": [-8.1590, 115.0255],
+    "airport": [-8.7467, 115.1668]
+  },
+  "area_to_anchor": {
+    "Seminyak": "seminyak", "Kerobokan": "seminyak", "Umalas": "seminyak", "Outer Seminyak": "seminyak",
+    "Legian": "legian",
+    "Canggu": "canggu", "Berawa": "berawa", "Pererenan": "pererenan", "Seseh": "pererenan", "Tabanan": "pererenan",
+    "Ubud": "ubud",
+    "Bingin": "bingin", "Uluwatu & Bingin": "bingin", "Uluwatu": "uluwatu",
+    "Jimbaran": "jimbaran", "Uluwatu, Nusa Dua & Jimbaran": "jimbaran",
+    "Sanur": "sanur", "Ketewel": "sanur",
+    "Nusa Dua": "nusadua",
+    "Candidasa": "candidasa",
+    "Lovina": "lovina"
+  },
+  "anchor_zh": {
+    "Legian": "雷吉安大街", "Uluwatu": "烏魯瓦圖 Padang Padang 海灘", "Jimbaran": "金巴蘭海灣", "Uluwatu, Nusa Dua & Jimbaran": "金巴蘭海灣",
+    "Sanur": "沙努爾主街", "Ketewel": "沙努爾主街", "Nusa Dua": "努沙杜瓦 Bali Collection", "Tabanan": "佩雷雷南中心", "Outer Seminyak": "水明漾 Eat Street"
+  },
+  "anchor_en": {
+    "Legian": "Legian Street", "Uluwatu": "Uluwatu Padang Padang beach", "Jimbaran": "Jimbaran Bay", "Uluwatu, Nusa Dua & Jimbaran": "Jimbaran Bay",
+    "Sanur": "Sanur main street", "Ketewel": "Sanur main street", "Nusa Dua": "Nusa Dua Bali Collection", "Tabanan": "Pererenan center", "Outer Seminyak": "Seminyak Eat Street"
+  },
+  "area_zh": {
+    "Uluwatu": "烏魯瓦圖", "Jimbaran": "金巴蘭", "Sanur": "沙努爾", "Nusa Dua": "努沙杜瓦", "Ketewel": "克特韋爾", "Tabanan": "塔巴南",
+    "Lombok": "龍目島", "Gili islands": "吉利群島", "Pemuteran": "佩穆特蘭", "Nusa Lembongan": "藍夢島", "Nusa Penida": "珀尼達島",
+    "Kubutambahan": "庫布坦巴漢", "Senggigi": "聖吉吉", "Tulamben": "圖蘭奔", "Balian": "巴利安", "Uluwatu, Nusa Dua & Jimbaran": "烏魯瓦圖／努沙杜瓦／金巴蘭",
+    "Outer Seminyak": "水明漾外圍", "Jatiluwih": "查蒂露薇", "North Bali": "北峇里", "Amed": "艾湄", "Munduk": "蒙杜克"
+  }
+}
