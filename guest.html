@@ -462,7 +462,7 @@ zh:{
   title:'Outo 峇里島別墅空房查詢',
   sub:'Villa Finder 同業房源 118 間 · 價格為對外售價（美金、含稅），不是 Outo 成本價',
   loading:'房況資料載入中', langGroup:'語言', helpBtn:'操作說明', histBtn:'房況更新歷史紀錄', close:'關閉',
-  helpT:'怎麼查房況、怎麼預訂', histT:'房況更新歷史紀錄', histNote:'同業後台 118 間：每 5 分鐘從 Villa Finder 的 iCal 行事曆同步一次。官網直售 1,019 間：每天 10:17、16:17 從 Villa Finder 公開頁面抓一次已訂日期。表格列出每一次更新，時間為台灣時間。', hSrcPortal:'同業後台', hSrcPub:'官網直售', freshPub:(d)=>`；官網直售房況 ${d}`, hTime:'更新時間', hFeeds:'同步間數', hChanged:'房況有變動', hErr:'失敗', histEmpty:'還沒有紀錄（下一次同步後會出現）', histNow:'目前頁面使用的版本', hUnk:'—',
+  helpT:'怎麼查房況、怎麼預訂', histT:'房況更新歷史紀錄', histNote:'同業後台 118 間：每 5 分鐘從 Villa Finder 的 iCal 行事曆同步一次。官網直售 1,019 間：每 5 分鐘從 Villa Finder 公開頁面抓一次已訂日期（GitHub 排程尖峰時可能延後幾分鐘）。表格列出每一次更新，時間為台灣時間。', hSrcPortal:'同業後台', hSrcPub:'官網直售', freshPub:(d)=>`；官網直售房況 ${d}`, hTime:'更新時間', hFeeds:'同步間數', hChanged:'房況有變動', hErr:'失敗', histEmpty:'還沒有紀錄（下一次同步後會出現）', histNow:'目前頁面使用的版本', hUnk:'—',
   helpHtml:`<ol>
 <li><b>1. 選日期與房數</b>點「入住日 → 退房日」一次選好入住與退房，再選「至少幾房」（例如客人要 3 房就選 3 房，4 房的別墅也會出現，報價會用符合的最小格局）。入住人數會自動排除容納不下的別墅。</li>
 <li><b>2. 縮小範圍</b>區域、床型膠囊（雙床房／雙人房／四人房／上下舖，可複選，選了就代表「都要有」）、開車到市區幾分鐘、排序方式。知道名字就直接打在「搜尋別墅名稱」。預設只顯示有空房的，取消勾選可看全部。</li>
@@ -547,7 +547,7 @@ en:{
   title:'Outo Bali Villa Availability',
   sub:"118 Villa Finder partner listings · Prices are public selling prices (USD, tax included), not Outo's cost",
   loading:'Loading availability data', langGroup:'Language', helpBtn:'How to use', histBtn:'Availability update log', close:'Close',
-  helpT:'How to search and book', histT:'Availability update log', histNote:'Partner-portal villas (118): synced from Villa Finder iCal calendars every 5 minutes. Published-rate villas (1,019): booked dates fetched from Villa Finder public pages daily at 10:17 and 16:17. Every update is listed; Taiwan time.', hSrcPortal:'Partner portal', hSrcPub:'Published rate', freshPub:(d)=>`; published-rate villas ${d}`, hTime:'Updated at', hFeeds:'Feeds synced', hChanged:'Changed', hErr:'Failed', histEmpty:'No entries yet (they appear after the next sync)', histNow:'version this page is using', hUnk:'—',
+  helpT:'How to search and book', histT:'Availability update log', histNote:'Partner-portal villas (118): synced from Villa Finder iCal calendars every 5 minutes. Published-rate villas (1,019): booked dates fetched from Villa Finder public pages every 5 minutes (GitHub scheduling may lag a few minutes). Every update is listed; Taiwan time.', hSrcPortal:'Partner portal', hSrcPub:'Published rate', freshPub:(d)=>`; published-rate villas ${d}`, hTime:'Updated at', hFeeds:'Feeds synced', hChanged:'Changed', hErr:'Failed', histEmpty:'No entries yet (they appear after the next sync)', histNow:'version this page is using', hUnk:'—',
   helpHtml:`<ol>
 <li><b>1. Pick dates and bedrooms</b>Click "Check-in → Check-out" to pick both dates in one calendar, then "Min. bedrooms" (choose 3 for a 3-bedroom request; 4-bedroom villas still appear, quoted at the smallest layout that fits). Guest count hides villas that cannot accommodate the group.</li>
 <li><b>2. Narrow down</b>Area, room-type chips (Twin / Double / Quad / Bunk — multi-select means the villa must have all of them), drive time to town, sort order. Know the name? Type it in "Search by villa name". "Available only" is on by default; untick to see everything.</li>
@@ -955,7 +955,7 @@ async function liveCheck(v,ciD,coD,el){if(!HOSTED){el.textContent='';return;}try
 function vfReq(v,ci,co){if(isPub(v))return `${v.url}?from=${toInput(ci)}&to=${toInput(co)}`;return `https://distribution.villa-finder.com/request/${encodeURIComponent(v.s)}?from=${toInput(ci)}&to=${toInput(co)}`;}
 
 const AVAIL_FILE_ID='1E7bPXD0-dR_Skgm53URFi1UDciwnxmiI';
-function applyAvail(d,src){if(d&&d.fx&&d.fx.rate)FX={rate:+d.fx.rate,at:d.fx.at,src:d.fx.src||'BOT'};if(d&&d.byIcal&&d.updatedAt&&new Date(d.updatedAt)>=new Date(avail.updatedAt)){avail=Object.assign({},d,{src});noteUpdate();showFresh();render();}}
+function applyAvail(d,src){if(d&&d.fx&&d.fx.rate)FX={rate:+d.fx.rate,at:d.fx.at,src:d.fx.src||'BOT'};if(d&&d.byIcal&&d.updatedAt&&new Date(d.updatedAt)>=new Date(avail.updatedAt)){avail=Object.assign({},d,{src});noteUpdate();showFresh();render();if(!$('histDlg').hidden)renderHist();}}
 function decodeB64(b){const bin=atob(b.replace(/\s/g,''));const u=new Uint8Array(bin.length);for(let i=0;i<bin.length;i++)u[i]=bin.charCodeAt(i);return new TextDecoder().decode(u);}
 function watchAvail(m){try{m.watchTool('Google Drive','download_file_content',{fileId:AVAIL_FILE_ID},ev=>{if(ev.type!=='data')return;try{const p=ev.result&&ev.result.payload;const b64=p&&(p.content||p.base64Content);if(!b64)return;applyAvail(JSON.parse(decodeB64(b64)),'drive');}catch(e){}},{refetchInterval:120000,cache:{staleTime:60000}});}catch(e){}}
 function photosOf(v){return (typeof PHOTOS!=='undefined'&&PHOTOS[v.s])||(typeof PUB_META!=='undefined'&&PUB_META[v.s]&&PUB_META[v.s].ph)||[];}
@@ -1179,7 +1179,7 @@ $('cur').addEventListener('click',e=>{const b=e.target.closest('button[data-cur]
 document.querySelectorAll('#cur button[data-cur]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.cur===CUR)));
 loadFx().then(()=>{if(CUR==='TWD')render();});
 const PUBAV_URL='https://raw.githubusercontent.com/andrewnowing/outo-bali-villas/main/pubav.js';
-async function refreshPubav(){if(!HOSTED||typeof PUBAV==='undefined')return;try{const r=await fetch(PUBAV_URL+'?t='+Math.floor(Date.now()/60000),{cache:'no-store'});if(!r.ok)return;const txt=await r.text();const m=txt.match(/^const PUBAV=(\{[\s\S]*\});\s*$/);if(!m)return;const j=JSON.parse(m[1]);if(j&&j.by&&j.updatedAt&&new Date(j.updatedAt)>new Date(PUBAV.updatedAt)){PUBAV.by=j.by;PUBAV.updatedAt=j.updatedAt;PUBAV.ok=j.ok;PUBAV.err=j.err;PUBAV.history=j.history;showFresh();render();}}catch(e){}}
+async function refreshPubav(){if(!HOSTED||typeof PUBAV==='undefined')return;try{const r=await fetch(PUBAV_URL+'?t='+Math.floor(Date.now()/60000),{cache:'no-store'});if(!r.ok)return;const txt=await r.text();const m=txt.match(/^const PUBAV=(\{[\s\S]*\});\s*$/);if(!m)return;const j=JSON.parse(m[1]);if(j&&j.by&&j.updatedAt&&new Date(j.updatedAt)>new Date(PUBAV.updatedAt)){PUBAV.by=j.by;PUBAV.updatedAt=j.updatedAt;PUBAV.ok=j.ok;PUBAV.err=j.err;PUBAV.history=j.history;showFresh();render();if(!$('histDlg').hidden)renderHist();}}catch(e){}}
 refreshPubav();setInterval(refreshPubav,120000);
 
 (function init(){
