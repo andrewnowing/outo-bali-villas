@@ -33,15 +33,17 @@ jobs:
           git commit -m "pubav: refresh $(date -u +%Y-%m-%dT%H:%MZ)"
           for i in 1 2 3; do git pull --rebase -X theirs origin main && git push && break || sleep 20; done
       - name: Pace to 5 minutes and dispatch the next run
-        if: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.chain != 'false' }}
+        # always(): the chain must survive a failed fetch (Villa Finder down / blocked), otherwise it dies silently
+        if: ${{ always() && github.event_name == 'workflow_dispatch' && github.event.inputs.chain != 'false' }}
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          # If GitHub's own cron fired within the last 12 minutes, let the cron carry on and stop chaining.
-          recent=$(gh run list -R ${{ github.repository }} -w refresh-pubav.yml --event schedule -L 1 --json createdAt -q '.[0].createdAt' 2>/dev/null || true)
-          if [ -n "$recent" ]; then
-            age=$(( $(date -u +%s) - $(date -u -d "$recent" +%s) ))
-            if [ "$age" -lt 720 ]; then echo "cron is alive (last schedule run ${age}s ago); not chaining"; exit 0; fi
+          # Never hand over to GitHub's cron: it fires sporadically, so stopping the chain on one cron run would kill the loop.
+          # Guard against two chains running in parallel: if another dispatch run was queued in the last 3 minutes, stop this one.
+          other=$(gh run list -R ${{ github.repository }} -w refresh-pubav.yml --event workflow_dispatch -L 2 --json createdAt,databaseId -q '.[] | select(.databaseId != ${{ github.run_id }}) | .createdAt' | head -1 || true)
+          if [ -n "$other" ]; then
+            age=$(( $(date -u +%s) - $(date -u -d "$other" +%s) ))
+            if [ "$age" -lt 180 ]; then echo "another chain run started ${age}s ago; not chaining"; exit 0; fi
           fi
           # pace from this job's own start time
           now=$(date -u +%s); elapsed=$(( now - START_TS ))

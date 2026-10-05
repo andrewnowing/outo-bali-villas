@@ -47,6 +47,7 @@ def to_ranges(unav):
 
 by = {}
 ok = err = 0
+noattr = 0
 t0 = time.time()
 import threading
 from concurrent.futures import ThreadPoolExecutor
@@ -61,6 +62,9 @@ def work(v):
         return
     m = ATTR.search(body)
     unav = []
+    if not m:
+        with lock:
+            global noattr; noattr += 1
     if m:
         try: unav = json.loads(html.unescape(m.group(1)))
         except Exception: unav = []
@@ -71,13 +75,17 @@ def work(v):
 with ThreadPoolExecutor(max_workers=12) as ex:
     list(ex.map(work, villas))
 
+if noattr > len(villas) * 0.3:
+    # page layout changed (attribute renamed/moved): writing empty ranges would show every villa as free
+    print(f'unavailabilities attribute missing on {noattr} pages; keeping previous pubav.js', file=sys.stderr)
+    sys.exit(2)
 if ok < len(villas) * 0.7:
     print(f'too many failures ({ok}/{len(villas)}), keeping previous pubav.js', file=sys.stderr)
     sys.exit(1)
 
 now = datetime.datetime.now(datetime.timezone(datetime.timedelta(hours=8))).strftime('%Y-%m-%dT%H:%M:%S+08:00')
 changed = sum(1 for k, v in by.items() if old.get(k) != v)
-hist = ([{'t': now, 'feeds': ok, 'errors': err, 'changed': changed}] + hist)[:120]
+hist = ([{'t': now, 'feeds': ok, 'errors': err, 'changed': changed, 'noattr': noattr}] + hist)[:120]
 out = {'updatedAt': now, 'by': by, 'ok': ok, 'err': err, 'history': hist}
 open(os.path.join(ROOT, 'pubav.js'), 'w', encoding='utf-8').write('const PUBAV=' + json.dumps(out, separators=(',', ':')) + ';\n')
 print(f'done ok={ok} err={err} in {int(time.time()-t0)}s')
