@@ -3,7 +3,7 @@
 <title>Outo 體驗元件地圖</title>
 <link rel="icon" href="favicon.ico?v=4" sizes="any"><link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png?v=4"><link rel="apple-touch-icon" href="favicon.png?v=3">
 <script src="config.js"></script>
-<script src="exp_data.js?v=10"></script>
+<script src="exp_data.js?v=11"></script>
 <style>
 @font-face{font-family:"Fields Display";src:url("fonts/Fields-Display-Semi-Bold.woff2") format("woff2");font-weight:600;font-display:swap}
 @font-face{font-family:"Fields";src:url("fonts/Fields-Regular.woff2") format("woff2");font-weight:400;font-display:swap}
@@ -442,7 +442,7 @@ input{font:inherit;font-weight:500;color:var(--ink);background:var(--surface);bo
     <div class="brand"><img class="logo" src="logo.png" alt="Outo 奧拓" width="1558" height="674"><div>
       <div class="eyebrow">Experiences · Internal</div>
       <h1>Outo 體驗元件地圖</h1>
-      <div class="sub" id="sub">峇里島、富國島、胡志明市周邊、清邁清萊、曼谷周邊、峴港會安順化的體驗元件 · 選起點、加一個或多個目的地，算各段車程與路線</div>
+      <div class="sub" id="sub">峇里島、富國島、胡志明市周邊、清邁清萊、曼谷周邊、中越（峴港・會安・順化）的體驗元件 · 選起點、加一個或多個目的地，算各段車程與路線</div>
     </div></div>
     <div><a class="hbtn" href="./">← 別墅空房查詢</a></div>
   </header>
@@ -600,7 +600,7 @@ function itemHtml(x){
   <div class="det" data-det="${esc(x.id)}"${OPEN.has(x.id)?'':' hidden'}>${OPEN.has(x.id)?detHtml(x):''}</div>
 </article>`;}
 let DLOAD=null;
-function loadDet(){if(window.EXPD)return Promise.resolve();if(!DLOAD)DLOAD=new Promise((ok,no)=>{const sc=document.createElement('script');sc.src='exp_detail.js?v=6';sc.onload=ok;sc.onerror=()=>{DLOAD=null;no();};document.head.appendChild(sc);});return DLOAD;}
+function loadDet(){if(window.EXPD)return Promise.resolve();if(!DLOAD)DLOAD=new Promise((ok,no)=>{const sc=document.createElement('script');sc.src='exp_detail.js?v=7';sc.onload=ok;sc.onerror=()=>{DLOAD=null;no();};document.head.appendChild(sc);});return DLOAD;}
 async function toggleDet(x,b){const box=document.querySelector(`.det[data-det="${x.id}"]`);if(!box)return;
   if(OPEN.has(x.id)){OPEN.delete(x.id);box.hidden=true;box.innerHTML='';b.textContent='展開詳情';b.setAttribute('aria-expanded','false');return;}
   OPEN.add(x.id);box.hidden=false;b.textContent='收合詳情';b.setAttribute('aria-expanded','true');
@@ -689,7 +689,7 @@ function showTab(t){document.querySelector('.mapwrap').classList.toggle('show-pl
 
 function setMsg(h,err){$('msg').innerHTML=h;$('msg').classList.toggle('err',!!err);}
 // ---- 行程草稿（多天）: days[] each with ordered stops; nights[] lodging between days ----
-const CARDEF=[1500,1800,1800,2000,2600,2000];// 包車／日預設（台幣，推估，可改）：峇里島、富國島、胡志明、清邁清萊、曼谷周邊、峴港會安順化
+const CARDEF=[1500,1800,1800,2000,2600,2000];// 包車／日預設（台幣，推估，可改）：峇里島、富國島、胡志明、清邁清萊、曼谷周邊、中越
 const PKEY='exp-plans-v1',DKEY='exp-draft-v1',WD=['一','二','三','四','五','六','日'],USD_TWD=32;
 let STOPS=[];let adding=true;let LEGS=[];let dirty=false;let CUR=0;
 const newDay=()=>({start:'08:00',end:'20:00',stops:[]});
