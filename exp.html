@@ -43,6 +43,19 @@ h1{font-family:var(--body);font-weight:600;font-size:clamp(24px,3.2vw,30px);line
 .sub{color:var(--ink2);font-size:13.5px;margin-top:6px;line-height:1.7}
 .hbtn{display:inline-flex;align-items:center;background:var(--surface);color:var(--ink2);border:1px solid var(--line-strong);padding:0 14px;height:34px;font-size:13px;border-radius:999px;letter-spacing:.02em;text-decoration:none}
 .hbtn:hover{border-color:var(--ink-900);color:var(--ink);background:var(--paper-50)}
+.help{position:fixed;inset:0;z-index:60;background:rgba(27,26,20,.45);display:flex;align-items:flex-start;justify-content:center;padding:24px 16px;overflow:auto}
+.help[hidden]{display:none}
+.helpbox{background:var(--surface);border:1px solid var(--line);border-radius:var(--r-lg);box-shadow:var(--shadow-md,0 12px 32px rgba(0,0,0,.18));width:min(760px,100%);padding:22px 24px 26px;position:relative;line-height:1.65;font-size:14px}
+.helpbox h2{font-size:18px;margin:0 0 4px}
+.helpbox h3{font-size:15px;margin:20px 0 6px;padding-top:14px;border-top:1px solid var(--line)}
+.helpbox ol,.helpbox ul{margin:0;padding-left:22px}
+.helpbox li{margin:4px 0}
+.helpbox b.k{font-weight:700}
+.helpbox .hint{margin-top:8px}
+.helpbox .hx{position:absolute;top:12px;right:12px;height:32px;width:32px;border-radius:999px;font-size:18px;line-height:1;padding:0}
+.helpbox table{border-collapse:collapse;width:100%;font-size:13px;margin-top:4px}
+.helpbox td,.helpbox th{border:1px solid var(--line);padding:5px 8px;text-align:left;vertical-align:top}
+.helpbox th{background:var(--paper-100,var(--paper-200));font-weight:600}
 .card{background:var(--surface);border:1px solid var(--line);border-radius:var(--r-lg);box-shadow:var(--shadow-sm)}
 .filters{padding:18px 20px;display:grid;gap:12px}
 .frow{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
@@ -438,13 +451,49 @@ input{font:inherit;font-weight:500;color:var(--ink);background:var(--surface);bo
 #lpG .combo input{padding-left:12px}
 </style></head><body>
 <div class="wrap">
+<div class="help" id="help" hidden role="dialog" aria-modal="true" aria-labelledby="helpT">
+  <div class="helpbox">
+    <button type="button" class="hx" id="helpX" aria-label="關閉">×</button>
+    <h2 id="helpT">操作說明</h2>
+    <div class="hint">這頁是內部工具，用來找體驗元件、排行程草稿、估時間與費用。</div>
+
+    <h3>1. 查詢體驗元件</h3>
+    <ol>
+      <li>先選<b class="k">目的地</b>（峇里島、富國島、胡志明市周邊、清邁清萊、曼谷周邊、中越）。</li>
+      <li>按<b class="k">更多篩選</b>可再縮小：地區、分類（自然、海上、寺廟、冒險、親子、療癒、餐飲夜生活、餐廳）、客群（帶小孩／帶長輩／伴侶／好友）、優先等級 P0–P2、通路（OTA 有上架／只有官網社群接單）、每人預算；也可以直接在搜尋框打名稱、英文名或地區。</li>
+      <li>每張卡片右上角是 <b class="k">Google 評價</b>（分數／則數）和<b class="k">每人參考價</b>（台幣，已把稅與服務費估進去）。卡片上的「適合客群」用顏色分三級：適合、有條件、不建議。</li>
+      <li>按<b class="k">展開詳情</b>看完整資料：原文價格與來源、營業時間、怎麼訂（Klook／KKday／Tripadvisor／官網）、TC 要注意的事、體驗感受、Google 評論重點、照片。</li>
+      <li>按<b class="k">在地圖上看</b>會把地圖移到該點；地圖上的數字圓圈是同一區的元件數量，點開可放大。</li>
+    </ol>
+
+    <h3>2. 規劃行程</h3>
+    <ol>
+      <li>在想出發的地點按<b class="k">設為起點</b>（通常是飯店或別墅），清單會改成依「到起點的車程」排序，每張卡片也會顯示到上一站的車程與公里數。</li>
+      <li>對想排進去的元件按<b class="k">加到路線</b>；飯店、餐廳或任何地址可以在行程草稿的搜尋框直接找來加。順序用拖曳 ⋮⋮ 或 ↑↓ 調整。</li>
+      <li>右側<b class="k">行程草稿</b>會自動算：每段車程（開車或步行，不含即時路況）、各站停留時間、幾點出發幾點結束、每人費用。單日超過 10 小時、或結束時間比你設定的晚，會跳提醒。</li>
+      <li>多天行程按<b class="k">＋ 加一天</b>，每天之間要選<b class="k">住宿</b>：峇里島可直接選 Villa Finder 別墅（會帶入每晚價格與空房），其他地方用 Google 搜飯店後自己填每晚價格。隔天會自動從前一晚住宿出發。</li>
+      <li>填好行程名稱、日期、大人小孩人數後按<b class="k">儲存</b>；<b class="k">另存為新版本</b>可以做 A／B 版本比較；<b class="k">複製分享連結</b>給同事，對方打開看到同一份行程。已存的行程在<b class="k">我的行程</b>裡。</li>
+    </ol>
+    <div class="hint">費用明細只含有價格資料的元件與住宿，不含餐費、導遊、機票、小費；是內部參考，不是給客人的報價。</div>
+
+    <h3>3. 體驗感受的分數怎麼來</h3>
+    <p>每個元件的「體驗感受」區塊是把 Tripadvisor、Klook、KKday、Trip.com、Google 與中文部落格上的旅客評論整批讀過後整理出來的，不是我們自己的問卷。整理方式：</p>
+    <ul>
+      <li><b class="k">最有感的時刻／最常失望的點</b>：把評論裡重複出現的正負面內容歸類，括號裡的「約幾成」是該內容在樣本中出現的大約比例。</li>
+      <li><b class="k">台灣／華人旅客在意</b>：只從中文評論與部落格抓出來的重點，方便 TC 事前提醒客人。</li>
+      <li><b class="k">感受分數（1–5）</b>：六個面向——體力負荷、刺激程度、放鬆程度、拍照程度、文化深度、人潮多寡——依評論整體傾向推估。5 代表評論一面倒說「很累／很刺激／很放鬆／很好拍／文化很深／人很多」，1 代表相反；3 是中性或評論分歧。它是「這類評論讀起來的感覺」，不是品質好壞，體力負荷 5 不等於不好。</li>
+      <li>評論太少的元件不給分數，會顯示「評論不足，不給分數」；每個區塊最下面的「樣本」會寫讀了幾則、來自哪裡，可以點來源自己核對。</li>
+    </ul>
+    <div class="hint">因為是推估，用來比較同類元件的相對差異比較可靠，不要拿單一分數當絕對標準；安排給帶長輩或帶小孩客群時，請搭配卡片上的「適合客群」一起看。</div>
+  </div>
+</div>
   <header>
     <div class="brand"><img class="logo" src="logo.png" alt="Outo 奧拓" width="1558" height="674"><div>
       <div class="eyebrow">Experiences · Internal</div>
       <h1>Outo 體驗元件地圖</h1>
       <div class="sub" id="sub">峇里島、富國島、胡志明市周邊、清邁清萊、曼谷周邊、中越（峴港・會安・順化）的體驗元件 · 選起點、加一個或多個目的地，算各段車程與路線</div>
     </div></div>
-    <div><a class="hbtn" href="./">← 別墅空房查詢</a></div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap"><a class="hbtn" href="./">← 別墅空房查詢</a><button type="button" class="hbtn" id="helpBtn">操作說明</button></div>
   </header>
 
   <section class="card filters" aria-label="篩選">
@@ -1046,5 +1095,8 @@ function focusExp(x,open){if(!gmap)return;const m=gmarkers.get(x.id);gmap.panTo(
   if(p&&(p.stops||p.days)){openPlan(p,!fromHash,fromHash?true:!!p.dirty);if(fromHash){history.replaceState(null,'',location.pathname);setMsg('已打開分享的行程。按「另存為新版本」可以存成自己的。');showTab('plan');}}
   else{render();drawStops();}})();
 loadGMaps();
+const helpEl=$('help');const openHelp=o=>{helpEl.hidden=!o;document.body.style.overflow=o?'hidden':'';};
+$('helpBtn').addEventListener('click',()=>openHelp(true));$('helpX').addEventListener('click',()=>openHelp(false));
+helpEl.addEventListener('click',e=>{if(e.target===helpEl)openHelp(false);});document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!helpEl.hidden)openHelp(false);});
 </script>
 </body></html>
