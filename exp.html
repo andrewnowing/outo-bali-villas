@@ -147,7 +147,7 @@ input{font:inherit;font-weight:500;color:var(--ink);background:var(--surface);bo
 .itop{display:flex;flex-wrap:wrap;gap:6px 10px;align-items:baseline}
 .iid{font-family:var(--sans);font-size:12px;color:var(--muted)}
 .inm{font-weight:600}
-.ien{font-family:var(--sans);font-size:13px;color:var(--muted)}
+.ien{font-family:var(--sans);font-size:13px;color:var(--muted)} .irate{display:inline-flex;align-items:baseline;gap:4px;font-family:var(--sans);font-weight:700;font-size:15px;color:var(--ink-900);background:var(--sun-50);border:1px solid var(--sun-500);border-radius:999px;padding:1px 10px 1px 8px;line-height:1.5} .irate .star{color:var(--sun-700);font-size:14px} .irate small{font-weight:500;font-size:12px;color:var(--muted)}
 .chips{display:flex;flex-wrap:wrap;gap:6px}
 .chip{font-size:12px;font-weight:500;padding:2px 10px;border-radius:999px;background:var(--paper-200);color:var(--ink2);white-space:nowrap;line-height:1.6}
 .chip.p0{background:var(--clay-100);color:var(--clay-600)}
@@ -587,10 +587,10 @@ $('bReset').addEventListener('click',()=>{bud.a=0;bud.b=BST.length-1;S.limit=40;
 function fmtMin(s){return Math.max(1,Math.round(s/60));}
 function distChip(x){if(!dest||!by)return '';const r=by[x.id];if(r===undefined)return '';if(!r)return `<span class="chip dist">到最後一站：無法計算</span>`;return `<span class="chip dist">到 ${esc(dest.name)} ${S.mode==='WALK'?'步行':'車程'} ${fmtMin(r.s)} 分 · ${(r.d/1000).toFixed(1)} km</span>`;}
 function itemHtml(x){
-  const g=x.gr?`Google ${x.gr}／${Number(x.gc||0).toLocaleString()} 則`:'';
+  const g='';
   return `<article class="card item${origin&&origin.id===x.id?' on':''}" data-id="${esc(x.id)}">
   <div class="ithumb"><img loading="lazy" src="exp_img/${esc(x.id)}.jpg" alt="${esc(x.n)}" onerror="this.parentNode.classList.add('err')"></div>
-  <div class="ibody"><div class="itop"><span class="iid">${esc(x.id)}</span><span class="inm">${esc(x.n)}</span><span class="ien">${esc(x.en)}</span></div>
+  <div class="ibody"><div class="itop"><span class="iid">${esc(x.id)}</span><span class="inm">${esc(x.n)}</span><span class="ien">${esc(x.en)}</span>${x.gr?`<span class="irate" title="Google 評價"><span class="star">★</span>${x.gr}<small>${Number(x.gc||0).toLocaleString()} 則</small></span>`:''}</div>
   <div class="chips"><span class="chip"><span class="dot" style="background:${CATCOL[x.c]}"></span>${esc(X.cats[x.c])}</span><span class="chip">${esc(x.r)}</span><span class="chip ${x.p.toLowerCase()}">${x.p}</span>${x.tw!==undefined?`<span class="chip tw">${x.tw===0?'免費':'約 '+twFmt(x.tw)}</span>`:''}${x.off?'<span class="chip">只有官網／社群接單</span>':''}${x.lo?'<span class="chip warn">座標待確認</span>':''}${rgChip(x)}${distChip(x)}</div>
   ${x.ds?`<div class="idesc">${esc(x.ds)}</div>`:''}
   ${x.hl&&x.hl.length?`<ul class="ihl">${x.hl.map(t=>`<li>${esc(t)}</li>`).join('')}</ul>`:''}
