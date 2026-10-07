@@ -1,0 +1,17 @@
+name: Probe Villa Finder offer API
+on:
+  workflow_dispatch:
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Call offer API from a GitHub runner
+        run: |
+          UA="Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0 Safari/537.36 OutoAvailabilitySync/1.0"
+          for s in villa-ola nick-villa-2-ubud; do
+            echo "== $s"
+            curl -sS -o /tmp/o.json -w "HTTP %{http_code} %{time_total}s\n" -A "$UA" -H "Accept: application/json" -H "Accept-Language: en" \
+              "https://www.villa-finder.com/en/api/offer/$s.json?from=2026-11-10&to=2026-11-14"
+            head -c 500 /tmp/o.json; echo
+          done
