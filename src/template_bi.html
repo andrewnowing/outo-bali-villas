@@ -440,6 +440,7 @@ button:disabled{opacity:.45;cursor:not-allowed;transform:none;box-shadow:none}
 /*DATA*/
 /*PHOTOS*/
 /*EXTRA*/
+/*ROOMS*/
 if(typeof PUB_VILLAS!=='undefined'){for(const v of PUB_VILLAS)VILLAS.push(v);}
 if(typeof PUB_X!=='undefined'){const mg=(name,src)=>{if(!src)return;if(typeof window[name]==='undefined')window[name]={};for(const k in src)if(!(k in window[name]))window[name][k]=src[k];};
   for(const n of ['BEDS','TWIN','TWIN_EN','GMAP','ADDR','RATE'])mg(n,PUB_X[n]);
@@ -484,6 +485,7 @@ zh:{
   sumNights:n=>`<span><b>${n}</b> 晚</span>`, sumFree:n=>`有空房 <b>${n}</b> 間`, sumBooked:n=>`已被訂 ${n} 間`, sumUnk:n=>`沒有房況資料 ${n} 間`,
   empty:'這段日期、房數、人數與區域沒有符合的別墅。可以放寬條件（床型、到市區時間），或取消「只看有空房」看看哪些已被訂。',
   galLab:['房間','室內設施','室外設施'], galCfg:(cfgs,n)=>`可訂 ${cfgs}：${n} 房配置使用全部臥室；選較少房數時會鎖上其餘臥室（Villa Finder 未標示鎖哪幾間，可在訂房時指定）`, galMore:n=>`其他照片（${n}）`, galPhoto:(lab,z)=>`${lab}照片 ${z}`, galNone:'相簿中沒有找到這類照片',
+  roomLab:['雙人房','雙床房','雙床可併','三人房','四人房','床型未註明','單人房'], roomPre:'房型：', roomSep:' · ',
   twYes:'✓ 有 Twin 房', twConv:'可拆成 Twin', twPhoto:'照片有 Twin（說明未寫）', twNo:'全為大床', twUnk:'Twin 未確認', bunk:'有上下舖',
   km:x=>(x/1000).toFixed(1)+' 公里', walkNo:(w,km)=>`不建議步行（${w} 分 / ${km}）`, walkYes:(w,km)=>`步行約 ${w} 分（${km}）`,
   driveTo:an=>`開車到${an}`, walkTo:an=>`走路到${an}`, driveAirport:'開車到機場', minKm:(r,km)=>`${r} 分鐘（${km}）`,
@@ -574,6 +576,7 @@ en:{
   sumNights:n=>`<span><b>${n}</b> night${n===1?'':'s'}</span>`, sumFree:n=>`Available: <b>${n}</b>`, sumBooked:n=>`Booked: ${n}`, sumUnk:n=>`No availability data: ${n}`,
   empty:'No villas match these dates, bedrooms, guests and area. Try relaxing the filters (bed type, drive to town), or untick "Available only" to see which are booked.',
   galLab:['Rooms','Indoor facilities','Outdoor facilities'], galCfg:(cfgs,n)=>`Bookable as ${cfgs}: the ${n}-bedroom layout uses all rooms; smaller layouts lock the remaining bedrooms (Villa Finder does not say which; request it when booking)`, galMore:n=>`More photos (${n})`, galPhoto:(lab,z)=>`${lab} photo ${z}`, galNone:'No photos of this type found in the album',
+  roomLab:['Double','Twin','Twin/King convertible','Triple','Quad','Bed type n/a','Single'], roomPre:'Rooms: ', roomSep:' · ',
   twYes:'✓ Twin room', twConv:'Convertible to Twin', twPhoto:'Twin in photos (not in description)', twNo:'All double beds', twUnk:'Twin unconfirmed', bunk:'Bunk beds',
   km:x=>(x/1000).toFixed(1)+' km', walkNo:(w,km)=>`Walking not recommended (${w} min / ${km})`, walkYes:(w,km)=>`About ${w} min walk (${km})`,
   driveTo:an=>`Drive to ${an}`, walkTo:an=>`Walk to ${an}`, driveAirport:'Drive to airport', minKm:(r,km)=>`${r} min (${km})`,
@@ -958,6 +961,7 @@ function galleryVF(v,g){if(!g||(!g.bed&&!g.in&&!g.out))return '';const lab=t('ga
   return parts.length?`<div class="gal vf">${parts.join('')}</div>`:'';}
 async function loadGallery(v,wrap){if(!wrap)return;let g=GAL_CACHE[v.s];if(g===undefined){try{const r=await fetch(`gal/${encodeURIComponent(v.s)}.json`);g=r.ok?await r.json():null;}catch(e){g=null;}GAL_CACHE[v.s]=g;}if(!g)return;const h=galleryVF(v,g);if(h)wrap.innerHTML=h;}
 function galleryHTML(v){const g=gsOf(v.s);if(!g)return '';const n=g.c[0]+g.c[1]+g.c[2];let i=0;const lab=t('galLab');return `<div class="gal">${g.c.map((m,j)=>{const ts=[];for(let z=0;z<m;z++,i++)ts.push(`<button type="button" class="tile" data-st="${tileStyle(g.k,i,n)}" style="${tileStyle(g.k,i,n)}" aria-label="${esc(t('galPhoto',lab[j],z+1))}"></button>`);return m?`<div class="grow"><p>${lab[j]}</p><div class="tiles">${ts.join('')}</div></div>`:`<div class="grow"><p>${lab[j]}</p><small>${t('galNone')}</small></div>`;}).join('')}</div>`;}
+function roomsChip(v){const r=(typeof ROOMS!=='undefined')&&ROOMS[v.s];if(!r)return '';const lab=t('roomLab');const parts=[];[0,1,2,3,4,6,5].forEach(i=>{if(r[i])parts.push(r[i]+' '+lab[i]);});if(!parts.length)return '';const unkOnly=r.slice(0,5).every(x=>!x)&&!r[6];return `<span class="chip ${unkOnly?'c-warn':'c-plain'} rooms" title="${esc(t('roomPre'))}${esc(parts.join(t('roomSep')))}">🛏 ${esc(parts.join(t('roomSep')))}</span>`;}
 function twinChip(v){const tw=twinOf(v.s);if(!tw)return '';const m={yes:['c-plain',t('twYes')],conv:['c-plain',t('twConv')],photo:['c-plain',t('twPhoto')],no:['c-plain',t('twNo')],unk:['c-warn',t('twUnk')]}[tw[0]];let h=m?`<span class="chip ${m[0]}">${m[1]}</span>`:'';if(tw[2])h+=`<span class="chip c-plain">${t('bunk')}</span>`;return h;}
 function routeFacts(v){const r=(typeof ROUTE!=='undefined')&&ROUTE[v.s];if(!r)return [];const [o0,d0,o1,d1,p0,p1,w0,wd]=r;const an=ANCHOR_OF(v.a)||t('localCenter');const km=x=>t('km',x);const walk=(wd>1200||w0>15)?t('walkNo',w0,km(wd)):t('walkYes',w0,km(wd));return [[t('driveTo',an),t('minKm',rng(o0,p0),km(d0))],[t('walkTo',an),walk],[t('driveAirport'),t('minKm',rng(o1,p1),km(d1))]];}
 document.addEventListener('click',e=>{const t=e.target.closest('.tile');const lb=document.getElementById('lb');if(t){lb.firstElementChild.setAttribute('style',t.dataset.st);lb.classList.add('on');}else if(e.target.closest('#lb'))lb.classList.remove('on');});
@@ -985,7 +989,7 @@ function row(x,ciD,coD,nights){
   if(v.x&&v.x.g) chips.push(`<span class="chip c-plain">${t('chMax',v.x.g)}</span>`);
   {const r=(typeof ROUTE!=='undefined')&&ROUTE[v.s];if(r){const an=ANCHOR_OF(v.a)||t('town');chips.push(`<span class="chip c-plain" title="${esc(t('chRouteTitle',an))}">${esc(t('chRoute',an,rng(r[0],r[4]),(r[1]/1000).toFixed(1)))}</span>`);}}
   {const pcp=poiChip(v);if(pcp)chips.push(pcp);}
-  {const tc=twinChip(v);if(tc)chips.push(tc);}
+  {const rc=roomsChip(v);if(rc)chips.push(rc);const tc=twinChip(v);if(tc)chips.push(tc);}
   let price=`<span class="per">${t(isPub(v)?'priceCheckPub':'priceCheck')}</span>`;
   const pc=promoCalc(v,q,ciD,nights);
   if(PUB){price=q.missing?`<span class="per">${t(isPub(v)?'priceCheckPub':'priceCheck')}</span>`:q.est?`<span class="tot">${t('fromN',money(q.lo))}</span><span class="per">${t('estDynPub')}</span>`:q.dynamic?`<span class="tot">${moneyRng(q.lo,q.hi)}</span><span class="per">${t('priceRange',q.br)}</span>`:`<span class="tot"><i>${t(PUBLIC?'lblPrice':'lblPub')}</i>${money(q.total)}</span><span class="per">${t('priceAvg',money(q.per),q.br)}</span>${QUOTE?`<span class="per">${esc(t('quoteDates',fmt(ciD),fmt(coD),nights))}</span>`:''}`;}
