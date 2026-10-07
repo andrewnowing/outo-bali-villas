@@ -5,10 +5,21 @@ Reads the villa list from pub.js, fetches each public page, extracts the
 Runs every 4 hours on GitHub Actions. 10 parallel workers with a short pause each; backs off on HTTP 429.
 """
 import json, re, sys, time, datetime, html, os, urllib.request, urllib.error
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+import pubrates
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 src = open(os.path.join(ROOT, 'pub.js'), encoding='utf-8').read()
 villas = json.loads(re.search(r'const PUB_VILLAS=(\[.*?\]);\n', src, re.S).group(1))
+static_by = {v['s']: v for v in villas}
+# live prices (rates table / default price / promotion) parsed from the same pages -> pubrates.js
+rates = {}; rate_stat = {'ok': 0, 'norates': 0, 'badrate': 0, 'diff': 0}
+old_rates = {}
+try:
+    o = open(os.path.join(ROOT, 'pubrates.js'), encoding='utf-8').read()
+    old_rates = json.loads(re.search(r'const PUBRATES=(\{.*\});', o, re.S).group(1)).get('by', {})
+except Exception:
+    pass
 old = {}; hist = []
 try:
     o = open(os.path.join(ROOT, 'pubav.js'), encoding='utf-8').read()
@@ -68,8 +79,16 @@ def work(v):
     if m:
         try: unav = json.loads(html.unescape(m.group(1)))
         except Exception: unav = []
+    live, st = pubrates.parse(body)
     with lock:
         by[v['s']] = to_ranges(unav); ok += 1
+        rate_stat[st] += 1
+        if st == 'ok' or live['dp'] is not None:
+            if st != 'ok': live['r'] = []; live['b'] = []
+            rates[v['s']] = live
+            if pubrates.differs(live, static_by.get(v['s'])): rate_stat['diff'] += 1
+        elif v['s'] in old_rates:
+            rates[v['s']] = old_rates[v['s']]
         if (ok + err) % 100 == 0: print(f'{ok+err}/{len(villas)} ok={ok} err={err} {int(time.time()-t0)}s', flush=True)
     time.sleep(0.1)
 with ThreadPoolExecutor(max_workers=12) as ex:
@@ -85,7 +104,13 @@ if ok < len(villas) * 0.7:
 
 now = datetime.datetime.now(datetime.timezone(datetime.timedelta(hours=8))).strftime('%Y-%m-%dT%H:%M:%S+08:00')
 changed = sum(1 for k, v in by.items() if old.get(k) != v)
-hist = ([{'t': now, 'feeds': ok, 'errors': err, 'changed': changed, 'noattr': noattr}] + hist)[:120]
+hist = ([{'t': now, 'feeds': ok, 'errors': err, 'changed': changed, 'noattr': noattr, 'rates': rate_stat['ok'], 'norates': rate_stat['norates'], 'pricediff': rate_stat['diff']}] + hist)[:120]
 out = {'updatedAt': now, 'by': by, 'ok': ok, 'err': err, 'history': hist}
 open(os.path.join(ROOT, 'pubav.js'), 'w', encoding='utf-8').write('const PUBAV=' + json.dumps(out, separators=(',', ':')) + ';\n')
-print(f'done ok={ok} err={err} in {int(time.time()-t0)}s')
+# prices: write pubrates.js (the workflow commits it only when it changed)
+if rate_stat['norates'] + rate_stat['badrate'] > len(villas) * 0.5 and old_rates:
+    print(f"rates table missing on {rate_stat['norates']} pages; keeping previous pubrates.js", file=sys.stderr)
+else:
+    rout = {'updatedAt': now, 'by': rates, 'stats': rate_stat}
+    open(os.path.join(ROOT, 'pubrates.js'), 'w', encoding='utf-8').write('const PUBRATES=' + json.dumps(rout, separators=(',', ':')) + ';\n')
+print(f"done ok={ok} err={err} rates={rate_stat} in {int(time.time()-t0)}s")

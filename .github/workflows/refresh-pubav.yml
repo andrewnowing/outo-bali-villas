@@ -29,25 +29,28 @@ jobs:
           cp pubav.js /tmp/pubav.main.js
           if git fetch --depth=1 origin data:refs/remotes/origin/data; then
             git show refs/remotes/origin/data:pubav.js > pubav.js
+            git show refs/remotes/origin/data:pubrates.js > pubrates.js 2>/dev/null || true
             echo "HAVE_DATA=1" >> "$GITHUB_ENV"
           else
             echo "HAVE_DATA=0" >> "$GITHUB_ENV"
           fi
-      - name: Fetch booked dates from Villa Finder public pages
+      - name: Fetch booked dates and live prices from Villa Finder public pages
         run: python3 scripts/refresh_pubav.py
       - name: Commit to the data branch if changed
         run: |
           git config --global user.name "outo-bot"
           git config --global user.email "andrew@outo.co"
           cp pubav.js /tmp/pubav.new.js
+          [ -f pubrates.js ] && cp pubrates.js /tmp/pubrates.new.js || true
           for i in 1 2 3; do
             if git fetch --depth=1 origin data:refs/remotes/origin/data; then base=refs/remotes/origin/data; else base=HEAD; fi
             rm -rf /tmp/data-wt; git worktree prune
             git worktree add --detach /tmp/data-wt "$base"
             cp /tmp/pubav.new.js /tmp/data-wt/pubav.js
+            [ -f /tmp/pubrates.new.js ] && cp /tmp/pubrates.new.js /tmp/data-wt/pubrates.js || true
             cd /tmp/data-wt
-            if git diff --quiet -- pubav.js; then echo "no change"; exit 0; fi
-            git add pubav.js
+            if git diff --quiet -- pubav.js pubrates.js && [ -z "$(git ls-files --others --exclude-standard pubrates.js)" ]; then echo "no change"; exit 0; fi
+            git add pubav.js pubrates.js
             git commit -q -m "pubav: refresh $(date -u +%Y-%m-%dT%H:%MZ)"
             if git push origin HEAD:refs/heads/data; then exit 0; fi
             cd "$GITHUB_WORKSPACE"; sleep 15
