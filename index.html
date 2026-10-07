@@ -471,7 +471,7 @@ zh:{
   title:'Outo 峇里島別墅空房查詢',
   sub:'Villa Finder 同業房源 118 間 · 價格為對外售價（美金、含稅），不是 Outo 成本價',
   loading:'房況資料載入中', langGroup:'語言', helpBtn:'操作說明', histBtn:'房況更新歷史紀錄', close:'關閉',
-  freshRates:x=>`・官網價格核對 ${x}`,
+  freshRates:x=>`・官網價格核對 ${x}`, freshPortal:x=>`・同業價格核對 ${x}`,
   helpT:'怎麼查房況、怎麼預訂', histT:'房況更新歷史紀錄', histNote:'兩種房源都每 5 分鐘更新一次：同業後台 118 間從 Villa Finder 的 iCal 行事曆同步，官網直售 1,019 間從 Villa Finder 公開頁面抓已訂日期。兩邊各自排程，同一輪的更新合併成一列，時間取較晚的那一個（台灣時間）。', hPortalCol:'同業後台 118 間', hPubCol:'官網直售 1,019 間', hCell:(f,c,e)=>`${f==null?'—':f+' 間'}${c==null?'':'・變動 '+c}${e?'・失敗 '+e:''}`, hNoRun:'—', freshBoth:(a,b)=>`房況更新：同業後台 ${a}｜官網直售 ${b}（每 5 分鐘自動同步）`, hSrcPortal:'同業後台', hSrcPub:'官網直售', freshPub:(d)=>`；官網直售房況 ${d}`, hTime:'更新時間', hFeeds:'同步間數', hChanged:'房況有變動', hErr:'失敗', histEmpty:'還沒有紀錄（下一次同步後會出現）', histNow:'目前頁面使用的版本', hUnk:'—',
   helpHtml:`<ol>
 <li><b>選日期與房數</b>點「入住日 → 退房日」一次選好入住與退房，再選「至少幾房」（例如客人要 3 房就選 3 房，4 房的別墅也會出現，報價會用符合的最小格局）。入住人數會自動排除容納不下的別墅。</li>
@@ -563,7 +563,7 @@ en:{
   title:'Outo Bali Villa Availability',
   sub:"118 Villa Finder partner listings · Prices are public selling prices (USD, tax included), not Outo's cost",
   loading:'Loading availability data', langGroup:'Language', helpBtn:'How to use', histBtn:'Availability update log', close:'Close',
-  freshRates:x=>` · public-site prices checked ${x}`,
+  freshRates:x=>` · public-site prices checked ${x}`, freshPortal:x=>` · portal prices checked ${x}`,
   helpT:'How to search and book', histT:'Availability update log', histNote:'Both sources update every 5 minutes: the 118 partner-portal villas from Villa Finder iCal calendars, the 1,019 published-rate villas from Villa Finder public pages. The two schedules run independently; updates from the same cycle are merged into one row, shown at the later of the two times (Taiwan time).', hPortalCol:'Partner portal (118)', hPubCol:'Published rate (1,019)', hCell:(f,c,e)=>`${f==null?'—':f+' villas'}${c==null?'':' · changed '+c}${e?' · failed '+e:''}`, hNoRun:'—', freshBoth:(a,b)=>`Availability: partner portal ${a} | published rate ${b} (auto-sync every 5 min)`, hSrcPortal:'Partner portal', hSrcPub:'Published rate', freshPub:(d)=>`; published-rate villas ${d}`, hTime:'Updated at', hFeeds:'Feeds synced', hChanged:'Changed', hErr:'Failed', histEmpty:'No entries yet (they appear after the next sync)', histNow:'version this page is using', hUnk:'—',
   helpHtml:`<ol>
 <li><b>Pick dates and bedrooms</b>Click "Check-in → Check-out" to pick both dates in one calendar, then "Min. bedrooms" (choose 3 for a 3-bedroom request; 4-bedroom villas still appear, quoted at the smallest layout that fits). Guest count hides villas that cannot accommodate the group.</li>
@@ -1196,6 +1196,7 @@ function showFresh(){
   if(typeof PUBAV!=='undefined'&&PUBAV.updatedAt&&avail.src==='drive')f.textContent=t('freshBoth',rel(avail.updatedAt),rel(PUBAV.updatedAt));
   else{f.textContent=t('freshAt',when)+(avail.src==='drive'?t('srcDrive'):avail.src==='db'?t('srcDb'):t('srcSnap'));if(typeof PUBAV!=='undefined'&&PUBAV.updatedAt){const pd=new Date(PUBAV.updatedAt);f.textContent+=t('freshPub',pd.toLocaleString(LOC(),{timeZone:'Asia/Taipei',month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit',hour12:false}));}}
   if(typeof PUBRATES_AT!=='undefined'&&PUBRATES_AT)f.textContent+=t('freshRates',rel(PUBRATES_AT));
+  if(typeof PORTALRATES_AT!=='undefined'&&PORTALRATES_AT)f.textContent+=t('freshPortal',rel(PORTALRATES_AT));
   f.classList.toggle('old',days>2); if(days>2) f.textContent+=t('old2d');
 }
 
@@ -1224,6 +1225,11 @@ document.querySelectorAll('#cur button[data-cur]').forEach(b=>b.setAttribute('ar
 loadFx().then(()=>{if(CUR==='TWD')render();});
 const PUBAV_URL='https://raw.githubusercontent.com/andrewnowing/outo-bali-villas/data/pubav.js';
 const PUBRATES_URL='https://raw.githubusercontent.com/andrewnowing/outo-bali-villas/data/pubrates.js';let PUBRATES_AT='';
+const PORTALRATES_URL='https://raw.githubusercontent.com/andrewnowing/outo-bali-villas/data/portalrates.js';let PORTALRATES_AT='';
+// 118 間同業後台價：以 Distribution Portal 每半小時抓到的季節價表與促銷為準，覆寫 data_bi.js
+function applyPortalRates(j){if(!j||!j.by||!j.updatedAt||j.updatedAt===PORTALRATES_AT)return false;let n=0;for(const v of VILLAS){if(v.src==='pub')continue;const L=j.by[v.s];if(!L||!L.r||!L.r.length)continue;v.r=L.r;if(L.b&&L.b.length)v.b=L.b;delete v.d;if(typeof L.p==='string')v.p=L.p;n++;}PORTALRATES_AT=j.updatedAt;return n>0;}
+async function refreshPortalRates(){if(!HOSTED)return;try{const r=await fetch(PORTALRATES_URL+'?t='+Math.floor(Date.now()/60000),{cache:'no-store'});if(!r.ok)return;const txt=await r.text();const m=txt.match(/^const PORTALRATES=(\{[\s\S]*\});\s*$/);if(!m)return;const j=JSON.parse(m[1]);if(j.updatedAt&&Date.now()-new Date(j.updatedAt).getTime()>3*3600e3)watchReport('portal_in_page','同業價格最後核對 '+j.updatedAt);if(applyPortalRates(j)){showFresh();render();}}catch(e){}}
+refreshPortalRates();setInterval(refreshPortalRates,300000);
 // 官網直售價以 Villa Finder 公開頁面每 5 分鐘抓到的價格表／起價／促銷為準，覆寫 pub.js 的靜態資料
 function applyRates(j){if(!j||!j.by||!j.updatedAt||j.updatedAt===PUBRATES_AT)return false;let n=0;for(const v of VILLAS){if(v.src!=='pub')continue;const L=j.by[v.s];if(!L)continue;if(L.r&&L.r.length){v.r=L.r;if(L.b&&L.b.length)v.b=L.b;v.dyn=false;}else if(L.dp!=null){v.dyn=true;v.dp=L.dp;v.dpd=L.dpd;}if(typeof L.p==='string')v.p=L.p;n++;}PUBRATES_AT=j.updatedAt;return n>0;}
 async function refreshRates(){if(!HOSTED)return;try{const r=await fetch(PUBRATES_URL+'?t='+Math.floor(Date.now()/60000),{cache:'no-store'});if(!r.ok)return;const txt=await r.text();const m=txt.match(/^const PUBRATES=(\{[\s\S]*\});\s*$/);if(!m)return;const j=JSON.parse(m[1]);if(j.updatedAt&&Date.now()-new Date(j.updatedAt).getTime()>90*60e3)watchReport('rates_in_page','官網價格最後核對 '+j.updatedAt);if(applyRates(j)){showFresh();render();}}catch(e){}}

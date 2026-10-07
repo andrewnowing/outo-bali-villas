@@ -14,6 +14,7 @@
  *   A. 官網房況（pubav.js）更新時間是否超過 20 分鐘 → 寄信 + 自動重新啟動 GitHub 接力鏈
  *   B. 最近一次抓取是否大量失敗（errors / noattr）→ 寄信
  *   B2. 官網價格核對（pubrates.js）超過 90 分鐘沒更新、或價格表讀不到 → 寄信
+ *   B3. 同業後台價格核對（portalrates.js）超過 3 小時沒更新、或少於 100 間 → 寄信
  *   C. GitHub 接力鏈是否還在跑（最近 15 分鐘有沒有 run）→ 沒有就自動重啟 + 寄信
  *   D. 網站 https://outo-bali-villas.vercel.app 是否打得開 → 寄信
  *   E. 同業價 118 間（Apps Script 房況）更新時間是否超過 3 小時 → 寄信（AVAIL_URL 填了才檢查）
@@ -22,7 +23,9 @@
 const REPO = 'andrewnowing/outo-bali-villas';
 const RAW = 'https://raw.githubusercontent.com/' + REPO + '/data/pubav.js';
 const RAW_RATES = 'https://raw.githubusercontent.com/' + REPO + '/data/pubrates.js';  // 官網價格核對結果
-const RATES_STALE_MIN = 90;   // 官網價格多久沒核對算異常  // pubav.js 在 data 分支（不觸發 Vercel 部署）
+const RATES_STALE_MIN = 90;   // 官網價格多久沒核對算異常
+const RAW_PORTAL = 'https://raw.githubusercontent.com/' + REPO + '/data/portalrates.js';  // 同業後台價格核對結果
+const PORTAL_STALE_MIN = 180; // 同業價格多久沒核對算異常（正常每 25–30 分鐘一次）  // pubav.js 在 data 分支（不觸發 Vercel 部署）
 const SITE = 'https://outo-bali-villas.vercel.app/';
 const AVAIL_URL = ''; // 118 間同業價房況的 Apps Script 網址（與 config.js 的 AVAIL_URL 相同）；留空則跳過檢查 E
 const STALE_MIN = 20;         // 官網房況多久沒更新算異常
@@ -60,6 +63,14 @@ function check() {
     const st = pr.stats || {};
     if ((st.norates || 0) + (st.badrate || 0) > 500) problems.push(['rates_layout', 'Villa Finder 價格表格式可能改變：' + ((st.norates || 0) + (st.badrate || 0)) + ' 頁讀不到價格表']);
   } catch (e) { problems.push(['rates_unreadable', '讀不到 pubrates.js（官網價格核對結果）：' + e]); }
+  // B3 同業後台價格核對（portalrates.js）
+  try {
+    const txt = UrlFetchApp.fetch(RAW_PORTAL + '?t=' + Date.now(), { muteHttpExceptions: true }).getContentText();
+    const pp = JSON.parse(txt.replace(/^const PORTALRATES=/, '').replace(/;\s*$/, ''));
+    const page = (Date.now() - new Date(pp.updatedAt).getTime()) / 60000;
+    if (page > PORTAL_STALE_MIN) problems.push(['portal_stale', '同業後台價格已 ' + Math.round(page) + ' 分鐘沒核對（登入失敗或後台改版？最後：' + pp.updatedAt + '）']);
+    if (((pp.stats || {}).villas || 0) < 100) problems.push(['portal_short', '同業後台只讀到 ' + ((pp.stats || {}).villas || 0) + ' 間的價格表（應為 118）']);
+  } catch (e) { problems.push(['portal_unreadable', '讀不到 portalrates.js（同業後台價格核對結果）：' + e]); }
   // C GitHub 接力鏈
   const gh = ghRuns_();
   if (gh.error) problems.push(['gh_api', 'GitHub API 讀不到：' + gh.error]);
@@ -96,7 +107,7 @@ function doPost(e) {
   try { body = JSON.parse(e.postData.contents); } catch (_) {}
   const kind = String(body.kind || 'page').slice(0, 40);
   const msg = String(body.msg || '').slice(0, 500);
-  const allowed = { gm_auth: 'Google 地圖金鑰或帳務錯誤（地圖無法顯示）', gm_load: 'Google 地圖程式載入失敗', stale_in_page: '網頁端讀到的房況資料過舊', rates_in_page: '網頁端讀到的官網價格核對結果過舊' };
+  const allowed = { gm_auth: 'Google 地圖金鑰或帳務錯誤（地圖無法顯示）', gm_load: 'Google 地圖程式載入失敗', stale_in_page: '網頁端讀到的房況資料過舊', rates_in_page: '網頁端讀到的官網價格核對結果過舊', portal_in_page: '網頁端讀到的同業價格核對結果過舊' };
   if (allowed[kind]) notify_([[kind, allowed[kind] + (msg ? '：' + msg : '')]], [], true);
   return ContentService.createTextOutput('ok');
 }
@@ -113,7 +124,7 @@ function notify_(problems, fixes, fromPage) {
   });
   if (!fromPage) {
     const nowKeys = new Set(problems.map(p => p[0]));
-    const recovered = Object.keys(active).filter(k => !nowKeys.has(k) && !k.startsWith('gm_') && k !== 'stale_in_page' && k !== 'rates_in_page');
+    const recovered = Object.keys(active).filter(k => !nowKeys.has(k) && !k.startsWith('gm_') && k !== 'stale_in_page' && k !== 'rates_in_page' && k !== 'portal_in_page');
     if (recovered.length) {
       MailApp.sendEmail(to, '[Outo 別墅查詢] 已恢復正常', '以下狀況已恢復：\n- ' + recovered.join('\n- ') + '\n\n' + Utilities.formatDate(new Date(), 'Asia/Taipei', 'yyyy-MM-dd HH:mm'));
       recovered.forEach(k => delete active[k]);
