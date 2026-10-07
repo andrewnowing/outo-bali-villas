@@ -1,0 +1,37 @@
+name: Refresh partner-portal rates (manual)
+on:
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  portal:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - run: pip install -q beautifulsoup4
+      - name: Start from the latest portalrates.js on the data branch
+        run: |
+          if git fetch --depth=1 origin data:refs/remotes/origin/data; then
+            git show refs/remotes/origin/data:portalrates.js > portalrates.js 2>/dev/null || true
+          fi
+      - name: Log in to the Distribution Portal and parse rate tables
+        env:
+          VF_PORTAL_USER: ${{ secrets.VF_PORTAL_USER }}
+          VF_PORTAL_PASS: ${{ secrets.VF_PORTAL_PASS }}
+          PORTAL_MIN_AGE_MIN: '0'
+        run: |
+          set +e
+          python3 scripts/refresh_portal.py > /tmp/out.txt 2>&1; rc=$?
+          echo "::notice title=portal::rc=$rc $(tr '\n' ' ' < /tmp/out.txt | cut -c1-600)"
+          exit $rc
+      - name: Commit portalrates.js to the data branch
+        run: |
+          git config --global user.name "outo-bot"; git config --global user.email "andrew@outo.co"
+          cp portalrates.js /tmp/portalrates.new.js
+          git fetch --depth=1 origin data:refs/remotes/origin/data || true
+          rm -rf /tmp/data-wt; git worktree prune; git worktree add --detach /tmp/data-wt refs/remotes/origin/data
+          cp /tmp/portalrates.new.js /tmp/data-wt/portalrates.js
+          cd /tmp/data-wt
+          if git diff --quiet -- portalrates.js && [ -z "$(git ls-files --others --exclude-standard portalrates.js)" ]; then echo "no change"; exit 0; fi
+          git add portalrates.js && git commit -q -m "portalrates: refresh $(date -u +%Y-%m-%dT%H:%MZ)" && git push origin HEAD:refs/heads/data
