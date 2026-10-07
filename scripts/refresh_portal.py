@@ -99,15 +99,23 @@ def parse_page(body):
     return found
 
 by = {}
-for page in range(1, 10):
-    st, url, body = get(BASE + ('/?page=%d' % page))
-    if 'name="_password"' in body:
-        print('session lost while paging', file=sys.stderr); sys.exit(3)
-    f = parse_page(body)
-    if not f: break
-    by.update(f)
-    if ('page=%d' % (page + 1)) not in body: break
-    time.sleep(1)
+# The unfiltered list re-shuffles between pages (some villas repeat, others never appear),
+# so walk the list per destination (the location filter) and union the results.
+st, url, body = get(BASE + '/')
+if 'name="_password"' in body:
+    print('session lost', file=sys.stderr); sys.exit(3)
+locs = re.findall(r'<option value="(\d+)"[^>]*>[^<]*</option>', body.split('name="location"', 1)[1].split('</select>', 1)[0]) if 'name="location"' in body else []
+by.update(parse_page(body))
+for loc in locs:
+    for page in range(1, 6):
+        st, url, body = get(BASE + ('/?location=%s&page=%d' % (loc, page)))
+        if 'name="_password"' in body:
+            print('session lost while paging', file=sys.stderr); sys.exit(3)
+        f = parse_page(body)
+        by.update(f)
+        if not f or ('page=%d' % (page + 1)) not in body: break
+        time.sleep(0.5)
+    time.sleep(0.5)
 
 good = {s: v for s, v in by.items() if v.get('r')}
 if len(good) < 60:
