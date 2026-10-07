@@ -111,6 +111,17 @@ open(os.path.join(ROOT, 'pubav.js'), 'w', encoding='utf-8').write('const PUBAV='
 if rate_stat['norates'] + rate_stat['badrate'] > len(villas) * 0.5 and old_rates:
     print(f"rates table missing on {rate_stat['norates']} pages; keeping previous pubrates.js", file=sys.stderr)
 else:
-    rout = {'updatedAt': now, 'by': rates, 'stats': rate_stat}
+    # rolling 14-day range of the public "from" price (it moves with Villa Finder's dynamic pricing)
+    old_h = {}
+    try: old_h = json.loads(re.search(r'const PUBRATES=(\{.*\});', o, re.S).group(1)).get('dph', {})
+    except Exception: pass
+    cutoff = (datetime.datetime.now(datetime.timezone.utc) - datetime.timedelta(days=14)).strftime('%Y-%m-%d')
+    dph = {}
+    for s_, L in rates.items():
+        if L.get('r') or L.get('dp') is None: continue
+        h = old_h.get(s_)
+        if not h or h[2] < cutoff: h = [L['dp'], L['dp'], now[:10]]
+        dph[s_] = [min(h[0], L['dp']), max(h[1], L['dp']), h[2]]
+    rout = {'updatedAt': now, 'by': rates, 'stats': rate_stat, 'dph': dph}
     open(os.path.join(ROOT, 'pubrates.js'), 'w', encoding='utf-8').write('const PUBRATES=' + json.dumps(rout, separators=(',', ':')) + ';\n')
 print(f"done ok={ok} err={err} rates={rate_stat} in {int(time.time()-t0)}s")
