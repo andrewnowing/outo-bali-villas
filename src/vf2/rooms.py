@@ -3,7 +3,7 @@
 # ROOMS[slug] = [雙人房, 雙床房, 雙床可併, 三人房, 四人房以上, 床型未註明, 單人房]
 import json, glob, os, re, collections
 ROOT = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-STRIP = re.compile(r'\b(bathroom|bathub|bathtub|aircon|tv|wi-?fi|minibar|desk|safe|fan|terrace|balcony|dressing room|walk-in closet|shower|fridge|ensuite|shared|pool view|room with swimming pool|first floor|ground floor|upper floor|2nd floor|second floor|1st building|master bedroom|connecting bedroom|this has a)\b', re.I)
+STRIP = re.compile(r'\b(bedrooms? ?\d+|shared bathroom with|shared bath(room)?|bathroom|bathub|bathtub|aircon|tv|wi-?fi|minibar|desk|safe|fan|terrace|balcony|dressing room|walk-in closet|shower|fridge|ensuite|shared|pool view|room with swimming pool|first floor|ground floor|upper floor|2nd floor|second floor|1st building|master bedroom|connecting bedroom|this has a)\b', re.I)
 
 def classify(desc):
     d = STRIP.sub(' ', (desc or '').lower())

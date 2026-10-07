@@ -441,6 +441,11 @@ button:disabled{opacity:.45;cursor:not-allowed;transform:none;box-shadow:none}
 /*PHOTOS*/
 /*EXTRA*/
 /*ROOMS*/
+// 以 Villa Finder 官網的各房床型（ROOMS）為準，覆寫 Twin 判定與房型篩選旗標
+(function(){if(typeof ROOMS==='undefined')return;for(const s in ROOMS){const c=ROOMS[s];const unk=c[5]>0;const f=x=>x>0?1:(unk?-1:0);
+  if(typeof BEDS!=='undefined'){const b=BEDS[s]||[-1,-1,-1,-1];BEDS[s]=[f(c[1]+c[2]),f(c[0]+c[3]+c[4]),f(c[4]),b[3]];}
+  const st=c[1]>0?'yes':(c[2]>0?'conv':(!unk?'no':null));if(!st)continue;
+  [typeof TWIN!=='undefined'?TWIN:null,typeof TWIN_EN!=='undefined'?TWIN_EN:null].forEach(D=>{if(!D)return;if(D[s])D[s][0]=st;else D[s]=[st,'',0,''];});}})();
 if(typeof PUB_VILLAS!=='undefined'){for(const v of PUB_VILLAS)VILLAS.push(v);}
 if(typeof PUB_X!=='undefined'){const mg=(name,src)=>{if(!src)return;if(typeof window[name]==='undefined')window[name]={};for(const k in src)if(!(k in window[name]))window[name][k]=src[k];};
   for(const n of ['BEDS','TWIN','TWIN_EN','GMAP','ADDR','RATE'])mg(n,PUB_X[n]);
