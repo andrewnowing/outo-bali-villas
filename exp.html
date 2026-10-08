@@ -3,7 +3,7 @@
 <title>Outo 體驗元件地圖</title>
 <link rel="icon" href="favicon.ico?v=5" sizes="any"><link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png?v=5"><link rel="apple-touch-icon" href="favicon.png?v=5">
 <script src="config.js"></script>
-<script src="exp_data.js?v=15"></script>
+<script src="exp_data.js?v=16"></script>
 <style>
 @font-face{font-family:"Fields Display";src:url("fonts/Fields-Display-Semi-Bold.woff2") format("woff2");font-weight:600;font-display:swap}
 @font-face{font-family:"Fields";src:url("fonts/Fields-Regular.woff2") format("woff2");font-weight:400;font-display:swap}
@@ -249,8 +249,8 @@ input{font:inherit;font-weight:500;color:var(--ink);background:var(--surface);bo
   .qrow{order:-1}
   .qrow .lbl{display:none}
   .qrow .q{flex-basis:100%;height:42px}
-  #fDest,#fReg,#fCat,#fSeg,#fPri,#fOff{flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none;-webkit-overflow-scrolling:touch;gap:6px;-webkit-mask-image:linear-gradient(90deg,#000 calc(100% - 28px),transparent);mask-image:linear-gradient(90deg,#000 calc(100% - 28px),transparent);padding-right:28px}
-  #fDest::-webkit-scrollbar,#fReg::-webkit-scrollbar,#fCat::-webkit-scrollbar,#fSeg::-webkit-scrollbar,#fPri::-webkit-scrollbar,#fOff::-webkit-scrollbar{display:none}
+  #fDest,#fReg,#fCat,#fSeg,#fOt,#fPri,#fOff{flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none;-webkit-overflow-scrolling:touch;gap:6px;-webkit-mask-image:linear-gradient(90deg,#000 calc(100% - 28px),transparent);mask-image:linear-gradient(90deg,#000 calc(100% - 28px),transparent);padding-right:28px}
+  #fDest::-webkit-scrollbar,#fReg::-webkit-scrollbar,#fCat::-webkit-scrollbar,#fSeg::-webkit-scrollbar,#fPri::-webkit-scrollbar,#fOt::-webkit-scrollbar,#fOff::-webkit-scrollbar{display:none}
   .filters .frow>button{flex:none;white-space:nowrap;height:32px;padding:0 11px}
   .filters .lbl{min-width:36px;flex:none;letter-spacing:.08em}
   .budget{margin-inline:16px;padding-inline:0}
@@ -307,7 +307,7 @@ input{font:inherit;font-weight:500;color:var(--ink);background:var(--surface);bo
   .ftog .car{transition:transform var(--dur) var(--ease)}
   .fopen .ftog .car{transform:rotate(180deg)}
   .fopen .ftog .hint{visibility:hidden}
-  .filters:not(.fopen) #fReg,.filters:not(.fopen) #fCat,.filters:not(.fopen) #fSeg,.filters:not(.fopen) #fPri,.filters:not(.fopen) #priHint,.filters:not(.fopen) #fOff,.filters:not(.fopen) #budgetBox{display:none}
+  .filters:not(.fopen) #fReg,.filters:not(.fopen) #fCat,.filters:not(.fopen) #fSeg,.filters:not(.fopen) #fOt,.filters:not(.fopen) #fPri,.filters:not(.fopen) #priHint,.filters:not(.fopen) #fOff,.filters:not(.fopen) #budgetBox{display:none}
   .budget{border-top:0;padding-top:0}
   .bhead{padding-top:2px}
 }
@@ -461,7 +461,7 @@ input{font:inherit;font-weight:500;color:var(--ink);background:var(--surface);bo
     <h3>1. 查詢體驗元件</h3>
     <ol>
       <li>先選<b class="k">目的地</b>（峇里島、富國島、胡志明市周邊、清邁清萊、曼谷周邊、中越）。</li>
-      <li>按<b class="k">更多篩選</b>可再縮小：地區、分類（自然、海上、寺廟、冒險、親子、療癒、餐飲夜生活、餐廳）、客群（帶小孩／帶長輩／伴侶／好友）、優先等級 P0–P2、通路（OTA 有上架／只有官網社群接單）、每人預算；也可以直接在搜尋框打名稱、英文名或地區。</li>
+      <li>按<b class="k">更多篩選</b>可再縮小：地區、分類（自然、海上、寺廟、冒險、親子、療癒、餐飲夜生活、餐廳）、客群（帶小孩／帶長輩／伴侶／好友）、優先等級 P0–P2、OMS 類型（行程／門票／體驗／餐費／郵輪／包車接送，對應 OMS 的 componentType）、通路（OTA 有上架／只有官網社群接單）、每人預算；也可以直接在搜尋框打名稱、英文名或地區。</li>
       <li>每張卡片右上角是 <b class="k">Google 評價</b>（分數／則數）和<b class="k">每人參考價</b>（台幣，已把稅與服務費估進去）。卡片上的「適合客群」用顏色分三級：適合、有條件、不建議。</li>
       <li><b class="k">優先等級</b>是盤點時依台灣客群需求判斷的，不代表品質高低；同一個體驗換業者不算另一個元件。
         <table><tr><th>等級</th><th>定義</th></tr>
@@ -508,6 +508,7 @@ input{font:inherit;font-weight:500;color:var(--ink);background:var(--surface);bo
     <div class="frow" id="fReg"><span class="lbl">地區</span></div>
     <div class="frow" id="fCat"><span class="lbl">分類</span></div>
     <div class="frow" id="fSeg"><span class="lbl">客群</span></div>
+    <div class="frow" id="fOt"><span class="lbl">OMS 類型</span></div>
     <div class="frow" id="fPri"><span class="lbl">優先</span></div>
     <details class="hint bnote" id="priHint"><summary>P0／P1／P2 怎麼分</summary>P0：台灣家庭或伴侶客大多會想去、排 5 日行程時優先放進去的主菜，每個目的地大約 20–40 個。P1：加選，客人有興趣或行程有空檔才排，用來補半天或換口味。P2：小眾，特定客群（愛冒險、親子特殊需求、深度文化）才會要，或營運不穩、季節限定、交通不便。同一個體驗換業者不算另一個元件；等級是盤點時依客群需求判斷，不代表品質高低。</details>
     <div class="frow" id="fOff"><span class="lbl">通路</span></div>
@@ -587,7 +588,7 @@ const MAPS_KEY=(window.OUTO_CFG&&window.OUTO_CFG.MAPS_KEY)||'';
 const X=window.EXP||{dests:[],cats:[],items:[]};
 const CATCOL=['#2F8466','#3E6B8B','#A16A1B','#B85C3B','#E18C00','#7A5C99','#1B1A14','#C2185B','#5B6B7A'];
 const rgChip=x=>(x.nw?'<span class="chip nw">2026-10 新增</span>':'')+(x.rg?`<span class="chip">${x.ml==='L'?'日常午餐':'特別晚餐'}</span><span class="chip rg">推薦程度 ${esc(x.rg.replace(/^\d\s*/,''))}</span>${x.ck?'<span class="chip">已電話確認</span>':'<span class="chip warn">網路初篩・未電話確認</span>'}`:'');
-const S={dest:0,dests:new Set([0]),reg:new Set(),cat:new Set(),seg:new Set(),pri:new Set(),off:new Set(),q:'',limit:40,mode:'DRIVE'};const OPEN=new Set();
+const S={dest:0,dests:new Set([0]),reg:new Set(),cat:new Set(),seg:new Set(),pri:new Set(),ot:new Set(),off:new Set(),q:'',limit:40,mode:'DRIVE'};const OPEN=new Set();
 const BST=[0,100,200,300,500,750,1000,1500,2000,2500,3000,4000,5000,6000,8000,10000,15000];const bud={a:0,b:BST.length-1};
 const budOn=()=>bud.a>0||bud.b<BST.length-1;
 const twFmt=n=>'NT$'+Math.round(n).toLocaleString();
@@ -598,9 +599,9 @@ let origin=null,dest=null,by=null,req=0;
 const BYID={};X.items.forEach(x=>BYID[x.id]=x);
 
 const has=(set,v)=>!set.size||set.has(v);
-function match(x,skip){const q=S.q.trim().toLowerCase();return S.dests.has(x.d)&&(skip==='reg'||has(S.reg,x.d+':'+x.ri))&&(skip==='cat'||has(S.cat,x.c))&&(skip==='seg'||[...S.seg].every(i=>x.s&&x.s[i]===2))&&(skip==='pri'||has(S.pri,x.p))&&(skip==='off'||has(S.off,x.off?1:0))&&(skip==='bud'||!budOn()||(x.tw!==undefined&&x.tw>=BST[bud.a]&&(bud.b===BST.length-1||x.tw<=BST[bud.b])))&&(!q||[x.id,x.n,x.en,x.r,x.ty||''].join(' ').toLowerCase().includes(q));}
+function match(x,skip){const q=S.q.trim().toLowerCase();return S.dests.has(x.d)&&(skip==='reg'||has(S.reg,x.d+':'+x.ri))&&(skip==='cat'||has(S.cat,x.c))&&(skip==='seg'||[...S.seg].every(i=>x.s&&x.s[i]===2))&&(skip==='pri'||has(S.pri,x.p))&&(skip==='ot'||has(S.ot,x.ot))&&(skip==='off'||has(S.off,x.off?1:0))&&(skip==='bud'||!budOn()||(x.tw!==undefined&&x.tw>=BST[bud.a]&&(bud.b===BST.length-1||x.tw<=BST[bud.b])))&&(!q||[x.id,x.n,x.en,x.r,x.ty||''].join(' ').toLowerCase().includes(q));}
 function rows(){return X.items.filter(x=>match(x));}
-function fCount(){const n=['reg','cat','seg','pri','off'].reduce((a,k)=>a+S[k].size,0)+((bud.a!==0||bud.b!==BST.length-1)?1:0);$('fCnt').textContent=n+' 個條件';$('fCnt').hidden=!n;}
+function fCount(){const n=['reg','cat','seg','pri','ot','off'].reduce((a,k)=>a+S[k].size,0)+((bud.a!==0||bud.b!==BST.length-1)?1:0);$('fCnt').textContent=n+' 個條件';$('fCnt').hidden=!n;}
 $('fTog').addEventListener('click',()=>{const f=document.querySelector('.filters');const o=!f.classList.contains('fopen');f.classList.toggle('fopen',o);$('fTog').setAttribute('aria-expanded',String(o));});
 function chips(){
   const all=X.items.filter(x=>S.dests.has(x.d));
@@ -612,6 +613,7 @@ function chips(){
   $('fReg').innerHTML='<span class="lbl">地區</span>'+allBtn('reg')+ds.map(d=>X.regs[d].map((r,i)=>{const key=d+':'+i;const c=n('reg',x=>x.d===d&&x.ri===i);return c||S.reg.has(key)?btn('reg',key,(multi?X.dests[d].name+'・':'')+r,c,S.reg.has(key)):'';}).join('')).join('');
   $('fCat').innerHTML='<span class="lbl">分類</span>'+allBtn('cat')+X.cats.map((c,i)=>{const k=n('cat',x=>x.c===i);return k||S.cat.has(i)?btn('cat',i,c,k,S.cat.has(i),`<span class="dot" style="background:${CATCOL[i]}"></span>`):'';}).join('');
   $('fSeg').innerHTML='<span class="lbl">客群</span>'+allBtn('seg')+SEGN.map((l,i)=>btn('seg',i,l+'適合',n('seg',x=>x.s&&x.s[i]===2),S.seg.has(i))).join('')+(S.seg.size>1?'<span class="hint">同時適合所選客群</span>':'');
+  $('fOt').innerHTML='<span class="lbl">OMS 類型</span>'+allBtn('ot')+X.ots.map((t,i)=>btn('ot',i,t,n('ot',x=>x.ot===i),S.ot.has(i))).join('');
   $('fPri').innerHTML='<span class="lbl">優先</span>'+allBtn('pri')+['P0','P1','P2'].map(p=>btn('pri',p,p,n('pri',x=>x.p===p),S.pri.has(p))).join('');
   $('fOff').innerHTML='<span class="lbl">通路</span>'+allBtn('off')+btn('off',0,'OTA 有上架',n('off',x=>!x.off),S.off.has(0))+btn('off',1,'只有官網／社群接單',n('off',x=>x.off),S.off.has(1));
   drawBud();fCount();
@@ -647,7 +649,7 @@ function itemHtml(x){
   return `<article class="card item${origin&&origin.id===x.id?' on':''}" data-id="${esc(x.id)}">
   <div class="ithumb"><img loading="lazy" src="exp_img/${esc(x.id)}.jpg" alt="${esc(x.n)}" onerror="this.parentNode.classList.add('err')"></div>
   <div class="ibody"><div class="itop"><span class="iid">${esc(x.id)}</span><span class="inm">${esc(x.n)}</span><span class="ien">${esc(x.en)}</span>${x.gr||x.tw!==undefined?`<span class="iright">${x.gr?`<span class="irate" title="Google 評價"><span class="star">★</span>${x.gr}<small>${Number(x.gc||0).toLocaleString()} 則</small></span>`:''}${x.tw!==undefined?`<span class="iprice">${x.tw===0?'免費':'約 '+twFmt(x.tw)}</span>`:''}</span>`:''}</div>
-  <div class="chips"><span class="chip"><span class="dot" style="background:${CATCOL[x.c]}"></span>${esc(X.cats[x.c])}</span><span class="chip">${esc(x.r)}</span><span class="chip ${x.p.toLowerCase()}">${x.p}</span>${x.tpl?'<span class="chip tpl">行程範本</span>':''}${x.off?'<span class="chip">只有官網／社群接單</span>':''}${x.lo?'<span class="chip warn">座標待確認</span>':''}${rgChip(x)}${distChip(x)}</div>
+  <div class="chips"><span class="chip"><span class="dot" style="background:${CATCOL[x.c]}"></span>${esc(X.cats[x.c])}</span><span class="chip" title="OMS 元件類型">${esc(X.ots[x.ot])}</span><span class="chip">${esc(x.r)}</span><span class="chip ${x.p.toLowerCase()}">${x.p}</span>${x.tpl?'<span class="chip tpl">行程範本</span>':''}${x.off?'<span class="chip">只有官網／社群接單</span>':''}${x.lo?'<span class="chip warn">座標待確認</span>':''}${rgChip(x)}${distChip(x)}</div>
   ${x.ds?`<div class="idesc">${esc(x.ds)}</div>`:''}
   ${x.hl&&x.hl.length?`<ul class="ihl">${x.hl.map(t=>`<li>${esc(t)}</li>`).join('')}</ul>`:''}
   ${x.s&&x.s.length?`<div class="iseg"><span class="lbl">適合客群</span>${x.s.map((v,i)=>`<span class="sg s${v}" title="${SEGT[v]}">${SEGN[i]}</span>`).join('')}</div>`:''}
@@ -959,7 +961,7 @@ function openPlan(p,keepId=true,isDirty=false){if(!p)return;const nd=+p.dest;if(
   while(PLAN.nights.length<days.length-1)PLAN.nights.push(null);
   CUR=Math.min(Math.max(0,+p.cur||0),days.length-1);STOPS=PLAN.days[CUR].stops;LEGS=[];S.mode=p.mode==='WALK'?'WALK':'DRIVE';setModeBtns();adding=!STOPS.length;dirty=isDirty;$('lPick').hidden=true;
   fillSettings();fitDest=true;syncStops();render();showRoute();saveDraft();}
-function switchDest(nv){S.dest=nv;if(!S.dests.has(nv)){S.dests=new Set([nv]);bud.a=0;bud.b=BST.length-1;['reg','cat','seg','pri','off'].forEach(k=>S[k].clear());}saveFilter();}
+function switchDest(nv){S.dest=nv;if(!S.dests.has(nv)){S.dests=new Set([nv]);bud.a=0;bud.b=BST.length-1;['reg','cat','seg','pri','ot','off'].forEach(k=>S[k].clear());}saveFilter();}
 $('pSave').addEventListener('click',()=>savePlan(false));
 $('pSaveAs').addEventListener('click',()=>savePlan(true));
 $('pNew').addEventListener('click',()=>{if(dirty&&anyStops()&&!confirm('目前的行程還沒儲存，確定要開新行程？'))return;openPlan({dest:S.dest,days:[newDay()]},false);});
