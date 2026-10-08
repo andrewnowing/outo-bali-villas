@@ -3,7 +3,7 @@
 <title>Outo 體驗元件地圖</title>
 <link rel="icon" href="favicon.ico?v=5" sizes="any"><link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png?v=5"><link rel="apple-touch-icon" href="favicon.png?v=5">
 <script src="config.js"></script>
-<script src="exp_data.js?v=19"></script>
+<script src="exp_data.js?v=20"></script>
 <style>
 @font-face{font-family:"Fields Display";src:url("fonts/Fields-Display-Semi-Bold.woff2") format("woff2");font-weight:600;font-display:swap}
 @font-face{font-family:"Fields";src:url("fonts/Fields-Regular.woff2") format("woff2");font-weight:400;font-display:swap}
@@ -450,6 +450,7 @@ input{font:inherit;font-weight:500;color:var(--ink);background:var(--surface);bo
 .lvp em.ok{background:var(--jade-100);color:var(--jade-700)}.lvp em.bad{background:var(--clay-100);color:var(--clay-600)}
 .ctab tr.grp td{background:var(--paper-100);font-weight:600;color:var(--ink)}
 #lpG .combo input{padding-left:12px}
+ol.vr{margin:4px 0 0 18px;padding:0}ol.vr li{margin:2px 0}
 </style></head><body>
 <div class="wrap">
 <div class="help" id="help" hidden role="dialog" aria-modal="true" aria-labelledby="helpT">
@@ -586,7 +587,9 @@ const $=id=>document.getElementById(id);
 function esc(s){return String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));}
 const MAPS_KEY=(window.OUTO_CFG&&window.OUTO_CFG.MAPS_KEY)||'';
 const X=window.EXP||{dests:[],cats:[],items:[]};
-function gurl(x,D){if(x.pid)return 'https://www.google.com/maps/search/?api=1&query='+encodeURIComponent(x.gn||x.gp||x.n)+'&query_place_id='+x.pid;return 'https://www.google.com/maps/search/?api=1&query='+encodeURIComponent((D&&D.map)||(x.la+','+x.ln));}
+function gurl(x,D){const biz=x.pid&&!x.gnb;if(biz)return gpl(x);if(x.ws)return x.ws;if(x.so)return x.so;if(x.pid)return gpl(x);return 'https://www.google.com/maps/search/?api=1&query='+encodeURIComponent((D&&D.map)||(x.la+','+x.ln));}
+function gpl(x){return 'https://www.google.com/maps/search/?api=1&query='+encodeURIComponent(x.gn||x.gp||x.n)+'&query_place_id='+x.pid;}
+function glabel(x){if(x.pid&&!x.gnb)return 'Google 商家';if(x.ws)return '官網';if(x.so)return '社群官方帳號';if(x.pid)return 'Google 地點';return 'Google 地圖';}
 const CATCOL=['#2F8466','#3E6B8B','#A16A1B','#B85C3B','#E18C00','#7A5C99','#1B1A14','#C2185B','#5B6B7A'];
 const rgChip=x=>(x.nw?'<span class="chip nw">2026-10 新增</span>':'')+(x.rg?`<span class="chip">${x.ml==='L'?'日常午餐':'特別晚餐'}</span><span class="chip rg">推薦程度 ${esc(x.rg.replace(/^\d\s*/,''))}</span>${x.ck?'<span class="chip">已電話確認</span>':'<span class="chip warn">網路初篩・未電話確認</span>'}`:'');
 const S={dest:0,dests:new Set([0]),reg:new Set(),cat:new Set(),seg:new Set(),pri:new Set(),ot:new Set(),off:new Set(),q:'',limit:40,mode:'DRIVE'};const OPEN=new Set();
@@ -650,12 +653,12 @@ function itemHtml(x){
   return `<article class="card item${origin&&origin.id===x.id?' on':''}" data-id="${esc(x.id)}">
   <div class="ithumb"><img loading="lazy" src="exp_img/${esc(x.id)}.jpg" alt="${esc(x.n)}" onerror="this.parentNode.classList.add('err')"></div>
   <div class="ibody"><div class="itop"><span class="iid">${esc(x.id)}</span><span class="inm">${esc(x.n)}</span><span class="ien">${esc(x.en)}</span>${x.gr||x.tw!==undefined?`<span class="iright">${x.gr?`<span class="irate" title="Google 評價"><span class="star">★</span>${x.gr}<small>${Number(x.gc||0).toLocaleString()} 則</small></span>`:''}${x.tw!==undefined?`<span class="iprice">${x.tw===0?'免費':'約 '+twFmt(x.tw)}</span>`:''}</span>`:''}</div>
-  <div class="chips"><span class="chip"><span class="dot" style="background:${CATCOL[x.c]}"></span>${esc(X.cats[x.c])}</span><span class="chip" title="OMS 元件類型">${esc(X.ots[x.ot])}</span><span class="chip">${esc(x.r)}</span><span class="chip ${x.p.toLowerCase()}">${x.p}</span>${x.tpl?'<span class="chip tpl">行程範本</span>':''}${x.off?'<span class="chip">只有官網／社群接單</span>':''}${x.lo?'<span class="chip warn">座標待確認</span>':''}${rgChip(x)}${distChip(x)}</div>
+  <div class="chips"><span class="chip"><span class="dot" style="background:${CATCOL[x.c]}"></span>${esc(X.cats[x.c])}</span><span class="chip" title="OMS 元件類型">${esc(X.ots[x.ot])}</span>${x.vr?`<span class="chip" title="有多種方案，報價需分開">${x.vr.length} 種方案</span>`:''}<span class="chip">${esc(x.r)}</span><span class="chip ${x.p.toLowerCase()}">${x.p}</span>${x.tpl?'<span class="chip tpl">行程範本</span>':''}${x.off?'<span class="chip">只有官網／社群接單</span>':''}${x.lo?'<span class="chip warn">座標待確認</span>':''}${rgChip(x)}${distChip(x)}</div>
   ${x.ds?`<div class="idesc">${esc(x.ds)}</div>`:''}
   ${x.hl&&x.hl.length?`<ul class="ihl">${x.hl.map(t=>`<li>${esc(t)}</li>`).join('')}</ul>`:''}
   ${x.s&&x.s.length?`<div class="iseg"><span class="lbl">適合客群</span>${x.s.map((v,i)=>`<span class="sg s${v}" title="${SEGT[v]}">${SEGN[i]}</span>`).join('')}</div>`:''}
   <div class="imeta">${[x.du?'建議停留：'+durM(x.du):'',x.ow?'營業時間：'+hmm(x.ow[0])+'–'+hmm(x.ow[1]):(x.tm?'時間資訊：'+x.tm:''),x.pr?'原文價格：'+x.pr:'',x.gp?'標示地點：'+x.gp:''].filter(Boolean).map(esc).join(' ｜ ')}</div>
-  <div class="iacts"><button type="button" data-act="x" data-id="${esc(x.id)}" aria-expanded="${OPEN.has(x.id)}">${OPEN.has(x.id)?'收合詳情':'展開詳情'}</button><button type="button" data-act="o" data-id="${esc(x.id)}">設為起點</button><button type="button" data-act="d" data-id="${esc(x.id)}">加到路線</button><button type="button" data-act="z" data-id="${esc(x.id)}">在地圖上看</button><a href="${gurl(x)}" target="_blank" rel="noopener">${x.pid?'Google 商家':'Google 地圖'} →</a></div></div>
+  <div class="iacts"><button type="button" data-act="x" data-id="${esc(x.id)}" aria-expanded="${OPEN.has(x.id)}">${OPEN.has(x.id)?'收合詳情':'展開詳情'}</button><button type="button" data-act="o" data-id="${esc(x.id)}">設為起點</button><button type="button" data-act="d" data-id="${esc(x.id)}">加到路線</button><button type="button" data-act="z" data-id="${esc(x.id)}">在地圖上看</button><a href="${gurl(x)}" target="_blank" rel="noopener">${glabel(x)} →</a></div></div>
   <div class="det" data-det="${esc(x.id)}"${OPEN.has(x.id)?'':' hidden'}>${OPEN.has(x.id)?detHtml(x):''}</div>
 </article>`;}
 let DLOAD=null;
@@ -709,14 +712,16 @@ function detHtml(x){
     <tr><th>記憶點</th><td>${esc(R.memo)}</td></tr><tr><th>訂位方式</th><td>${esc(R.book)}</td></tr><tr><th>訂位風險</th><td>${esc(R.rk)}</td></tr>
     <tr><th>待電話確認</th><td><ol>${R.q.map(t=>`<li>${esc(t)}</li>`).join('')}</ol></td></tr></table></section>`;}
   const vid=D.vid&&D.vid.length?`<ul>${D.vid.map(([t,u,m])=>`<li>${lk(t,u)} <span class="hint">${esc(m||'')}</span></li>`).join('')}</ul>`:'<span class="hint">—</span>';
+  const vr=x.vr&&x.vr.length?`<div class="w"><dt>方案／配套<span class="hint">（依網路公開資料整理，供應商請分開報價）</span></dt><dd><ol class="vr">${x.vr.map((v,i)=>`<li><b>${esc(v.l)}</b>　${esc(v.df)}<span class="hint">　參考價：${esc(v.pr)}</span></li>`).join('')}</ol></dd></div>`:'';
   const parts=D.parts&&D.parts.length?`<div class="why"><b>行程範本</b>　這是多個單點組成的行程，報價與 OMS 建檔以單點元件為準：${D.parts.map(id=>{const y=X.items.find(z=>z.id===id);return y?`<a href="#" data-act="j" data-id="${esc(id)}">${esc(id)} ${esc(y.n)}</a>`:esc(id)}).join('、')}</div>`:'';
   return `${parts}<div class="tx">${esc(D.desc||'')}</div>
   <dl class="dg">
     <div class="w"><dt>價格行情與訂購平台</dt><dd>${x.tw!==undefined?`<div><b>${x.tw===0?'免費':'約 '+twFmt(x.tw)}</b>${x.tr&&x.tr[1]>x.tr[0]?`<span class="hint">（各方案換算約 ${twFmt(x.tr[0])}–${twFmt(x.tr[1])}）</span>`:''}</div>`:''}<div>${esc(D.price||'未查到')}</div><div class="plats">${plat.join('')}</div></dd></div>
-    <div><dt>區域／地圖</dt><dd>${esc(D.area||x.r)} · <a href="${gurl(x,D)}" target="_blank" rel="noopener">${x.pid?'Google 商家：'+esc(x.gn):'Google 地圖'}</a></dd></div>
+    <div><dt>區域／地圖</dt><dd>${esc(D.area||x.r)} · <a href="${gurl(x,D)}" target="_blank" rel="noopener">${glabel(x)}${x.pid&&!x.gnb?'：'+esc(x.gn):x.op?'：'+esc(x.op):''}</a>${x.pid&&!x.gnb&&x.ws?` · <a href="${esc(x.ws)}" target="_blank" rel="noopener">官網</a>`:''}${(x.pid&&!x.gnb||x.ws)&&x.so?` · <a href="${esc(x.so)}" target="_blank" rel="noopener">社群</a>`:''}</dd></div>
     <div><dt>建議停留／體驗時間</dt><dd>${x.du?durM(x.du):'—'}${x.tm?`<span class="hint">（${esc(x.tm)}）</span>`:''}</dd></div>
     <div><dt>營業時間／可預約時段</dt><dd>${x.ow?hmm(x.ow[0])+'–'+hmm(x.ow[1])+' ':''}${esc(D.time||'')||(x.ow?'':'未查到，請以供應商回覆為準')}</dd></div>
     <div class="w"><dt>包含／不包含${D.ie==='ota'?`<span class="hint">（來源：<a href="${D.ieu}" target="_blank" rel="noopener">${D.ies}</a>，供應商報價後更新）</span>`:D.ie==='ota_mixed'?`<span class="hint">（來源：<a href="${D.ieu}" target="_blank" rel="noopener">${D.ies}</a>；該頁含與不含混列，請點連結核對）</span>`:D.ie==='manual'?'<span class="hint">（盤點時依官網／資料整理，未向業者確認）</span>':''}</dt><dd>${D.ie==='none'?'<span class="hint">尚未查到公開來源，待供應商提供</span>':`<div class="g2"><div><div class="dt">包含</div>${ul(D.inc)}</div><div><div class="dt">不包含</div>${ul(D.exc)}</div></div>`}</dd></div>
+    ${vr}
     <div><dt>社群提及／來源</dt><dd>${esc(D.social||'—')}</dd></div>
     <div class="w"><dt>OTA 熱度（評分／評論／訂購）</dt><dd class="num">${esc((D.ota||'—')+(D.tc&&D.tc[0]?'；'+D.tc[0]:''))}</dd></div>
     <div class="w"><dt>注意事項</dt><dd>${ul(D.notes)}</dd></div>
