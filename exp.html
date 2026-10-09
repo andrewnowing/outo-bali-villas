@@ -3,7 +3,7 @@
 <title>Outo 體驗元件地圖</title>
 <link rel="icon" href="favicon.ico?v=5" sizes="any"><link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png?v=5"><link rel="apple-touch-icon" href="favicon.png?v=5">
 <script src="config.js"></script>
-<script src="exp_data.js?v=23"></script>
+<script src="exp_data.js?v=24"></script>
 <style>
 @font-face{font-family:"Fields Display";src:url("fonts/Fields-Display-Semi-Bold.woff2") format("woff2");font-weight:600;font-display:swap}
 @font-face{font-family:"Fields";src:url("fonts/Fields-Regular.woff2") format("woff2");font-weight:400;font-display:swap}
@@ -676,7 +676,7 @@ function itemHtml(x){
   <div class="det" data-det="${esc(x.id)}"${OPEN.has(x.id)?'':' hidden'}>${OPEN.has(x.id)?detHtml(x):''}</div>
 </article>`;}
 let DLOAD=null;
-function loadDet(){if(window.EXPD)return Promise.resolve();if(!DLOAD)DLOAD=new Promise((ok,no)=>{const sc=document.createElement('script');sc.src='exp_detail.js?v=14';sc.onload=ok;sc.onerror=()=>{DLOAD=null;no();};document.head.appendChild(sc);});return DLOAD;}
+function loadDet(){if(window.EXPD)return Promise.resolve();if(!DLOAD)DLOAD=new Promise((ok,no)=>{const sc=document.createElement('script');sc.src='exp_detail.js?v=15';sc.onload=ok;sc.onerror=()=>{DLOAD=null;no();};document.head.appendChild(sc);});return DLOAD;}
 async function toggleDet(x,b){const box=document.querySelector(`.det[data-det="${x.id}"]`);if(!box)return;
   if(OPEN.has(x.id)){OPEN.delete(x.id);box.hidden=true;box.innerHTML='';b.textContent='展開詳情';b.setAttribute('aria-expanded','false');return;}
   OPEN.add(x.id);box.hidden=false;b.textContent='收合詳情';b.setAttribute('aria-expanded','true');
