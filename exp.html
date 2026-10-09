@@ -3,7 +3,7 @@
 <title>Outo 體驗元件地圖</title>
 <link rel="icon" href="favicon.ico?v=5" sizes="any"><link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png?v=5"><link rel="apple-touch-icon" href="favicon.png?v=5">
 <script src="config.js"></script>
-<script src="exp_data.js?v=20"></script>
+<script src="exp_data.js?v=21"></script>
 <style>
 @font-face{font-family:"Fields Display";src:url("fonts/Fields-Display-Semi-Bold.woff2") format("woff2");font-weight:600;font-display:swap}
 @font-face{font-family:"Fields";src:url("fonts/Fields-Regular.woff2") format("woff2");font-weight:400;font-display:swap}
@@ -249,7 +249,7 @@ input{font:inherit;font-weight:500;color:var(--ink);background:var(--surface);bo
   .qrow{order:-1}
   .qrow .lbl{display:none}
   .qrow .q{flex-basis:100%;height:42px}
-  #fDest,#fReg,#fCat,#fSeg,#fOt,#fPri,#fOff{flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none;-webkit-overflow-scrolling:touch;gap:6px;-webkit-mask-image:linear-gradient(90deg,#000 calc(100% - 28px),transparent);mask-image:linear-gradient(90deg,#000 calc(100% - 28px),transparent);padding-right:28px}
+  #fDest,#fReg,#fCat,#fSeg,#fOt,#fPri,#fOff,#fVr{flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none;-webkit-overflow-scrolling:touch;gap:6px;-webkit-mask-image:linear-gradient(90deg,#000 calc(100% - 28px),transparent);mask-image:linear-gradient(90deg,#000 calc(100% - 28px),transparent);padding-right:28px}
   #fDest::-webkit-scrollbar,#fReg::-webkit-scrollbar,#fCat::-webkit-scrollbar,#fSeg::-webkit-scrollbar,#fPri::-webkit-scrollbar,#fOt::-webkit-scrollbar,#fOff::-webkit-scrollbar{display:none}
   .filters .frow>button{flex:none;white-space:nowrap;height:32px;padding:0 11px}
   .filters .lbl{min-width:36px;flex:none;letter-spacing:.08em}
@@ -307,7 +307,7 @@ input{font:inherit;font-weight:500;color:var(--ink);background:var(--surface);bo
   .ftog .car{transition:transform var(--dur) var(--ease)}
   .fopen .ftog .car{transform:rotate(180deg)}
   .fopen .ftog .hint{visibility:hidden}
-  .filters:not(.fopen) #fReg,.filters:not(.fopen) #fCat,.filters:not(.fopen) #fSeg,.filters:not(.fopen) #fOt,.filters:not(.fopen) #fPri,.filters:not(.fopen) #priHint,.filters:not(.fopen) #fOff,.filters:not(.fopen) #budgetBox{display:none}
+  .filters:not(.fopen) #fReg,.filters:not(.fopen) #fCat,.filters:not(.fopen) #fSeg,.filters:not(.fopen) #fOt,.filters:not(.fopen) #fPri,.filters:not(.fopen) #priHint,.filters:not(.fopen) #fOff,.filters:not(.fopen) #fVr,.filters:not(.fopen) #budgetBox{display:none}
   .budget{border-top:0;padding-top:0}
   .bhead{padding-top:2px}
 }
@@ -450,7 +450,11 @@ input{font:inherit;font-weight:500;color:var(--ink);background:var(--surface);bo
 .lvp em.ok{background:var(--jade-100);color:var(--jade-700)}.lvp em.bad{background:var(--clay-100);color:var(--clay-600)}
 .ctab tr.grp td{background:var(--paper-100);font-weight:600;color:var(--ink)}
 #lpG .combo input{padding-left:12px}
-ol.vr{margin:4px 0 0 18px;padding:0}ol.vr li{margin:2px 0}
+.vrw dd{margin-top:4px}.vrs{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:8px}
+.vrc{border:1px solid var(--line,#e5e5e5);border-left:4px solid #0a7d8c;border-radius:8px;padding:8px 10px;background:var(--card,#fafafa)}
+.vrh{display:flex;gap:6px;align-items:baseline;margin-bottom:3px}.vrn{font-size:11px;color:#0a7d8c;border:1px solid #0a7d8c;border-radius:10px;padding:0 6px;white-space:nowrap}
+.vrd{font-size:13px;margin-bottom:3px}.vri{font-size:12px;margin-bottom:3px}.vri .ok{color:#1b7f3b;font-weight:600}.vri .no{color:#b23b3b;font-weight:600}.vri .ad{color:#9a6b00;font-weight:600}
+.vrp{font-size:12px;color:#666}
 </style></head><body>
 <div class="wrap">
 <div class="help" id="help" hidden role="dialog" aria-modal="true" aria-labelledby="helpT">
@@ -470,6 +474,7 @@ ol.vr{margin:4px 0 0 18px;padding:0}ol.vr li{margin:2px 0}
         <tr><td>P1</td><td>加選。客人有興趣或行程有空檔才排，用來補半天或換口味。</td></tr>
         <tr><td>P2</td><td>小眾。特定客群（愛冒險、親子特殊需求、深度文化）才會要，或營運不穩、季節限定、交通不便。</td></tr></table></li>
       <li>按<b class="k">展開詳情</b>看完整資料：原文價格與來源、建議停留時間、營業時間、包含／不包含、怎麼訂（Klook／KKday／Tripadvisor／官網）、TC 要注意的事、體驗感受、Google 評論重點、照片。</li>
+      <li>卡片上有<b class="k">N 種方案</b>標籤的，表示同一個體驗在網路上有多種賣法（拼團／私人、半日／一日、含不含接送或攝影師、票種組合、不同店家）。展開詳情會把每個方案列成一個區塊，標出含／不含／另購的差異與參考價；篩選列的「方案」可以只看多方案的元件。這些方案是依公開資料整理的，供應商報價時要分開報，實際方案以供應商回覆為準。</li>
       <li>按<b class="k">在地圖上看</b>會把地圖移到該點；地圖上的數字圓圈是同一區的元件數量，點開可放大。</li>
     </ol>
 
@@ -513,6 +518,7 @@ ol.vr{margin:4px 0 0 18px;padding:0}ol.vr li{margin:2px 0}
     <div class="frow" id="fPri"><span class="lbl">優先</span></div>
     <details class="hint bnote" id="priHint"><summary>P0／P1／P2 怎麼分</summary>P0：台灣家庭或伴侶客大多會想去、排 5 日行程時優先放進去的主菜，每個目的地大約 20–40 個。P1：加選，客人有興趣或行程有空檔才排，用來補半天或換口味。P2：小眾，特定客群（愛冒險、親子特殊需求、深度文化）才會要，或營運不穩、季節限定、交通不便。同一個體驗換業者不算另一個元件；等級是盤點時依客群需求判斷，不代表品質高低。</details>
     <div class="frow" id="fOff"><span class="lbl">通路</span></div>
+    <div class="frow" id="fVr"><span class="lbl">方案</span></div>
     <div class="budget" id="budgetBox"><div class="bhead"><span class="lbl">預算（每人，台幣）</span><b class="bval num" id="bVal"></b></div>
       <div class="rng"><div class="track"><div class="fill" id="rngFill"></div></div><input type="range" id="bLo" min="0" max="16" step="1" value="0" aria-label="最低預算"><input type="range" id="bHi" min="0" max="16" step="1" value="16" aria-label="最高預算"></div>
       <div class="rlbl num"><span id="bMinL"></span><button type="button" class="rreset" id="bReset" hidden>重設</button><span id="bMaxL"></span></div>
@@ -589,10 +595,17 @@ const MAPS_KEY=(window.OUTO_CFG&&window.OUTO_CFG.MAPS_KEY)||'';
 const X=window.EXP||{dests:[],cats:[],items:[]};
 function gurl(x,D){const biz=x.pid&&!x.gnb;if(biz)return gpl(x);if(x.ws)return x.ws;if(x.so)return x.so;if(x.pid)return gpl(x);return 'https://www.google.com/maps/search/?api=1&query='+encodeURIComponent((D&&D.map)||(x.la+','+x.ln));}
 function gpl(x){return 'https://www.google.com/maps/search/?api=1&query='+encodeURIComponent(x.gn||x.gp||x.n)+'&query_place_id='+x.pid;}
+function incDiff(v){const t=(v.l||'')+'；'+(v.df||'');const inc=[],exc=[],add=[];
+  for(const m of t.matchAll(/(?<![不未無])含([^，。；、,;（）()]{1,14})/g))inc.push(m[1]);
+  for(const m of t.matchAll(/(?:不含|未含|無)([^，。；、,;（）()]{1,14})/g))exc.push(m[1]);
+  for(const m of t.matchAll(/(?:加購|另購|另付|自費)([^，。；、,;（）()]{0,14})/g))add.push(m[1]||'項目');
+  const u=a=>[...new Set(a.map(x=>x.trim()).filter(Boolean))];
+  const parts=[];if(u(inc).length)parts.push('<span class="ok">含</span> '+esc(u(inc).join('、')));if(u(exc).length)parts.push('<span class="no">不含</span> '+esc(u(exc).join('、')));if(u(add).length)parts.push('<span class="ad">另購</span> '+esc(u(add).join('、')));
+  return parts.join('　');}
 function glabel(x){if(x.pid&&!x.gnb)return 'Google 商家';if(x.ws)return '官網';if(x.so)return '社群官方帳號';if(x.pid)return 'Google 地點';return 'Google 地圖';}
 const CATCOL=['#2F8466','#3E6B8B','#A16A1B','#B85C3B','#E18C00','#7A5C99','#1B1A14','#C2185B','#5B6B7A'];
 const rgChip=x=>(x.nw?'<span class="chip nw">2026-10 新增</span>':'')+(x.rg?`<span class="chip">${x.ml==='L'?'日常午餐':'特別晚餐'}</span><span class="chip rg">推薦程度 ${esc(x.rg.replace(/^\d\s*/,''))}</span>${x.ck?'<span class="chip">已電話確認</span>':'<span class="chip warn">網路初篩・未電話確認</span>'}`:'');
-const S={dest:0,dests:new Set([0]),reg:new Set(),cat:new Set(),seg:new Set(),pri:new Set(),ot:new Set(),off:new Set(),q:'',limit:40,mode:'DRIVE'};const OPEN=new Set();
+const S={dest:0,dests:new Set([0]),reg:new Set(),cat:new Set(),seg:new Set(),pri:new Set(),ot:new Set(),off:new Set(),vr:new Set(),q:'',limit:40,mode:'DRIVE'};const OPEN=new Set();
 const BST=[0,100,200,300,500,750,1000,1500,2000,2500,3000,4000,5000,6000,8000,10000,15000];const bud={a:0,b:BST.length-1};
 const budOn=()=>bud.a>0||bud.b<BST.length-1;
 const twFmt=n=>'NT$'+Math.round(n).toLocaleString();
@@ -603,9 +616,9 @@ let origin=null,dest=null,by=null,req=0;
 const BYID={};X.items.forEach(x=>BYID[x.id]=x);
 
 const has=(set,v)=>!set.size||set.has(v);
-function match(x,skip){const q=S.q.trim().toLowerCase();return S.dests.has(x.d)&&(skip==='reg'||has(S.reg,x.d+':'+x.ri))&&(skip==='cat'||has(S.cat,x.c))&&(skip==='seg'||[...S.seg].every(i=>x.s&&x.s[i]===2))&&(skip==='pri'||has(S.pri,x.p))&&(skip==='ot'||has(S.ot,x.ot))&&(skip==='off'||has(S.off,x.off?1:0))&&(skip==='bud'||!budOn()||(x.tw!==undefined&&x.tw>=BST[bud.a]&&(bud.b===BST.length-1||x.tw<=BST[bud.b])))&&(!q||[x.id,x.n,x.en,x.r,x.ty||''].join(' ').toLowerCase().includes(q));}
+function match(x,skip){const q=S.q.trim().toLowerCase();return S.dests.has(x.d)&&(skip==='reg'||has(S.reg,x.d+':'+x.ri))&&(skip==='cat'||has(S.cat,x.c))&&(skip==='seg'||[...S.seg].every(i=>x.s&&x.s[i]===2))&&(skip==='pri'||has(S.pri,x.p))&&(skip==='ot'||has(S.ot,x.ot))&&(skip==='off'||has(S.off,x.off?1:0))&&(skip==='vr'||has(S.vr,x.vr?1:0))&&(skip==='bud'||!budOn()||(x.tw!==undefined&&x.tw>=BST[bud.a]&&(bud.b===BST.length-1||x.tw<=BST[bud.b])))&&(!q||[x.id,x.n,x.en,x.r,x.ty||''].join(' ').toLowerCase().includes(q));}
 function rows(){return X.items.filter(x=>match(x));}
-function fCount(){const n=['reg','cat','seg','pri','ot','off'].reduce((a,k)=>a+S[k].size,0)+((bud.a!==0||bud.b!==BST.length-1)?1:0);$('fCnt').textContent=n+' 個條件';$('fCnt').hidden=!n;}
+function fCount(){const n=['reg','cat','seg','pri','ot','off','vr'].reduce((a,k)=>a+S[k].size,0)+((bud.a!==0||bud.b!==BST.length-1)?1:0);$('fCnt').textContent=n+' 個條件';$('fCnt').hidden=!n;}
 $('fTog').addEventListener('click',()=>{const f=document.querySelector('.filters');const o=!f.classList.contains('fopen');f.classList.toggle('fopen',o);$('fTog').setAttribute('aria-expanded',String(o));});
 function chips(){
   const all=X.items.filter(x=>S.dests.has(x.d));
@@ -619,6 +632,7 @@ function chips(){
   $('fSeg').innerHTML='<span class="lbl">客群</span>'+allBtn('seg')+SEGN.map((l,i)=>btn('seg',i,l+'適合',n('seg',x=>x.s&&x.s[i]===2),S.seg.has(i))).join('')+(S.seg.size>1?'<span class="hint">同時適合所選客群</span>':'');
   $('fOt').innerHTML='<span class="lbl">OMS 類型</span>'+allBtn('ot')+X.ots.map((t,i)=>btn('ot',i,t,n('ot',x=>x.ot===i),S.ot.has(i))).join('');
   $('fPri').innerHTML='<span class="lbl">優先</span>'+allBtn('pri')+['P0','P1','P2'].map(p=>btn('pri',p,p,n('pri',x=>x.p===p),S.pri.has(p))).join('');
+  $('fVr').innerHTML='<span class="lbl">方案</span>'+allBtn('vr')+btn('vr',1,'多種方案',n('vr',x=>!!x.vr),S.vr.has(1))+btn('vr',0,'單一方案',n('vr',x=>!x.vr),S.vr.has(0));
   $('fOff').innerHTML='<span class="lbl">通路</span>'+allBtn('off')+btn('off',0,'OTA 有上架',n('off',x=>!x.off),S.off.has(0))+btn('off',1,'只有官網／社群接單',n('off',x=>x.off),S.off.has(1));
   drawBud();fCount();
   $('legend').innerHTML=X.cats.map((c,i)=>`<span><span class="dot" style="background:${CATCOL[i]}"></span>${esc(c)}</span>`).join('');
@@ -712,7 +726,7 @@ function detHtml(x){
     <tr><th>記憶點</th><td>${esc(R.memo)}</td></tr><tr><th>訂位方式</th><td>${esc(R.book)}</td></tr><tr><th>訂位風險</th><td>${esc(R.rk)}</td></tr>
     <tr><th>待電話確認</th><td><ol>${R.q.map(t=>`<li>${esc(t)}</li>`).join('')}</ol></td></tr></table></section>`;}
   const vid=D.vid&&D.vid.length?`<ul>${D.vid.map(([t,u,m])=>`<li>${lk(t,u)} <span class="hint">${esc(m||'')}</span></li>`).join('')}</ul>`:'<span class="hint">—</span>';
-  const vr=x.vr&&x.vr.length?`<div class="w"><dt>方案／配套<span class="hint">（依網路公開資料整理，供應商請分開報價）</span></dt><dd><ol class="vr">${x.vr.map((v,i)=>`<li><b>${esc(v.l)}</b>　${esc(v.df)}<span class="hint">　參考價：${esc(v.pr)}</span></li>`).join('')}</ol></dd></div>`:'';
+  const vr=x.vr&&x.vr.length?`<div class="w vrw"><dt>方案／配套（${x.vr.length} 種）<span class="hint">依網路公開資料整理，供應商請分開報價；實際方案以供應商為準</span></dt><dd><div class="vrs">${x.vr.map((v,i)=>{const io=incDiff(v);return `<div class="vrc"><div class="vrh"><span class="vrn">方案 ${i+1}</span><b>${esc(v.l)}</b></div><div class="vrd">${esc(v.df)}</div>${io?`<div class="vri">${io}</div>`:''}<div class="vrp">參考價：${esc(v.pr||'未查到')}</div></div>`}).join('')}</div></dd></div>`:'';
   const parts=D.parts&&D.parts.length?`<div class="why"><b>行程範本</b>　這是多個單點組成的行程，報價與 OMS 建檔以單點元件為準：${D.parts.map(id=>{const y=X.items.find(z=>z.id===id);return y?`<a href="#" data-act="j" data-id="${esc(id)}">${esc(id)} ${esc(y.n)}</a>`:esc(id)}).join('、')}</div>`:'';
   return `${parts}<div class="tx">${esc(D.desc||'')}</div>
   <dl class="dg">
@@ -720,8 +734,8 @@ function detHtml(x){
     <div><dt>區域／地圖</dt><dd>${esc(D.area||x.r)} · <a href="${gurl(x,D)}" target="_blank" rel="noopener">${glabel(x)}${x.pid&&!x.gnb?'：'+esc(x.gn):x.op?'：'+esc(x.op):''}</a>${x.pid&&!x.gnb&&x.ws?` · <a href="${esc(x.ws)}" target="_blank" rel="noopener">官網</a>`:''}${(x.pid&&!x.gnb||x.ws)&&x.so?` · <a href="${esc(x.so)}" target="_blank" rel="noopener">社群</a>`:''}</dd></div>
     <div><dt>建議停留／體驗時間</dt><dd>${x.du?durM(x.du):'—'}${x.tm?`<span class="hint">（${esc(x.tm)}）</span>`:''}</dd></div>
     <div><dt>營業時間／可預約時段</dt><dd>${x.ow?hmm(x.ow[0])+'–'+hmm(x.ow[1])+' ':''}${esc(D.time||'')||(x.ow?'':'未查到，請以供應商回覆為準')}</dd></div>
-    <div class="w"><dt>包含／不包含${D.ie==='ota'?`<span class="hint">（來源：<a href="${D.ieu}" target="_blank" rel="noopener">${D.ies}</a>，供應商報價後更新）</span>`:D.ie==='ota_mixed'?`<span class="hint">（來源：<a href="${D.ieu}" target="_blank" rel="noopener">${D.ies}</a>；該頁含與不含混列，請點連結核對）</span>`:D.ie==='manual'?'<span class="hint">（盤點時依官網／資料整理，未向業者確認）</span>':''}</dt><dd>${D.ie==='none'?'<span class="hint">尚未查到公開來源，待供應商提供</span>':`<div class="g2"><div><div class="dt">包含</div>${ul(D.inc)}</div><div><div class="dt">不包含</div>${ul(D.exc)}</div></div>`}</dd></div>
     ${vr}
+    <div class="w"><dt>包含／不包含${D.ie==='ota'?`<span class="hint">（來源：<a href="${D.ieu}" target="_blank" rel="noopener">${D.ies}</a>，供應商報價後更新）</span>`:D.ie==='ota_mixed'?`<span class="hint">（來源：<a href="${D.ieu}" target="_blank" rel="noopener">${D.ies}</a>；該頁含與不含混列，請點連結核對）</span>`:D.ie==='manual'?'<span class="hint">（盤點時依官網／資料整理，未向業者確認）</span>':''}</dt><dd>${D.ie==='none'?'<span class="hint">尚未查到公開來源，待供應商提供</span>':`<div class="g2"><div><div class="dt">包含</div>${ul(D.inc)}</div><div><div class="dt">不包含</div>${ul(D.exc)}</div></div>`}</dd></div>
     <div><dt>社群提及／來源</dt><dd>${esc(D.social||'—')}</dd></div>
     <div class="w"><dt>OTA 熱度（評分／評論／訂購）</dt><dd class="num">${esc((D.ota||'—')+(D.tc&&D.tc[0]?'；'+D.tc[0]:''))}</dd></div>
     <div class="w"><dt>注意事項</dt><dd>${ul(D.notes)}</dd></div>
@@ -967,7 +981,7 @@ function openPlan(p,keepId=true,isDirty=false){if(!p)return;const nd=+p.dest;if(
   while(PLAN.nights.length<days.length-1)PLAN.nights.push(null);
   CUR=Math.min(Math.max(0,+p.cur||0),days.length-1);STOPS=PLAN.days[CUR].stops;LEGS=[];S.mode=p.mode==='WALK'?'WALK':'DRIVE';setModeBtns();adding=!STOPS.length;dirty=isDirty;$('lPick').hidden=true;
   fillSettings();fitDest=true;syncStops();render();showRoute();saveDraft();}
-function switchDest(nv){S.dest=nv;if(!S.dests.has(nv)){S.dests=new Set([nv]);bud.a=0;bud.b=BST.length-1;['reg','cat','seg','pri','ot','off'].forEach(k=>S[k].clear());}saveFilter();}
+function switchDest(nv){S.dest=nv;if(!S.dests.has(nv)){S.dests=new Set([nv]);bud.a=0;bud.b=BST.length-1;['reg','cat','seg','pri','ot','off','vr'].forEach(k=>S[k].clear());}saveFilter();}
 $('pSave').addEventListener('click',()=>savePlan(false));
 $('pSaveAs').addEventListener('click',()=>savePlan(true));
 $('pNew').addEventListener('click',()=>{if(dirty&&anyStops()&&!confirm('目前的行程還沒儲存，確定要開新行程？'))return;openPlan({dest:S.dest,days:[newDay()]},false);});
