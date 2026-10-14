@@ -23,7 +23,7 @@ function clean(q) {
     for (const [b, a] of Object.entries(v.o || {})) {
       if (!/^\d{1,2}$/.test(b) || !Array.isArray(a)) continue;
       const num = x => (x == null || x === '' ? null : (Number.isFinite(+x) ? Math.round(+x * 100) / 100 : null));
-      o[b] = [num(a[0]), num(a[1]), num(a[2]) || 0, num(a[3]), num(a[4])];
+      o[b] = [num(a[0]), num(a[1]), num(a[2]) || 0, null, num(a[4])]; // 同業價一律不存（公開 repo）
     }
     const av = v.av === 'unavailable' ? 'unavailable' : (v.av === 'available' ? 'available' : '');
     if (!Object.keys(o).length && av !== 'unavailable') continue;
