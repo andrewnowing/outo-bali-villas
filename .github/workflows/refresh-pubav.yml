@@ -53,7 +53,7 @@ jobs:
           cp pubav.js /tmp/pubav.new.js
           [ -f pubrates.js ] && cp pubrates.js /tmp/pubrates.new.js || true
           [ -f portalrates.js ] && cp portalrates.js /tmp/portalrates.new.js || true
-          for i in 1 2 3; do
+          for i in 1 2 3 4 5; do
             if git fetch --depth=1 origin data:refs/remotes/origin/data; then base=refs/remotes/origin/data; else base=HEAD; fi
             rm -rf /tmp/data-wt; git worktree prune
             git worktree add --detach /tmp/data-wt "$base"
@@ -76,10 +76,11 @@ jobs:
             if git diff --quiet -- pubav.js pubrates.js portalrates.js vfquotes.json && [ -z "$(git ls-files --others --exclude-standard pubrates.js portalrates.js)" ]; then echo "no change"; exit 0; fi
             git add pubav.js pubrates.js portalrates.js
             [ -f vfquotes.json ] && git add vfquotes.json || true
-            git commit -q -m "pubav: refresh $(date -u +%Y-%m-%dT%H:%MZ)"
-            if git push origin HEAD:refs/heads/data; then exit 0; fi
-            cd "$GITHUB_WORKSPACE"; sleep 15
+            git commit -q -m "pubav: refresh $(date -u +%Y-%m-%dT%H:%MZ)" || echo "::warning::commit failed on try $i: $(git status --short | head -5 | tr '\n' ' ')"
+            if out=$(git push origin HEAD:refs/heads/data 2>&1); then exit 0; else echo "::warning::push failed on try $i: $(echo "$out" | tail -3 | tr '\n' ' ')"; fi
+            cd "$GITHUB_WORKSPACE"; sleep $((15 + RANDOM % 20))
           done
+          echo "::error::data branch push failed after 3 tries"
           exit 1
       - name: Transition only - hourly copy to main until the live site reads the data branch
         # Remove this step once https://outo-bali-villas.vercel.app serves a build whose PUBAV_URL points at /data/.
