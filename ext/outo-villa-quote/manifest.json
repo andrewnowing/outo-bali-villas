@@ -1,10 +1,12 @@
 {
   "manifest_version": 3,
   "name": "Outo Villa 報價",
-  "version": "1.0.0",
-  "description": "讓 Outo 峇里島別墅空房查詢頁顯示 Villa Finder 的即時報價（含各房數）。只對 villa-finder.com 與 Outo 查詢頁有權限。",
-  "host_permissions": ["https://www.villa-finder.com/*"],
+  "version": "1.1.0",
+  "description": "讓 Outo 峇里島別墅空房查詢頁顯示 Villa Finder 的即時報價（含各房數），並把查到的報價分享給全公司。只對 villa-finder.com 與 Outo 查詢頁有權限。",
+  "permissions": ["storage"],
+  "host_permissions": ["https://www.villa-finder.com/*", "https://outo-bali-villas.vercel.app/*"],
   "background": { "service_worker": "bg.js" },
+  "options_ui": { "page": "options.html", "open_in_tab": true },
   "content_scripts": [
     { "matches": ["https://outo-bali-villas.vercel.app/*", "https://*.vercel.app/*", "http://localhost/*", "http://127.0.0.1/*"],
       "js": ["content.js"], "run_at": "document_start" }
