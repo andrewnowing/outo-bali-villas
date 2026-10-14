@@ -326,6 +326,7 @@ button:disabled{opacity:.45;cursor:not-allowed;transform:none;box-shadow:none}
 .concTbl th,.concTbl td{padding:4px 6px;border-top:1px solid var(--line);text-align:left}
 .concTbl .n{text-align:right;white-space:nowrap}
 .concSrc{font-size:12px;color:var(--muted);margin:0}
+.concEn{display:block;font-size:11px;color:var(--muted)}
 .help .tip{font-size:13px;color:var(--ink2);background:var(--surface-warm);border:1px solid var(--line);border-radius:var(--r-md);padding:10px 14px;line-height:1.7}
 .histNote{margin:0;font-size:13px;color:var(--ink2)}
 .histTbl{width:100%;border-collapse:collapse;font-size:13px}
@@ -1137,7 +1138,7 @@ $('bClose').addEventListener('click',()=>{$('dlg').hidden=true;});$('waClose').a
 document.querySelectorAll('[data-close]').forEach(b=>b.addEventListener('click',()=>{$(b.dataset.close).hidden=true;}));
 ['helpDlg','histDlg'].forEach(id=>$(id).addEventListener('click',e=>{if(e.target.id===id)$(id).hidden=true;}));
 $('helpBtn').addEventListener('click',()=>{$('helpBody').innerHTML=t('helpHtml');$('helpDlg').hidden=false;});
-function concList(){if(typeof CONC==='undefined')return '';const rp=n=>'Rp '+Math.round(n).toLocaleString('en-US');const zh=LANG!=='en';return CONC.groups.map(g=>`<details class="concG"><summary>${esc(zh?g.zh:g.en)} <small>(${g.items.length})</small></summary><div class="tw"><table class="concTbl"><thead><tr><th>${esc(zh?'項目':'Item')}</th><th class="n">${esc(t('concPriceCol'))}</th></tr></thead><tbody>${g.items.map(i=>`<tr><td><a href="https://shop.villa-finder.com/products/${esc(i[1])}" target="_blank" rel="noopener">${esc(i[0])}</a></td><td class="n">${i[2]==null?'—':(i[3]>i[2]?rp(i[2])+(zh?' 起':' from'):rp(i[2]))}</td></tr>`).join('')}</tbody></table></div></details>`).join('')+`<p class="concSrc">${esc(t('concSrc',CONC.at))}</p>`;}
+function concList(){if(typeof CONC==='undefined')return '';const rp=n=>'Rp '+Math.round(n).toLocaleString('en-US');const zh=LANG!=='en';return CONC.groups.map(g=>`<details class="concG"><summary>${esc(zh?g.zh:g.en)} <small>(${g.items.length})</small></summary><div class="tw"><table class="concTbl"><thead><tr><th>${esc(zh?'項目':'Item')}</th><th class="n">${esc(t('concPriceCol'))}</th></tr></thead><tbody>${g.items.map(i=>`<tr><td><a href="https://shop.villa-finder.com/products/${esc(i[1])}" target="_blank" rel="noopener">${esc(zh?(i[4]||i[0]):i[0])}</a>${zh&&i[4]&&i[4]!==i[0]?`<small class="concEn">${esc(i[0])}</small>`:''}</td><td class="n">${i[2]==null?'—':(i[3]>i[2]?rp(i[2])+(zh?' 起':' from'):rp(i[2]))}</td></tr>`).join('')}</tbody></table></div></details>`).join('')+`<p class="concSrc">${esc(t('concSrc',CONC.at))}</p>`;}
 $('concBtn').addEventListener('click',()=>{$('concBody').innerHTML=t('concHtml')+concList();$('concDlg').hidden=false;});
 let localHist=[];try{localHist=JSON.parse(localStorage.getItem('vf-hist')||'[]');}catch(e){}
 function noteUpdate(){try{if(!avail.updatedAt)return;if(!localHist.some(h=>h.t===avail.updatedAt)){localHist.unshift({t:avail.updatedAt,src:avail.src||'snap'});if(localHist.length>400)localHist.length=400;localStorage.setItem('vf-hist',JSON.stringify(localHist));}}catch(e){}}
