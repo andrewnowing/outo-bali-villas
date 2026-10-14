@@ -966,10 +966,13 @@ function probeStatus(left){const n=$('probeNote');if(!n)return;n.hidden=false;n.
 async function probeTick(){if(PUB||SHARE||QUOTE||!HOSTED)return;if(!vfqExt()||document.documentElement.dataset.outoQuoteShare!=='1')return;if(PROBE.busy||vfqPending)return;
   try{const lk=JSON.parse(localStorage.getItem('vf-probe-lock')||'{}');if(lk.id!==PROBE.id&&Date.now()-(lk.t||0)<240e3)return;localStorage.setItem('vf-probe-lock',JSON.stringify({id:PROBE.id,t:Date.now()}));}catch(e){}
   if(!PROBE.plan)PROBE.plan=probePlan();const now=Date.now();const done=x=>{const r=VFS.by[x.s+'|'+x.from+'|'+x.to];return (r&&now-r.at<VFS_TTL)||PROBE.sent.has(x.s+'|'+x.from);};
-  const cand=PROBE.plan.filter(x=>!done(x));probeStatus(cand.length);if(!cand.length)return;const pri=Math.min(...cand.map(x=>x.pri));const pool=cand.filter(x=>x.pri===pri);
-  const byPair={};for(const x of pool){const k=x.from+'|'+x.to;(byPair[k]=byPair[k]||[]).push(x.s);}const pairs=Object.keys(byPair).sort((a,b)=>byPair[b].length-byPair[a].length);const k=pairs[Math.floor(Math.random()*Math.min(3,pairs.length))];const slugs=byPair[k].sort(()=>Math.random()-0.5).slice(0,40);const [from,to]=k.split('|');
-  PROBE.busy=true;const id='probe-'+(++PROBE.seq);slugs.forEach(s_=>PROBE.sent.add(s_+'|'+from));
-  try{await new Promise((res,rej)=>{PROBE.wait[id]=res;setTimeout(()=>rej(new Error('timeout')),120e3);window.postMessage({type:'OUTO_QUOTE_REQ',id,slugs,from,to},'*');});}catch(e){}
+  const cand=PROBE.plan.filter(x=>!done(x));probeStatus(cand.length);if(!cand.length)return;
+  // 依優先順序把任務按（入住,退房）分組，一次最多 40 筆、可跨多組；每組一個請求，依序送
+  cand.sort((a,b)=>a.pri-b.pri);const groups=[];const gi={};for(const x of cand){const k=x.pri+'|'+x.from+'|'+x.to;if(gi[k]==null){gi[k]=groups.length;groups.push({pri:x.pri,from:x.from,to:x.to,slugs:[]});}groups[gi[k]].slugs.push(x.s);}
+  groups.sort((a,b)=>a.pri-b.pri||b.slugs.length-a.slugs.length);const batch=[];let left=40;for(const g of groups){if(left<=0)break;const sl=g.slugs.slice(0,left);batch.push({from:g.from,to:g.to,slugs:sl});left-=sl.length;}
+  PROBE.busy=true;
+  for(const b of batch){const id='probe-'+(++PROBE.seq);b.slugs.forEach(s_=>PROBE.sent.add(s_+'|'+b.from));
+    try{await new Promise((res,rej)=>{PROBE.wait[id]=res;setTimeout(()=>rej(new Error('timeout')),120e3);window.postMessage({type:'OUTO_QUOTE_REQ',id,slugs:b.slugs,from:b.from,to:b.to},'*');});}catch(e){}}
   PROBE.busy=false;}
 window.addEventListener('message',e=>{if(e.source!==window||!e.data||e.data.type!=='OUTO_QUOTE_RES')return;const d=e.data;if(String(d.id||'').startsWith('probe-')){const ci=d.from,co=d.to;for(const [s_,r] of Object.entries(d.res||{})){if(r&&r.o){VFS.by[s_+'|'+ci+'|'+co]={av:r.av,o:r.o,at:r.at||Date.now()};PROBE.n++;}}const f=PROBE.wait[d.id];delete PROBE.wait[d.id];if(f)f();return;}const ci=d.from.replace(/^20(\d{2})-(\d{2})-(\d{2})$/,'$1$2$3'),co=d.to.replace(/^20(\d{2})-(\d{2})-(\d{2})$/,'$1$2$3');let got=0;for(const [s,r] of Object.entries(d.res||{})){if(r&&r.o){VFQ[s+'|'+ci+'|'+co]=r;got++;}else VFQ[s+'|'+ci+'|'+co]={o:null,at:Date.now(),err:r&&r.err};}vfqNoKey=d.shared==='notoken'||document.documentElement.dataset.outoQuoteShare==='0';vfqPending=null;if(got)render();else{const n=$('vfqNote');if(n){n.hidden=true;}}});
 function render(){
