@@ -315,6 +315,10 @@ button:disabled{opacity:.45;cursor:not-allowed;transform:none;box-shadow:none}
 .panel.help{max-width:740px}
 .help ol{margin:0;padding-left:22px;display:grid;gap:12px;font-size:14px;line-height:1.8}
 .help li b{display:block;font-size:15px;margin-bottom:2px;color:var(--ink)}
+.help h4{margin:6px 0 2px;font-size:15px;color:var(--ink)}
+.help ul{margin:0;padding-left:22px;font-size:14px;line-height:1.8;color:var(--ink2)}
+.help p{margin:0;font-size:14px;line-height:1.7;color:var(--ink2)}
+#concBody{display:grid;gap:6px}
 .help .tip{font-size:13px;color:var(--ink2);background:var(--surface-warm);border:1px solid var(--line);border-radius:var(--r-md);padding:10px 14px;line-height:1.7}
 .histNote{margin:0;font-size:13px;color:var(--ink2)}
 .histTbl{width:100%;border-collapse:collapse;font-size:13px}
@@ -357,7 +361,7 @@ button:disabled{opacity:.45;cursor:not-allowed;transform:none;box-shadow:none}
       <h1 data-t="title">Outo 峇里島別墅空房查詢</h1>
       <div class="sub" data-t="sub">Villa Finder 同業房源 118 間 · 價格為對外售價（美金、含稅），不是 Outo 成本價</div>
     </div></div>
-    <div class="hdr-r"><span class="fresh" id="fresh" data-t="loading">房況資料載入中</span><a class="hbtn" id="expLink" href="exp" hidden style="display:inline-flex;align-items:center;text-decoration:none">體驗元件地圖</a><button type="button" class="hbtn" id="helpBtn" data-t="helpBtn">操作說明</button><button type="button" class="hbtn" id="histBtn" data-t="histBtn">房況更新歷史紀錄</button><div class="lang" id="lang" role="group" data-t-aria="langGroup" aria-label="語言"><button type="button" data-lang="zh" aria-pressed="true" lang="zh-Hant">中文</button><span class="sep" aria-hidden="true">|</span><button type="button" data-lang="en" aria-pressed="false" lang="en">EN</button></div><div class="lang" id="cur" role="group" aria-label="currency"><button type="button" data-cur="USD" aria-pressed="true">USD</button><span class="sep" aria-hidden="true">|</span><button type="button" data-cur="TWD" aria-pressed="false">TWD</button></div></div>
+    <div class="hdr-r"><span class="fresh" id="fresh" data-t="loading">房況資料載入中</span><a class="hbtn" id="expLink" href="exp" hidden style="display:inline-flex;align-items:center;text-decoration:none">體驗元件地圖</a><button type="button" class="hbtn" id="helpBtn" data-t="helpBtn">操作說明</button><button type="button" class="hbtn" id="histBtn" data-t="histBtn">房況更新歷史紀錄</button><button type="button" class="hbtn" id="concBtn" data-t="concBtn">Villa Finder 禮賓服務</button><div class="lang" id="lang" role="group" data-t-aria="langGroup" aria-label="語言"><button type="button" data-lang="zh" aria-pressed="true" lang="zh-Hant">中文</button><span class="sep" aria-hidden="true">|</span><button type="button" data-lang="en" aria-pressed="false" lang="en">EN</button></div><div class="lang" id="cur" role="group" aria-label="currency"><button type="button" data-cur="USD" aria-pressed="true">USD</button><span class="sep" aria-hidden="true">|</span><button type="button" data-cur="TWD" aria-pressed="false">TWD</button></div></div>
   </header>
 
   <form class="search" id="f" autocomplete="off">
@@ -411,6 +415,9 @@ button:disabled{opacity:.45;cursor:not-allowed;transform:none;box-shadow:none}
 <div class="dlg" id="histDlg" hidden role="dialog" aria-modal="true" aria-labelledby="histT">
   <div class="panel"><h3 id="histT" data-t="histT">房況更新歷史紀錄</h3><p class="histNote" data-t="histNote">房況每 5 分鐘從 Villa Finder 的 iCal 行事曆同步一次。時間為台灣時間。</p><div class="tw"><table class="histTbl"><thead><tr><th data-t="hTime">更新時間</th><th data-t="hPortalCol">同業後台 118 間</th><th data-t="hPubCol">官網直售 1,019 間</th></tr></thead><tbody id="histBody"></tbody></table></div><div class="actions"><button type="button" class="ghost" data-close="histDlg" data-t="close">關閉</button></div></div>
 </div>
+<div class="dlg" id="concDlg" hidden role="dialog" aria-modal="true" aria-labelledby="concT">
+  <div class="panel help"><h3 id="concT" data-t="concT">Villa Finder 禮賓服務</h3><div id="concBody"></div><div class="actions"><button type="button" class="ghost" data-close="concDlg" data-t="close">關閉</button></div></div>
+</div>
 <div class="dlg" id="dlg" hidden role="dialog" aria-modal="true" aria-labelledby="dlgT">
   <div class="panel">
     <h3 id="dlgT" data-t="dlgT">確認預訂並寄信給 Villa Finder</h3>
@@ -457,7 +464,8 @@ const T={
 zh:{
   title:'Outo 峇里島別墅空房查詢',
   sub:'Villa Finder 同業房源 118 間 · 價格為對外售價（美金、含稅），不是 Outo 成本價',
-  loading:'房況資料載入中', langGroup:'語言', helpBtn:'操作說明', histBtn:'房況更新歷史紀錄', close:'關閉',
+  loading:'房況資料載入中', langGroup:'語言', helpBtn:'操作說明', histBtn:'房況更新歷史紀錄', concBtn:'Villa Finder 禮賓服務', concT:'Villa Finder 禮賓服務（可幫客人加購）', close:'關閉',
+  concHtml:`<p>Villa Finder 禮賓團隊可代為安排下列服務，費用另計。Tour、機場接送、包車由 Outo 自己安排，不列在這裡。</p><h4>特別安排</h4><ul><li>派對與活動</li><li>浪漫晚餐、漂浮早餐、床飾佈置</li><li>驚喜安排（生日、求婚、紀念日）</li><li>瑜伽課</li><li>其他需求都可以提出，禮賓團隊會找方案</li></ul><h4>入住前準備</h4><ul><li>代購食材與日用品</li><li>嬰兒椅、嬰兒床、推車</li><li>兒童安全防護（圍欄、防撞）</li></ul><h4>入住期間</h4><ul><li>私廚與 BBQ（含預先備餐）</li><li>別墅內按摩</li><li>Spa 與美容美髮</li><li>餐廳訂位</li><li>商務支援（列印、會議）</li><li>保母／托育</li></ul><h4>怎麼預訂</h4><ul><li>所有服務至少入住前 2 天提出，由 Outo CS 轉給 Villa Finder 禮賓團隊（服務時間 8:00–22:00，峇里島時間）</li><li>深夜緊急事項撥 Villa Finder 24 小時專線 +62-21-50890816</li><li>價格依別墅與項目而定，報價時先向 Villa Finder 確認</li><li>來源：<a href="https://www.villa-finder.com/en/concierge" target="_blank" rel="noopener">villa-finder.com/en/concierge</a>（2026/10/14 查）與 2026/10/14 會議</li></ul>`,
   freshRates:x=>`・官網價格核對 ${x}`, freshPortal:x=>`・同業價格核對 ${x}`,
   helpT:'怎麼查房況、怎麼預訂', histT:'房況更新歷史紀錄', histNote:'兩種房源都每 5 分鐘更新一次：同業後台 118 間從 Villa Finder 的 iCal 行事曆同步，官網直售 1,019 間從 Villa Finder 公開頁面抓已訂日期。兩邊各自排程，同一輪的更新合併成一列，時間取較晚的那一個（台灣時間）。', hPortalCol:'同業後台 118 間', hPubCol:'官網直售 1,019 間', hCell:(f,c,e)=>`${f==null?'—':f+' 間'}${c==null?'':'・變動 '+c}${e?'・失敗 '+e:''}`, hNoRun:'—', freshBoth:(a,b)=>`房況更新：同業後台 ${a}｜官網直售 ${b}（每 5 分鐘自動同步）`, hSrcPortal:'同業後台', hSrcPub:'官網直售', freshPub:(d)=>`；官網直售房況 ${d}`, hTime:'更新時間', hFeeds:'同步間數', hChanged:'房況有變動', hErr:'失敗', histEmpty:'還沒有紀錄（下一次同步後會出現）', histNow:'目前頁面使用的版本', hUnk:'—',
   helpHtml:`<ol>
@@ -549,7 +557,8 @@ zh:{
 en:{
   title:'Outo Bali Villa Availability',
   sub:"118 Villa Finder partner listings · Prices are public selling prices (USD, tax included), not Outo's cost",
-  loading:'Loading availability data', langGroup:'Language', helpBtn:'How to use', histBtn:'Availability update log', close:'Close',
+  loading:'Loading availability data', langGroup:'Language', helpBtn:'How to use', histBtn:'Availability update log', concBtn:'Villa Finder concierge', concT:'Villa Finder concierge (bookable add-ons)', close:'Close',
+  concHtml:`<p>The Villa Finder concierge team can arrange the services below at extra cost. Tours, airport transfers and chauffeured cars are arranged by Outo and are not listed here.</p><h4>Special requests</h4><ul><li>Parties & events</li><li>Romantic dinner, floating breakfast, bed decoration</li><li>Surprise occasions (birthday, proposal, anniversary)</li><li>Yoga sessions</li><li>Anything else: just ask</li></ul><h4>Before the stay</h4><ul><li>Grocery shopping</li><li>Baby chairs, cots, strollers</li><li>Baby / child proofing</li></ul><h4>During the stay</h4><ul><li>Personal chef & BBQ (incl. pre-prepared meals)</li><li>In-villa massage</li><li>Spa and salon services</li><li>Restaurant reservations</li><li>Business support services</li><li>Childcare services</li></ul><h4>How to book</h4><ul><li>Request at least 2 days before arrival; Outo CS passes it to the Villa Finder concierge team (8:00–22:00 Bali time)</li><li>Late-night emergencies: Villa Finder 24h line +62-21-50890816</li><li>Prices vary by villa and item; confirm with Villa Finder before quoting</li><li>Source: <a href="https://www.villa-finder.com/en/concierge" target="_blank" rel="noopener">villa-finder.com/en/concierge</a> (checked 2026-10-14) and the 2026-10-14 meeting</li></ul>`,
   freshRates:x=>` · public-site prices checked ${x}`, freshPortal:x=>` · portal prices checked ${x}`,
   helpT:'How to search and book', histT:'Availability update log', histNote:'Both sources update every 5 minutes: the 118 partner-portal villas from Villa Finder iCal calendars, the 1,019 published-rate villas from Villa Finder public pages. The two schedules run independently; updates from the same cycle are merged into one row, shown at the later of the two times (Taiwan time).', hPortalCol:'Partner portal (118)', hPubCol:'Published rate (1,019)', hCell:(f,c,e)=>`${f==null?'—':f+' villas'}${c==null?'':' · changed '+c}${e?' · failed '+e:''}`, hNoRun:'—', freshBoth:(a,b)=>`Availability: partner portal ${a} | published rate ${b} (auto-sync every 5 min)`, hSrcPortal:'Partner portal', hSrcPub:'Published rate', freshPub:(d)=>`; published-rate villas ${d}`, hTime:'Updated at', hFeeds:'Feeds synced', hChanged:'Changed', hErr:'Failed', histEmpty:'No entries yet (they appear after the next sync)', histNow:'version this page is using', hUnk:'—',
   helpHtml:`<ol>
@@ -1120,6 +1129,7 @@ $('bClose').addEventListener('click',()=>{$('dlg').hidden=true;});$('waClose').a
 document.querySelectorAll('[data-close]').forEach(b=>b.addEventListener('click',()=>{$(b.dataset.close).hidden=true;}));
 ['helpDlg','histDlg'].forEach(id=>$(id).addEventListener('click',e=>{if(e.target.id===id)$(id).hidden=true;}));
 $('helpBtn').addEventListener('click',()=>{$('helpBody').innerHTML=t('helpHtml');$('helpDlg').hidden=false;});
+$('concBtn').addEventListener('click',()=>{$('concBody').innerHTML=t('concHtml');$('concDlg').hidden=false;});
 let localHist=[];try{localHist=JSON.parse(localStorage.getItem('vf-hist')||'[]');}catch(e){}
 function noteUpdate(){try{if(!avail.updatedAt)return;if(!localHist.some(h=>h.t===avail.updatedAt)){localHist.unshift({t:avail.updatedAt,src:avail.src||'snap'});if(localHist.length>400)localHist.length=400;localStorage.setItem('vf-hist',JSON.stringify(localHist));}}catch(e){}}
 function renderHist(){const tb=$('histBody');const seen=new Set();const por=[];
@@ -1246,8 +1256,8 @@ refreshPubav();setInterval(refreshPubav,120000);
   $('mapWrap').addEventListener('toggle',()=>{if($('mapWrap').open){if(useDyn()){if(gState==='idle')loadGMaps();else drawGMap(true);}else drawMap();}});
   if(HOSTED){$('rec').hidden=true;if(!SHARE)pollAvail();}
   if(QUOTE)document.body.classList.add('quote');
-  if(PUBLIC){document.body.classList.add('public');$('helpBtn').hidden=true;$('histBtn').hidden=true;$('eyebrow').textContent='Outo 奧拓';}
-  if(SHARE){document.body.classList.add('share');$('mapWrap').open=false;$('fresh').hidden=true;$('helpBtn').hidden=true;$('histBtn').hidden=true;document.querySelector('.hdr-r').style.display='flex';}
+  if(PUBLIC){document.body.classList.add('public');$('helpBtn').hidden=true;$('histBtn').hidden=true;$('concBtn').hidden=true;$('eyebrow').textContent='Outo 奧拓';}
+  if(SHARE){document.body.classList.add('share');$('mapWrap').open=false;$('fresh').hidden=true;$('helpBtn').hidden=true;$('histBtn').hidden=true;$('concBtn').hidden=true;document.querySelector('.hdr-r').style.display='flex';}
   applyShare();
   $('mapWrap').addEventListener('toggle',()=>{try{localStorage.setItem('vf-map-open',$('mapWrap').open?'1':'0');}catch(e){}});
   if(Array.isArray(saved.beds)) for(const c of document.querySelectorAll('.fchip')) c.setAttribute('aria-pressed',String(saved.beds.includes(c.id||c.dataset.bed)));
