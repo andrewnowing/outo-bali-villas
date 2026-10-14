@@ -61,8 +61,21 @@ jobs:
             [ -f /tmp/pubrates.new.js ] && cp /tmp/pubrates.new.js /tmp/data-wt/pubrates.js || true
             [ -f /tmp/portalrates.new.js ] && cp /tmp/portalrates.new.js /tmp/data-wt/portalrates.js || true
             cd /tmp/data-wt
-            if git diff --quiet -- pubav.js pubrates.js portalrates.js && [ -z "$(git ls-files --others --exclude-standard pubrates.js portalrates.js)" ]; then echo "no change"; exit 0; fi
+            if [ -f /tmp/vfquotes_invalidate.json ] && [ -f vfquotes.json ]; then
+              python3 - <<'PY'
+          import json
+          inv = set(json.load(open('/tmp/vfquotes_invalidate.json'))['slugs'])
+          j = json.load(open('vfquotes.json')); by = j.get('by', {})
+          drop = [k for k in by if k.split('|')[0] in inv]
+          for k in drop: del by[k]
+          if drop:
+              json.dump(j, open('vfquotes.json', 'w'), separators=(',', ':'))
+              print(f'dropped {len(drop)} stored quotes for {len(inv)} repriced villas')
+          PY
+            fi
+            if git diff --quiet -- pubav.js pubrates.js portalrates.js vfquotes.json && [ -z "$(git ls-files --others --exclude-standard pubrates.js portalrates.js)" ]; then echo "no change"; exit 0; fi
             git add pubav.js pubrates.js portalrates.js
+            [ -f vfquotes.json ] && git add vfquotes.json || true
             git commit -q -m "pubav: refresh $(date -u +%Y-%m-%dT%H:%MZ)"
             if git push origin HEAD:refs/heads/data; then exit 0; fi
             cd "$GITHUB_WORKSPACE"; sleep 15

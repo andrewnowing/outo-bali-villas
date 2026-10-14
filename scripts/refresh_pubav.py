@@ -123,5 +123,13 @@ else:
         if not h or h[2] < cutoff: h = [L['dp'], L['dp'], now[:10]]
         dph[s_] = [min(h[0], L['dp']), max(h[1], L['dp']), h[2]]
     rout = {'updatedAt': now, 'by': rates, 'stats': rate_stat, 'dph': dph}
+    # villas whose public price/promo changed since the last run: their stored VF quotes (vfquotes.json on the
+    # data branch) are stale, so the workflow drops them and the extensions re-probe. Guarded against layout changes.
+    inval = [s_ for s_, L in rates.items() if s_ in old_rates and old_rates[s_] != L]
+    if old_rates and len(inval) <= max(20, len(rates) * 0.3):
+        json.dump({'at': now, 'slugs': inval}, open('/tmp/vfquotes_invalidate.json', 'w'))
+        print(f'price changed on {len(inval)} villas -> stored quotes to drop', flush=True)
+    elif inval:
+        print(f'price changed on {len(inval)} villas (too many, probably a layout change) -> not dropping stored quotes', flush=True)
     open(os.path.join(ROOT, 'pubrates.js'), 'w', encoding='utf-8').write('const PUBRATES=' + json.dumps(rout, separators=(',', ':')) + ';\n')
 print(f"done ok={ok} err={err} rates={rate_stat} in {int(time.time()-t0)}s")
