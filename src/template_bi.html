@@ -60,6 +60,8 @@ h3{font-family:var(--body);font-weight:600;font-size:17px;line-height:1.45;margi
 .sub{color:var(--ink2);font-size:13.5px;margin-top:6px;line-height:1.7}
 .hdr-r{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
 .fresh{font-family:var(--body);font-size:12px;padding:6px 12px;border-radius:999px;background:var(--paper-200);color:var(--ink-700);border:1px solid var(--paper-300);white-space:nowrap;letter-spacing:.04em}
+.fresh.ok{background:var(--jade-100);color:var(--jade-700);border-color:transparent}
+.fresh.warn{background:var(--sun-50);color:var(--sun-700);border-color:transparent;white-space:normal}
 .fresh.old{background:var(--clay-100);color:var(--clay-600);border-color:transparent}
 form.search{background:var(--surface);border:1px solid var(--line);border-radius:var(--r-lg);padding:20px;display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:16px;align-items:end;box-shadow:var(--shadow-sm)}
 label.f,div.f{display:grid;gap:8px;min-width:0}
@@ -369,7 +371,7 @@ button:disabled{opacity:.45;cursor:not-allowed;transform:none;box-shadow:none}
       <h1 data-t="title">Outo 峇里島別墅空房查詢</h1>
       <div class="sub" data-t="sub">Villa Finder 同業房源 118 間 · 價格為對外售價（美金、含稅），不是 Outo 成本價</div>
     </div></div>
-    <div class="hdr-r"><span class="fresh" id="fresh" data-t="loading">房況資料載入中</span><a class="hbtn" id="expLink" href="exp" hidden style="display:inline-flex;align-items:center;text-decoration:none">體驗元件地圖</a><button type="button" class="hbtn" id="helpBtn" data-t="helpBtn">操作說明</button><button type="button" class="hbtn" id="histBtn" data-t="histBtn">房況更新歷史紀錄</button><button type="button" class="hbtn" id="concBtn" data-t="concBtn">Villa Finder 禮賓服務</button><div class="lang" id="lang" role="group" data-t-aria="langGroup" aria-label="語言"><button type="button" data-lang="zh" aria-pressed="true" lang="zh-Hant">中文</button><span class="sep" aria-hidden="true">|</span><button type="button" data-lang="en" aria-pressed="false" lang="en">EN</button></div><div class="lang" id="cur" role="group" aria-label="currency"><button type="button" data-cur="USD" aria-pressed="true">USD</button><span class="sep" aria-hidden="true">|</span><button type="button" data-cur="TWD" aria-pressed="false">TWD</button></div></div>
+    <div class="hdr-r"><span class="fresh" id="fresh" data-t="loading">房況資料載入中</span><span class="fresh" id="vfqNote" hidden></span><a class="hbtn" id="expLink" href="exp" hidden style="display:inline-flex;align-items:center;text-decoration:none">體驗元件地圖</a><button type="button" class="hbtn" id="helpBtn" data-t="helpBtn">操作說明</button><button type="button" class="hbtn" id="histBtn" data-t="histBtn">房況更新歷史紀錄</button><button type="button" class="hbtn" id="concBtn" data-t="concBtn">Villa Finder 禮賓服務</button><div class="lang" id="lang" role="group" data-t-aria="langGroup" aria-label="語言"><button type="button" data-lang="zh" aria-pressed="true" lang="zh-Hant">中文</button><span class="sep" aria-hidden="true">|</span><button type="button" data-lang="en" aria-pressed="false" lang="en">EN</button></div><div class="lang" id="cur" role="group" aria-label="currency"><button type="button" data-cur="USD" aria-pressed="true">USD</button><span class="sep" aria-hidden="true">|</span><button type="button" data-cur="TWD" aria-pressed="false">TWD</button></div></div>
   </header>
 
   <form class="search" id="f" autocomplete="off">
@@ -508,7 +510,7 @@ zh:{
   sumNights:n=>`<span><b>${n}</b> 晚</span>`, sumFree:n=>`有空房 <b>${n}</b> 間`, sumBooked:n=>`已被訂 ${n} 間`, sumUnk:n=>`沒有房況資料 ${n} 間`,
   empty:'這段日期、房數、人數與區域沒有符合的別墅。可以放寬條件（床型、到市區時間），或取消「只看有空房」看看哪些已被訂。',
   galLab:['房間','室內設施','室外設施'], galCfg:(cfgs,n)=>`可訂 ${cfgs}：${n} 房配置使用全部臥室；選較少房數時會鎖上其餘臥室（Villa Finder 未標示鎖哪幾間，可在訂房時指定）`, galMore:n=>`其他照片（${n}）`, galPhoto:(lab,z)=>`${lab}照片 ${z}`, galNone:'相簿中沒有找到這類照片',
-  roomLab:['雙人房','雙床房','雙床可併','三人房','四人房','床型未註明','單人房'], roomPre:'房型：', roomSep:' · ', nBedConf:(s)=>`床型與加床規則已由 ${s} 書面確認`,
+  roomLab:['雙人房','雙床房','雙床可併','三人房','四人房','床型未註明','單人房'], roomPre:'房型：', roomSep:' · ', lblVf:'VF 即時報價', vfAt:(t_)=>`Villa Finder 即時報價（${t_} 查）`, vfUnav:'VF 顯示不可訂', vfPer:(p,br)=>`平均每晚 ${p} · ${br} 房`, vfCfg:(rows)=>`各房數 VF 報價：${rows}`, vfAgent:(p)=>`同業價 ${p}`, vfHint:'裝「Outo Villa 報價」擴充功能，卡片會顯示 Villa Finder 即時報價', vfLoading:(n)=>`正在向 Villa Finder 取得 ${n} 間即時報價…`, vfDone:(n,t_)=>`VF 即時報價 ${n} 間（${t_}）`, nBedConf:(s)=>`床型與加床規則已由 ${s} 書面確認`,
   twYes:'✓ 有 Twin 房', twConv:'可拆成 Twin', twPhoto:'照片有 Twin（說明未寫）', twNo:'全為大床', twUnk:'Twin 未確認', bunk:'有上下舖',
   km:x=>(x/1000).toFixed(1)+' 公里', walkNo:(w,km)=>`不建議步行（${w} 分 / ${km}）`, walkYes:(w,km)=>`步行約 ${w} 分（${km}）`,
   driveTo:an=>`開車到${an}`, walkTo:an=>`走路到${an}`, driveAirport:'開車到機場', minKm:(r,km)=>`${r} 分鐘（${km}）`,
@@ -601,7 +603,7 @@ en:{
   sumNights:n=>`<span><b>${n}</b> night${n===1?'':'s'}</span>`, sumFree:n=>`Available: <b>${n}</b>`, sumBooked:n=>`Booked: ${n}`, sumUnk:n=>`No availability data: ${n}`,
   empty:'No villas match these dates, bedrooms, guests and area. Try relaxing the filters (bed type, drive to town), or untick "Available only" to see which are booked.',
   galLab:['Rooms','Indoor facilities','Outdoor facilities'], galCfg:(cfgs,n)=>`Bookable as ${cfgs}: the ${n}-bedroom layout uses all rooms; smaller layouts lock the remaining bedrooms (Villa Finder does not say which; request it when booking)`, galMore:n=>`More photos (${n})`, galPhoto:(lab,z)=>`${lab} photo ${z}`, galNone:'No photos of this type found in the album',
-  roomLab:['Double','Twin','Twin/King convertible','Triple','Quad','Bed type n/a','Single'], roomPre:'Rooms: ', roomSep:' · ', nBedConf:(s)=>`Bed types and extra-bed rules confirmed in writing (${s})`,
+  roomLab:['Double','Twin','Twin/King convertible','Triple','Quad','Bed type n/a','Single'], roomPre:'Rooms: ', roomSep:' · ', lblVf:'VF live quote', vfAt:(t_)=>`Villa Finder live quote (fetched ${t_})`, vfUnav:'VF shows unavailable', vfPer:(p,br)=>`avg ${p} / night · ${br} BR`, vfCfg:(rows)=>`VF quote per layout: ${rows}`, vfAgent:(p)=>`agent price ${p}`, vfHint:'Install the “Outo Villa 報價” extension to see Villa Finder live quotes on cards', vfLoading:(n)=>`Fetching ${n} live quotes from Villa Finder…`, vfDone:(n,t_)=>`VF live quotes for ${n} villas (${t_})`, nBedConf:(s)=>`Bed types and extra-bed rules confirmed in writing (${s})`,
   twYes:'✓ Twin room', twConv:'Convertible to Twin', twPhoto:'Twin in photos (not in description)', twNo:'All double beds', twUnk:'Twin unconfirmed', bunk:'Bunk beds',
   km:x=>(x/1000).toFixed(1)+' km', walkNo:(w,km)=>`Walking not recommended (${w} min / ${km})`, walkYes:(w,km)=>`About ${w} min walk (${km})`,
   driveTo:an=>`Drive to ${an}`, walkTo:an=>`Walk to ${an}`, driveAirport:'Drive to airport', minKm:(r,km)=>`${r} min (${km})`,
@@ -927,6 +929,12 @@ function onBudgetInput(e){
 let bTimer=null;
 ['bLo','bHi'].forEach(id=>{$(id).addEventListener('input',e=>{onBudgetInput(e);clearTimeout(bTimer);bTimer=setTimeout(render,120);});});
 $('bReset').addEventListener('click',()=>{bud.lo=bud.min;bud.hi=bud.max;render();});
+// ---- Villa Finder 即時報價（透過「Outo Villa 報價」Chrome 擴充功能） ----
+const VFQ={};const VFQ_TTL=30*60e3;let vfqPending=null,vfqSeq=0;
+const vfqExt=()=>!!document.documentElement.dataset.outoQuote;
+function vfqApply(v,q,ci,co,nights,minBr){const c=VFQ[v.s+'|'+ci+'|'+co];if(!c||!c.o||Date.now()-c.at>VFQ_TTL)return;const cfgs=Object.keys(c.o).map(Number).sort((a,b)=>a-b);const br=cfgs.includes(q.br)?q.br:cfgs.find(b=>b>=minBr);if(c.av==='unavailable')q.vfUnav=true;if(br==null)return;const o=c.o[br];const disc=o[1]!=null?o[1]:o[0];if(disc==null||disc<=0)return;q.vf={total:disc,orig:o[0],rate:o[2],agent:o[3],all:c.o,at:c.at,atTxt:new Date(c.at).toLocaleTimeString(LOC(),{hour:'2-digit',minute:'2-digit'})};q.br=br;q.total=disc;q.per=disc/nights;q.est=false;q.dynamic=false;q.missing=false;}
+function vfqRequest(items,ci,co){if(PUB||SHARE||QUOTE)return;const n=$('vfqNote');if(!vfqExt()){if(n){n.hidden=false;n.textContent=t('vfHint');n.className='fresh warn';}return;}const need=items.filter(x=>x.free!==false).map(x=>x.v.s).filter(s=>{const c=VFQ[s+'|'+ci+'|'+co];return !c||Date.now()-c.at>VFQ_TTL;}).slice(0,150);if(!need.length){const have=items.filter(x=>x.q.vf).length;if(n){n.hidden=!have;n.className='fresh ok';if(have)n.textContent=t('vfDone',have,new Date().toLocaleTimeString(LOC(),{hour:'2-digit',minute:'2-digit'}));}return;}if(vfqPending&&vfqPending.ci===ci&&vfqPending.co===co)return;const id=++vfqSeq;vfqPending={id,ci,co};if(n){n.hidden=false;n.className='fresh';n.textContent=t('vfLoading',need.length);}window.postMessage({type:'OUTO_QUOTE_REQ',id,slugs:need,from:ci.replace(/^(\d{2})(\d{2})(\d{2})$/,'20$1-$2-$3'),to:co.replace(/^(\d{2})(\d{2})(\d{2})$/,'20$1-$2-$3')},'*');}
+window.addEventListener('message',e=>{if(e.source!==window||!e.data||e.data.type!=='OUTO_QUOTE_RES')return;const d=e.data;const ci=d.from.replace(/^20(\d{2})-(\d{2})-(\d{2})$/,'$1$2$3'),co=d.to.replace(/^20(\d{2})-(\d{2})-(\d{2})$/,'$1$2$3');let got=0;for(const [s,r] of Object.entries(d.res||{})){if(r&&r.o){VFQ[s+'|'+ci+'|'+co]=r;got++;}else VFQ[s+'|'+ci+'|'+co]={o:null,at:Date.now(),err:r&&r.err};}vfqPending=null;if(got)render();else{const n=$('vfqNote');if(n){n.hidden=true;}}});
 function render(){
   const {ciD,coD,nights,ci,co}=state();
   const list=$('list');
@@ -943,6 +951,7 @@ function render(){
   const dtOk=v=>{if(!dt)return true;const r=(typeof ROUTE!=='undefined')&&ROUTE[v.s];return r&&r[0]<=dt;};
   let items=(SHARE?VILLAS.filter(v=>v.s===SHARE):VILLAS.filter(v=>qOk(v)&&twOk(v)&&dtOk(v)&&(!srcF||(srcF==='pub')===isPub(v))&&(!area||v.a===area)&&(!gu||!v.x||!v.x.g||v.x.g>=gu))).map(v=>{
     const q=quote(v,ciD,nights,minBr); if(!q) return null;
+    vfqApply(v,q,ci,co,nights,minBr);
     const cf=hasAv(v)?conflicts(v,ci,co):[];
     return {v,q,free:hasAv(v)?cf.length===0:null,cf};
   }).filter(Boolean);
@@ -956,6 +965,7 @@ function render(){
   const rv=x=>{const r=(typeof RATE!=='undefined')&&RATE[x.v.s];return r&&r[0]!=null?r[0]*1000+Math.min(r[1]||0,999):-1;};
   items.sort((a,b)=>s==='poi'?(pv(a)-pv(b))||(val(a)-val(b)):s==='rate'?(rv(b)-rv(a))||(val(a)-val(b)):s==='dist'?(dv(a)-dv(b))||(val(a)-val(b)):s==='name'?a.v.n.localeCompare(b.v.n):s==='pricedesc'?((val(b)===Infinity?-1:val(b))-(val(a)===Infinity?-1:val(a))):val(a)-val(b));
   updateMarkers(items);fillVillaList();
+  vfqRequest(items,ci,co);
   if(!items.length){list.innerHTML='<div class="empty">'+t(SHARE?'shareMissing':'empty')+'</div>';return;}
   const frag=document.createDocumentFragment();
   for(const x of items){const el=row(x,ciD,coD,nights);frag.appendChild(el);if(wasOpen.has(x.v.s)||SHARE)el.open=true;}
@@ -1016,8 +1026,10 @@ function row(x,ciD,coD,nights){
   {const pcp=poiChip(v);if(pcp)chips.push(pcp);}
   {const rc=roomsChip(v);if(rc)chips.push(rc);const tc=twinChip(v);if(tc)chips.push(tc);}
   let price=`<span class="per">${t(isPub(v)?'priceCheckPub':'priceCheck')}</span>`;
-  const pc=promoCalc(v,q,ciD,nights);
-  if(PUB){price=q.missing?`<span class="per">${t(isPub(v)?'priceCheckPub':'priceCheck')}</span>`:q.est?`<span class="tot">${t('dynQuote')}</span><span class="per">${v.dph?t('dynRange',money(v.dph[0]),money(v.dph[1])):t('estDynPub')}</span>`:q.dynamic?`<span class="tot">${moneyRng(q.lo,q.hi)}</span><span class="per">${t('priceRange',q.br)}</span>`:`<span class="tot"><i>${t(PUBLIC?'lblPrice':'lblPub')}</i>${money(q.total)}</span><span class="per">${t('priceAvg',money(q.per),q.br)}</span>${QUOTE?`<span class="per">${esc(t('quoteDates',fmt(ciD),fmt(coD),nights))}</span>`:''}`;}
+  const pc=q.vf?null:promoCalc(v,q,ciD,nights);
+  if(q.vfUnav) chips.push(`<span class="chip c-bad">${t('vfUnav')}</span>`);
+  if(q.vf){const w=q.vf.orig>q.vf.total?`<span class="was"><i>${t('lblPub')}</i><b>${money(q.vf.orig)}</b></span>`:'';price=`${w}<span class="tot"><i>${t('lblVf')}</i>${money(q.total)}</span><span class="per">${t('vfPer',money(q.per),q.br)}</span>${!PUB&&q.vf.agent?`<span class="dl">${esc(t('vfAgent',money(q.vf.agent)))}</span>`:''}`;}
+  else if(PUB){price=q.missing?`<span class="per">${t(isPub(v)?'priceCheckPub':'priceCheck')}</span>`:q.est?`<span class="tot">${t('dynQuote')}</span><span class="per">${v.dph?t('dynRange',money(v.dph[0]),money(v.dph[1])):t('estDynPub')}</span>`:q.dynamic?`<span class="tot">${moneyRng(q.lo,q.hi)}</span><span class="per">${t('priceRange',q.br)}</span>`:`<span class="tot"><i>${t(PUBLIC?'lblPrice':'lblPub')}</i>${money(q.total)}</span><span class="per">${t('priceAvg',money(q.per),q.br)}</span>${QUOTE?`<span class="per">${esc(t('quoteDates',fmt(ciD),fmt(coD),nights))}</span>`:''}`;}
   else if(!q.missing&&q.est){price=`<span class="tot"><i>${t('lblPub')}</i>${t('dynQuote')}</span><span class="per">${v.dph?t('dynRange',money(v.dph[0]),money(v.dph[1])):t('estDyn')}</span>`;}
   else if(!q.missing&&isPub(v)&&!q.dynamic){const base=pc&&pc.best?pc.best.total:q.total;price=(pc&&pc.best?`<span class="was"><i>${t('lblPub')}</i><b>${money(q.total)}</b></span><span class="tot"><i>${t('lblPromo')}</i>${money(base)}</span><span class="per">${t('priceAvg',money(base/nights),q.br)}</span><span class="dl">${esc(t('dlOff',pc.best.label))}${pc.n>1?' · '+esc(t('dlMore',pc.n-1)):''}</span>`:`<span class="tot"><i>${t('lblPub')}</i>${money(q.total)}</span><span class="per">${t('priceAvg',money(q.per),q.br)}</span>`)+`<span class="dl">${esc(t('comPub',v.com||10,money(base*(v.com||10)/100)))}</span>`;}
   else if(!q.missing) price=q.dynamic?`<span class="tot">${moneyRng(q.lo,q.hi)}</span><span class="per">${t('priceRange',q.br)}</span>`:(pc&&pc.best?`<span class="was"><i>${t('lblPub')}</i><b>${money(q.total)}</b></span><span class="tot"><i>${t('lblPartner')}</i>${money(pc.best.total)}</span><span class="per">${t('priceAvg',money(pc.best.total/nights),q.br)}</span><span class="dl">${esc(t('dlOff',pc.best.label))}${pc.n>1?' · '+esc(t('dlMore',pc.n-1)):''}</span>`:`<span class="tot">${money(q.total)}</span><span class="per">${t('priceAvg',money(q.per),q.br)}</span>`);
@@ -1051,6 +1063,7 @@ function fillBody(b,x,ciD,coD,nights){
   if(v.s==='villa-sanook')notes.push(['w',t('nSanook')]);
   {const conf=(typeof ROOMX!=='undefined')&&ROOMX[v.s];const tw=twinOf(v.s);if(!conf){if(tw&&tw[0]==='unk')notes.push(['w',t('nTwinUnk',tw[3])]);else if(tw&&tw[3])notes.push(['',tw[3]]);}}
   if(typeof ROUTE!=='undefined'&&ROUTE[v.s])notes.push(['',t('nRoute')]);
+  if(q.vf){const rows=Object.entries(q.vf.all).sort((a,b)=>+a[0]-+b[0]).map(([b,o])=>`${b} ${LANG==='zh'?'房':'BR'} ${money(o[1]!=null?o[1]:o[0])}`).join(' · ');notes.push(['',t('vfAt',q.vf.atTxt)+'｜'+t('vfCfg',rows)]);}
   if(typeof ROOMX!=='undefined'&&ROOMX[v.s]){const x=ROOMX[v.s];notes.push(['',t('nBedConf',x.src)]);if(x.xb)notes.push(['',x.xb]);if(x.n)notes.push(['',x.n]);}
   if(q.missing) notes.push(['w',t('nMissing')]);
   else if(q.est) notes.push(['',t('nDynPub',v.dph?money(v.dph[0])+'–'+money(v.dph[1]):'')]);
