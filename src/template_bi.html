@@ -1050,7 +1050,7 @@ function fillBody(b,x,ciD,coD,nights){
     promoSec=`<div class="promoSec"><p class="sec">${t('secPromo')}</p><div class="tw"><table class="promoTbl"><thead><tr><th>${t('prRule')}</th><th>${t('prCond')}</th><th style="text-align:right">${t('prPrice')}${!q.missing&&!q.dynamic?`<span class="why">${t('prOrig')} ${money(q.total)}</span>`:''}</th></tr></thead><tbody>${rows}</tbody></table></div><p class="histNote" style="margin-top:8px">${esc(t('prNote'))}</p></div>`;}
   else promoSec=`<div class="promoSec"><p class="sec">${t('secPromo')}</p><p class="histNote">${t('prNoPromo')}</p></div>`;
   const box=(title,arr)=>`<div class="box"><h4>${esc(title)}</h4>${arr&&arr.length?`<ul>${arr.map(x=>`<li>${esc(L2(x))}</li>`).join('')}</ul>`:`<ul><li class="na">${esc(t('polNone'))}</li></ul>`}</div>`;
-  const stdBox=`<div class="box std"><h4>${esc(t('vfStdT'))}</h4><ul>${t('vfStd').map(x=>`<li>${esc(x)}</li>`).join('')}</ul></div>`;
+  const stdList=((typeof ROOMX!=='undefined')&&ROOMX[v.s])?t('vfStd').slice(0,-1):t('vfStd');const stdBox=`<div class="box std"><h4>${esc(t('vfStdT'))}</h4><ul>${stdList.map(x=>`<li>${esc(x)}</li>`).join('')}</ul></div>`;
   const polSec=pol?`<div class="polSec"><p class="sec">${t('secPol')}</p><div class="pol">${stdBox}</div><p class="histNote" style="margin:6px 0 8px">${esc(t('vfStdNote'))}</p><div class="pol">${box(t('polCancel'),pol.cancel)}${box(t('polPay'),pol.pay)}${box(t('polRules'),pol.rules)}${box(t('polIncl'),pol.incl)}</div><p class="histNote" style="margin-top:8px">${esc(t('polSrc'))}</p></div>`:'';
   const rulesSec=(SHARE&&pol&&pol.rules.length)?`<div><p class="sec">${t('polRules')}</p><ul class="notes">${pol.rules.map(x=>`<li>${esc(L2(x))}</li>`).join('')}</ul></div>`:'';
   const gal=galleryHTML(v);
