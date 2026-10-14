@@ -1031,7 +1031,7 @@ function fillBody(b,x,ciD,coD,nights){
   notes.push(['',t('n1')]);
   notes.push(['',t('n2')]);
   if(v.s==='villa-sanook')notes.push(['w',t('nSanook')]);
-  {const tw=twinOf(v.s);if(tw&&tw[0]==='unk')notes.push(['w',t('nTwinUnk',tw[3])]);else if(tw&&tw[3])notes.push(['',tw[3]]);}
+  {const conf=(typeof ROOMX!=='undefined')&&ROOMX[v.s];const tw=twinOf(v.s);if(!conf){if(tw&&tw[0]==='unk')notes.push(['w',t('nTwinUnk',tw[3])]);else if(tw&&tw[3])notes.push(['',tw[3]]);}}
   if(typeof ROUTE!=='undefined'&&ROUTE[v.s])notes.push(['',t('nRoute')]);
   if(typeof ROOMX!=='undefined'&&ROOMX[v.s]){const x=ROOMX[v.s];notes.push(['',t('nBedConf',x.src)]);if(x.xb)notes.push(['',x.xb]);if(x.n)notes.push(['',x.n]);}
   if(q.missing) notes.push(['w',t('nMissing')]);
