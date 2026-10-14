@@ -6,7 +6,10 @@ ROOT = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)
 STRIP = re.compile(r'\b(bedrooms? ?\d+|shared bathroom with|shared bath(room)?|bathroom|bathub|bathtub|aircon|tv|wi-?fi|minibar|desk|safe|fan|terrace|balcony|dressing room|walk-in closet|shower|fridge|ensuite|shared|pool view|room with swimming pool|first floor|ground floor|upper floor|2nd floor|second floor|1st building|master bedroom|connecting bedroom|this has a)\b', re.I)
 
 def classify(desc):
-    d = STRIP.sub(' ', (desc or '').lower())
+    d = (desc or '').lower()
+    d = re.sub(r'\b(king|queen|double) extra bed', r'\1 bed, single extra bed', d)
+    d = re.sub(r'\btwin room\b', '2 single beds', d)
+    d = STRIP.sub(' ', d)
     d = re.sub(r'[ ,]+', ' ', d).strip()
     if not d:
         return 5
