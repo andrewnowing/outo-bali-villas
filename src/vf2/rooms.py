@@ -33,19 +33,31 @@ def classify(desc):
         return 6
     return 1 if singles == 2 else 0
 
+# Villa Finder 書面確認過的床型（src/vf2/bed_confirmed.json）優先於 gal/*.json 的頁面抓取
+CONF_PATH = os.path.join(ROOT, 'src', 'vf2', 'bed_confirmed.json')
+CONF = json.load(open(CONF_PATH, encoding='utf-8')) if os.path.exists(CONF_PATH) else {}
+
 out = {}
+roomx = {}
 tot = collections.Counter()
-for f in glob.glob(os.path.join(ROOT, 'gal', '*.json')):
-    slug = os.path.basename(f)[:-5]
-    g = json.load(open(f, encoding='utf-8'))
-    beds = g.get('bed') or []
-    if not beds:
+slugs = {os.path.basename(f)[:-5] for f in glob.glob(os.path.join(ROOT, 'gal', '*.json'))} | set(CONF)
+for slug in sorted(slugs):
+    conf = CONF.get(slug)
+    if conf:
+        descs = conf['beds']
+    else:
+        g = json.load(open(os.path.join(ROOT, 'gal', slug + '.json'), encoding='utf-8'))
+        descs = [b[2] if len(b) > 2 else '' for b in (g.get('bed') or [])]
+    if not descs:
         continue
     c = [0] * 7
-    for b in beds:
-        k = classify(b[2] if len(b) > 2 else '')
+    for d in descs:
+        k = classify(d)
         c[k] += 1
         tot[k] += 1
     out[slug] = c
-open(os.path.join(ROOT, 'src', 'rooms_bi.js'), 'w', encoding='utf-8').write('var ROOMS=' + json.dumps(out, ensure_ascii=False, separators=(',', ':')) + ';\n')
+    if conf:
+        roomx[slug] = {'xb': conf.get('extra', ''), 'n': conf.get('note', ''), 'src': conf.get('src', '')}
+open(os.path.join(ROOT, 'src', 'rooms_bi.js'), 'w', encoding='utf-8').write('var ROOMS=' + json.dumps(out, ensure_ascii=False, separators=(',', ':')) + ';\nvar ROOMX=' + json.dumps(roomx, ensure_ascii=False, separators=(',', ':')) + ';\n')
+print('confirmed by Villa Finder:', len(roomx))
 print('villas', len(out), 'rooms by type', dict(sorted(tot.items())))

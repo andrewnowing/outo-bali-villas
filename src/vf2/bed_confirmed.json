@@ -1,0 +1,383 @@
+{
+ "swan-villa-r": {
+  "beds": [
+   "King bed",
+   "2 single beds"
+  ],
+  "extra": "不可加床",
+  "note": "",
+  "src": "Villa Finder 回覆 2026-10-14"
+ },
+ "villa-alami": {
+  "beds": [
+   "Queen bed",
+   "Queen bed",
+   "Queen bed",
+   "2 single beds"
+  ],
+  "extra": "不可加床",
+  "note": "",
+  "src": "Villa Finder 回覆 2026-10-14"
+ },
+ "villa-ku-tama": {
+  "beds": [
+   "King bed",
+   "King bed",
+   "King bed"
+  ],
+  "extra": "可加床：第 3 房，US$50／床／晚（含早餐），最多 2 床",
+  "note": "",
+  "src": "Villa Finder 回覆 2026-10-14"
+ },
+ "villa-desa-roro-estate": {
+  "beds": [
+   "King bed",
+   "King bed",
+   "King bed",
+   "King bed",
+   "King bed",
+   "King bed",
+   "King bed"
+  ],
+  "extra": "可加床：任一房，US$20／床／晚，最多 4 床",
+  "note": "",
+  "src": "Villa Finder 回覆 2026-10-14"
+ },
+ "villa-lapis-1": {
+  "beds": [
+   "King bed",
+   "Queen bed",
+   "Queen bed"
+  ],
+  "extra": "不可加床",
+  "note": "",
+  "src": "Villa Finder 回覆 2026-10-14"
+ },
+ "villa-nala-1": {
+  "beds": [
+   "Queen bed"
+  ],
+  "extra": "不可加床",
+  "note": "",
+  "src": "Villa Finder 回覆 2026-10-14"
+ },
+ "villa-nala-2": {
+  "beds": [
+   "Queen bed"
+  ],
+  "extra": "不可加床",
+  "note": "",
+  "src": "Villa Finder 回覆 2026-10-14"
+ },
+ "loona-palm-villa-1": {
+  "beds": [
+   "King bed",
+   "King bed"
+  ],
+  "extra": "可加床：主臥，US$35／床／晚，最多 1 床",
+  "note": "",
+  "src": "Villa Finder 回覆 2026-10-14"
+ },
+ "loona-palm-villa-2": {
+  "beds": [
+   "King bed",
+   "King bed"
+  ],
+  "extra": "可加床：主臥，US$35／床／晚，最多 1 床",
+  "note": "",
+  "src": "Villa Finder 回覆 2026-10-14"
+ },
+ "m-villa-318-canggu": {
+  "beds": [
+   "King bed",
+   "King bed",
+   "King bed",
+   "King bed",
+   "King bed"
+  ],
+  "extra": "可加床：任一房，每房最多 1 床，US$35／床／晚，全棟最多 5 床",
+  "note": "",
+  "src": "Villa Finder 回覆 2026-10-14"
+ },
+ "villa-moana-canggu": {
+  "beds": [
+   "King bed",
+   "King bed",
+   "Bunk",
+   "King bed",
+   "King bed",
+   "King bed"
+  ],
+  "extra": "可加床：Spa 房或樓上臥室，US$40／床／晚，最多 2 床",
+  "note": "第 1、2 房共用浴室",
+  "src": "Villa Finder 回覆 2026-10-14"
+ },
+ "villa-castil-di-udara": {
+  "beds": [
+   "Queen bed",
+   "Queen bed",
+   "Queen bed",
+   "2 single beds"
+  ],
+  "extra": "可加床：任一房，US$35／床／晚，最多 1 床",
+  "note": "",
+  "src": "Villa Finder 回覆 2026-10-14"
+ },
+ "villa-dreamora": {
+  "beds": [
+   "Queen bed",
+   "Queen bed",
+   "Queen bed"
+  ],
+  "extra": "不可加床",
+  "note": "",
+  "src": "Villa Finder 回覆 2026-10-14"
+ },
+ "villa-kuwait": {
+  "beds": [
+   "King bed",
+   "King bed",
+   "King bed"
+  ],
+  "extra": "可加床：任一房，US$35／床／晚，最多 1 床",
+  "note": "",
+  "src": "Villa Finder 回覆 2026-10-14"
+ },
+ "villa-v-seminyak": {
+  "beds": [
+   "King bed",
+   "King bed",
+   "King bed"
+  ],
+  "extra": "可加床：任一房，US$35／床／晚，最多 1 床",
+  "note": "第 2、3 房共用浴室",
+  "src": "Villa Finder 回覆 2026-10-14"
+ },
+ "villa-bloom": {
+  "beds": [
+   "King bed",
+   "Queen bed",
+   "Queen bed",
+   "2 single beds (for kids)"
+  ],
+  "extra": "可加床：任一房，US$35／床／晚，最多 1 床",
+  "note": "第 2、3 房共用浴室；第 4 房適合小孩，兩張床需另外付費",
+  "src": "Villa Finder 回覆 2026-10-14"
+ },
+ "villa-manusa": {
+  "beds": [
+   "King bed",
+   "King bed",
+   "King bed",
+   "2 singles, can be joined as 1 king"
+  ],
+  "extra": "可加床：任一房，US$35／床／晚，最多 1 床",
+  "note": "第 2、3 房共用浴室",
+  "src": "Villa Finder 回覆 2026-10-14"
+ },
+ "alice-estate": {
+  "beds": [
+   "King bed",
+   "King bed",
+   "King bed",
+   "King bed"
+  ],
+  "extra": "可加床：第 1 或 2 房，US$35／床／晚，最多 2 床",
+  "note": "",
+  "src": "Villa Finder 回覆 2026-10-14"
+ },
+ "anjali-villas": {
+  "beds": [
+   "King bed",
+   "King bed",
+   "King bed",
+   "King bed",
+   "King bed",
+   "King bed",
+   "King bed",
+   "King bed",
+   "King bed",
+   "King bed"
+  ],
+  "extra": "可加床：任一房，US$35／床／晚，最多 3 床",
+  "note": "",
+  "src": "Villa Finder 回覆 2026-10-14"
+ },
+ "the-chands-empat": {
+  "beds": [
+   "King bed",
+   "King bed",
+   "King bed"
+  ],
+  "extra": "可加床：任一房，US$35／床／晚，最多 1 床",
+  "note": "",
+  "src": "Villa Finder 回覆 2026-10-14"
+ },
+ "the-chands-delapan": {
+  "beds": [
+   "King bed",
+   "King bed",
+   "King bed"
+  ],
+  "extra": "可加床：任一房，US$35／床／晚，最多 1 床",
+  "note": "",
+  "src": "Villa Finder 回覆 2026-10-14"
+ },
+ "villa-celeste-seminyak": {
+  "beds": [
+   "King bed",
+   "King bed",
+   "King bed"
+  ],
+  "extra": "可加床：任一房，US$35／床／晚，最多 1 床",
+  "note": "",
+  "src": "Villa Finder 回覆 2026-10-14"
+ },
+ "villa-ku-besar": {
+  "beds": [
+   "King bed",
+   "King bed",
+   "King bed",
+   "King bed",
+   "King bed"
+  ],
+  "extra": "可加床：第 4 房，US$50／床／晚（含早餐），最多 2 床",
+  "note": "",
+  "src": "Villa Finder 回覆 2026-10-14"
+ },
+ "villa-lange-2": {
+  "beds": [
+   "King bed",
+   "King bed"
+  ],
+  "extra": "不可加床",
+  "note": "",
+  "src": "Villa Finder 回覆 2026-10-14"
+ },
+ "villa-lange-estate": {
+  "beds": [
+   "King bed",
+   "King bed",
+   "King bed",
+   "King bed"
+  ],
+  "extra": "不可加床",
+  "note": "由 Villa Lange 2 與 Villa Lange 3 兩棟組成",
+  "src": "Villa Finder 回覆 2026-10-14"
+ },
+ "villa-mogi": {
+  "beds": [
+   "King bed",
+   "Queen bed",
+   "King bed"
+  ],
+  "extra": "可加床：任一房，US$35／床／晚，最多 1 床",
+  "note": "",
+  "src": "Villa Finder 回覆 2026-10-14"
+ },
+ "villa-nikaia-seminyak": {
+  "beds": [
+   "Queen bed",
+   "Queen bed",
+   "2 double beds",
+   "Queen bed",
+   "Queen bed",
+   "Queen bed"
+  ],
+  "extra": "可加床：任一房，US$35／床／晚，最多 2 床",
+  "note": "每房最多 2 人，第 3 房（兩張雙人床）最多 4 人",
+  "src": "Villa Finder 回覆 2026-10-14"
+ },
+ "villa-reviva": {
+  "beds": [
+   "Queen bed",
+   "Queen bed",
+   "Queen bed"
+  ],
+  "extra": "可加床：任一房，US$35／床／晚，最多 1 床",
+  "note": "",
+  "src": "Villa Finder 回覆 2026-10-14"
+ },
+ "loona-palm-seseh-1": {
+  "beds": [
+   "King bed",
+   "King bed"
+  ],
+  "extra": "不可加床",
+  "note": "",
+  "src": "Villa Finder 回覆 2026-10-14"
+ },
+ "loona-palm-seseh-2": {
+  "beds": [
+   "King bed",
+   "King bed"
+  ],
+  "extra": "不可加床",
+  "note": "",
+  "src": "Villa Finder 回覆 2026-10-14"
+ },
+ "loona-palm-estate-seseh": {
+  "beds": [
+   "King bed",
+   "King bed",
+   "King bed",
+   "King bed"
+  ],
+  "extra": "不可加床",
+  "note": "",
+  "src": "Villa Finder 回覆 2026-10-14"
+ },
+ "domo-villa-1": {
+  "beds": [
+   "King bed",
+   "King bed",
+   "King bed"
+  ],
+  "extra": "可加床：任一房，US$35／床／晚，最多 1 床",
+  "note": "",
+  "src": "Villa Finder 回覆 2026-10-14"
+ },
+ "katak-villa": {
+  "beds": [
+   "King bed",
+   "King bed",
+   "King bed"
+  ],
+  "extra": "可加床：第 2 房，US$35／床／晚，最多 1 床",
+  "note": "",
+  "src": "Villa Finder 回覆 2026-10-14"
+ },
+ "lexington-palace-villa": {
+  "beds": [
+   "Queen bed",
+   "Queen bed",
+   "Queen bed",
+   "Queen bed",
+   "Queen bed",
+   "Queen bed"
+  ],
+  "extra": "可加床：任一房，US$35／床／晚，最多 3 床",
+  "note": "",
+  "src": "Villa Finder 回覆 2026-10-14"
+ },
+ "villa-navaho": {
+  "beds": [
+   "King bed",
+   "Queen bed",
+   "Queen bed"
+  ],
+  "extra": "可加床：任一房，US$35／床／晚，最多 1 床",
+  "note": "",
+  "src": "Villa Finder 回覆 2026-10-14"
+ },
+ "villa-omah-bumbak": {
+  "beds": [
+   "King bed",
+   "King bed",
+   "King bed"
+  ],
+  "extra": "可加床：第 1 房，US$35／床／晚，最多 1 床",
+  "note": "",
+  "src": "Villa Finder 回覆 2026-10-14"
+ }
+}

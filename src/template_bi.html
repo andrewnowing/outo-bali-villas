@@ -491,7 +491,7 @@ zh:{
   sumNights:n=>`<span><b>${n}</b> 晚</span>`, sumFree:n=>`有空房 <b>${n}</b> 間`, sumBooked:n=>`已被訂 ${n} 間`, sumUnk:n=>`沒有房況資料 ${n} 間`,
   empty:'這段日期、房數、人數與區域沒有符合的別墅。可以放寬條件（床型、到市區時間），或取消「只看有空房」看看哪些已被訂。',
   galLab:['房間','室內設施','室外設施'], galCfg:(cfgs,n)=>`可訂 ${cfgs}：${n} 房配置使用全部臥室；選較少房數時會鎖上其餘臥室（Villa Finder 未標示鎖哪幾間，可在訂房時指定）`, galMore:n=>`其他照片（${n}）`, galPhoto:(lab,z)=>`${lab}照片 ${z}`, galNone:'相簿中沒有找到這類照片',
-  roomLab:['雙人房','雙床房','雙床可併','三人房','四人房','床型未註明','單人房'], roomPre:'房型：', roomSep:' · ',
+  roomLab:['雙人房','雙床房','雙床可併','三人房','四人房','床型未註明','單人房'], roomPre:'房型：', roomSep:' · ', nBedConf:(s)=>`床型與加床規則已由 ${s} 書面確認`,
   twYes:'✓ 有 Twin 房', twConv:'可拆成 Twin', twPhoto:'照片有 Twin（說明未寫）', twNo:'全為大床', twUnk:'Twin 未確認', bunk:'有上下舖',
   km:x=>(x/1000).toFixed(1)+' 公里', walkNo:(w,km)=>`不建議步行（${w} 分 / ${km}）`, walkYes:(w,km)=>`步行約 ${w} 分（${km}）`,
   driveTo:an=>`開車到${an}`, walkTo:an=>`走路到${an}`, driveAirport:'開車到機場', minKm:(r,km)=>`${r} 分鐘（${km}）`,
@@ -583,7 +583,7 @@ en:{
   sumNights:n=>`<span><b>${n}</b> night${n===1?'':'s'}</span>`, sumFree:n=>`Available: <b>${n}</b>`, sumBooked:n=>`Booked: ${n}`, sumUnk:n=>`No availability data: ${n}`,
   empty:'No villas match these dates, bedrooms, guests and area. Try relaxing the filters (bed type, drive to town), or untick "Available only" to see which are booked.',
   galLab:['Rooms','Indoor facilities','Outdoor facilities'], galCfg:(cfgs,n)=>`Bookable as ${cfgs}: the ${n}-bedroom layout uses all rooms; smaller layouts lock the remaining bedrooms (Villa Finder does not say which; request it when booking)`, galMore:n=>`More photos (${n})`, galPhoto:(lab,z)=>`${lab} photo ${z}`, galNone:'No photos of this type found in the album',
-  roomLab:['Double','Twin','Twin/King convertible','Triple','Quad','Bed type n/a','Single'], roomPre:'Rooms: ', roomSep:' · ',
+  roomLab:['Double','Twin','Twin/King convertible','Triple','Quad','Bed type n/a','Single'], roomPre:'Rooms: ', roomSep:' · ', nBedConf:(s)=>`Bed types and extra-bed rules confirmed in writing (${s})`,
   twYes:'✓ Twin room', twConv:'Convertible to Twin', twPhoto:'Twin in photos (not in description)', twNo:'All double beds', twUnk:'Twin unconfirmed', bunk:'Bunk beds',
   km:x=>(x/1000).toFixed(1)+' km', walkNo:(w,km)=>`Walking not recommended (${w} min / ${km})`, walkYes:(w,km)=>`About ${w} min walk (${km})`,
   driveTo:an=>`Drive to ${an}`, walkTo:an=>`Walk to ${an}`, driveAirport:'Drive to airport', minKm:(r,km)=>`${r} min (${km})`,
@@ -1033,6 +1033,7 @@ function fillBody(b,x,ciD,coD,nights){
   if(v.s==='villa-sanook')notes.push(['w',t('nSanook')]);
   {const tw=twinOf(v.s);if(tw&&tw[0]==='unk')notes.push(['w',t('nTwinUnk',tw[3])]);else if(tw&&tw[3])notes.push(['',tw[3]]);}
   if(typeof ROUTE!=='undefined'&&ROUTE[v.s])notes.push(['',t('nRoute')]);
+  if(typeof ROOMX!=='undefined'&&ROOMX[v.s]){const x=ROOMX[v.s];notes.push(['',t('nBedConf',x.src)]);if(x.xb)notes.push(['',x.xb]);if(x.n)notes.push(['',x.n]);}
   if(q.missing) notes.push(['w',t('nMissing')]);
   else if(q.est) notes.push(['',t('nDynPub',v.dph?money(v.dph[0])+'–'+money(v.dph[1]):'')]);
   else if(q.dynamic) notes.push(['',t('nDyn',q.br,money(q.lo),moneyN(q.hi))]);
