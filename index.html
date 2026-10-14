@@ -557,7 +557,7 @@ zh:{
   nRoute:'車程用 Google 地圖路線計算：前一個數字是平日上午 10 點，後一個是週五下午 5 點尖峰；步行超過 1.2 公里或 15 分鐘標為不建議（峇里島多數路段沒有人行道）',
   nMissing:'這段日期 Villa Finder 還沒開價',
   nDyn:(br,lo,hi)=>'這間每天價格不同，'+br+' 房在這段月份每晚約 '+lo+'–'+hi+'，報價前請回後台查',
-  nTotal:(br,n,tot,seasons)=>`${br} 房，${n} 晚共 ${tot}（季節：${seasons}）`, nVfTotal:(br,n,tot)=>`${br} 房，${n} 晚共 ${tot}（Villa Finder 即時報價，已含促銷與固定費用）`,
+  nTotal:(br,n,tot,seasons)=>`${br} 房，${n} 晚共 ${tot}（季節：${seasons}）`, nVfTotal:(br,n,tot,st)=>`${br} 房，${n} 晚共 ${tot}（Villa Finder ${st?'報價，同事近 7 天查得':'即時報價'}，已含促銷與固定費用）`,
   nMinStay:n=>`入住當天的最少入住晚數：${n} 晚（天數不足可請 Villa Finder 個案放寬，旺季較難）`, nConflict:s=>'與既有訂房衝突：'+s,
   nNoIcal:'這間沒有 iCal 房況連結，需直接問 Villa Finder 有沒有空房', nLong:'行事曆長期封房，可能已暫停接單，下訂前先確認',
   nNib:'後台沒有列出這間的營業登記號碼（NIB），下訂前可請 Villa Finder 確認是否合法經營',
@@ -650,7 +650,7 @@ en:{
   nRoute:'Drive times are from Google Maps routing: the first figure is a weekday at 10 am, the second is Friday 5 pm rush hour. Walks over 1.2 km or 15 min are marked not recommended (most roads in Bali have no sidewalks)',
   nMissing:'Villa Finder has not released rates for these dates yet',
   nDyn:(br,lo,hi)=>'Rates vary by day: '+br+' BR is about '+lo+'–'+hi+' per night in these months; check the portal before quoting',
-  nTotal:(br,n,tot,seasons)=>`${br} BR, ${n} night${n===1?'':'s'}: ${tot} total (season: ${seasons})`, nVfTotal:(br,n,tot)=>`${br} BR, ${n} night${n===1?'':'s'}: ${tot} total (Villa Finder live quote, promotions and fixed fees included)`,
+  nTotal:(br,n,tot,seasons)=>`${br} BR, ${n} night${n===1?'':'s'}: ${tot} total (season: ${seasons})`, nVfTotal:(br,n,tot,st)=>`${br} BR, ${n} night${n===1?'':'s'}: ${tot} total (Villa Finder ${st?'quote fetched by a colleague in the last 7 days':'live quote'}, promotions and fixed fees included)`,
   nMinStay:n=>`Minimum stay on check-in date: ${n} nights (shorter stays can be requested from Villa Finder case by case; harder in peak season)`, nConflict:s=>'Conflicts with existing bookings: '+s,
   nNoIcal:'No iCal availability link for this villa; ask Villa Finder directly about availability', nLong:'Calendar shows a long-term block; the villa may have stopped taking bookings, confirm before booking',
   nNib:'The portal does not list a business registration number (NIB) for this villa; ask Villa Finder to confirm it is licensed before booking',
@@ -1087,7 +1087,7 @@ function fillBody(b,x,ciD,coD,nights){
   if(q.missing) notes.push(['w',t('nMissing')]);
   else if(q.est) notes.push(['',t('nDynPub',v.dph?money(v.dph[0])+'–'+money(v.dph[1]):'')]);
   else if(q.dynamic) notes.push(['',t('nDyn',q.br,money(q.lo),moneyN(q.hi))]);
-  else if(q.vf) notes.push(['',t('nVfTotal',q.br,nights,money(q.total))]);
+  else if(q.vf) notes.push(['',t('nVfTotal',q.br,nights,money(q.total),q.vf&&q.vf.stored)]);
   else notes.push(['',t('nTotal',q.br,nights,money(q.total),(q.seasons||[]).map(SEASON_OF).join(t('sep')))]);
   if(q.minStay) notes.push([q.short?'w':'',t('nMinStay',q.minStay)]);
   if(cf.length) notes.push(['w',t('nConflict',cf.map(([s,e])=>fmt(k2d(s))+'–'+fmt(k2d(e))).join(t('sep')))]);
