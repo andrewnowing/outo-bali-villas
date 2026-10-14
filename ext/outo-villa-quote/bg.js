@@ -25,7 +25,12 @@ async function getToken() {
 async function share(from, to, res) {
   const k = await getToken(); if (!k) return 'notoken';
   const q = {};
-  for (const [s, r] of Object.entries(res)) if (r && r.o) q[`${s}|${from}|${to}`] = { av: r.av, o: r.o, at: r.at };
+  for (const [s, r] of Object.entries(res)) {
+    if (!r || !r.o) continue;
+    // 同業價（travelAgentPrice）不上傳：共享檔放在公開的 GitHub data 分支
+    const o = {}; for (const [b, a] of Object.entries(r.o)) o[b] = [a[0], a[1], a[2], null, a[4]];
+    q[`${s}|${from}|${to}`] = { av: r.av, o, at: r.at };
+  }
   if (!Object.keys(q).length) return 'ok';
   try {
     const r = await fetch(SHARE_URL, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ k, q }) });
