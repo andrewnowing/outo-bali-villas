@@ -25,6 +25,8 @@ function clean(q) {
       const num = x => (x == null || x === '' ? null : (Number.isFinite(+x) ? Math.round(+x * 100) / 100 : null));
       o[b] = [num(a[0]), num(a[1]), num(a[2]) || 0, null, num(a[4])]; // 同業價一律不存（公開 repo）
     }
+    // 幣別防呆：報價一律應是美元；任何金額超過 30,000 視為誤抓到印尼盾，整筆丟掉
+    if (Object.values(o).some(a => a.some(x => x != null && x > 30000))) continue;
     const av = v.av === 'unavailable' ? 'unavailable' : (v.av === 'available' ? 'available' : '');
     if (!Object.keys(o).length && av !== 'unavailable') continue;
     out[k] = { av, o, at: Math.round(at) }; n++;
