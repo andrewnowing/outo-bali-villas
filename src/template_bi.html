@@ -935,9 +935,20 @@ const VFS={by:{},at:''};const VFS_URL='https://raw.githubusercontent.com/andrewn
 const vfIso=d=>'20'+d.slice(0,2)+'-'+d.slice(2,4)+'-'+d.slice(4,6);
 const vfAtTxt=at=>new Date(at).toLocaleString(LOC(),{month:'numeric',day:'numeric',hour:'2-digit',minute:'2-digit'});
 function vfSamples(slug){const now=Date.now(),out=[];for(const k in VFS.by){if(!k.startsWith(slug+'|'))continue;const x=VFS.by[k];if(!x||!x.o||now-x.at>VFS_TTL)continue;const p=k.split('|');if(p.length!==3)continue;const a=fromInput(p[1]),b=fromInput(p[2]);const n=Math.round((b-a)/864e5);if(!(n>0))continue;out.push({x,ciD:a,n});}return out;}
+function vfRowOf(v,d){const k=key(d);return v.r.find(r=>r[0]<=k&&k<r[1])||null;}
 function vfDerive(v,q,ciD,nights,minBr){if(!q||q.missing)return;const smp=vfSamples(v.s);if(!smp.length)return;
-  if(v.r&&v.r.length&&!q.dynamic){const br=q.br;const cand=smp.map(sm=>{const o=sm.x.o[br];if(!o||o[0]==null||o[0]<=0)return null;const tq=quote(v,sm.ciD,sm.n,br);if(!tq||tq.missing||tq.dynamic||tq.br!==br)return null;const same=(tq.seasons||[]).join()===(q.seasons||[]).join();return {sm,o,fee:o[0]-tq.total,same};}).filter(Boolean);if(!cand.length)return;cand.sort((a,b)=>(b.same-a.same)||(b.sm.x.at-a.sm.x.at));const c=cand[0];if(Math.abs(c.fee)>Math.max(60,q.total*0.5))return;const orig=Math.round((q.total+c.fee)*100)/100;let rate=0;if(c.same&&c.o[2]>0&&c.o[1]!=null)rate=c.o[2];else{const pc=promoCalc(v,q,ciD,nights);if(pc&&pc.best)rate=pc.best.r.pct;}const disc=Math.round(orig*(100-rate))/100;if(!(disc>0))return;
-    q.vf={total:disc,orig,rate,agent:null,all:null,at:c.sm.x.at,stored:true,est:'fee',atTxt:vfAtTxt(c.sm.x.at),how:t('vfEstFee',vfAtTxt(c.sm.x.at))};q.total=disc;q.per=disc/nights;q.est=false;q.missing=false;return;}
+  if(v.r&&v.r.length&&!q.dynamic){const br=q.br;const idx=v.b.indexOf(br);if(idx<0)return;
+    // 每筆樣本：VF 原價 vs 價目表；同一列（季節區間）內的樣本可直接給出該列的真實每晚價
+    const cand=[];for(const sm of smp){const o=sm.x.o[br];if(!o||o[0]==null||o[0]<=0)continue;const row=vfRowOf(v,sm.ciD);if(!row||!(key(addDays(sm.ciD,sm.n-1))<row[1]))continue;const T=row[4+idx]*sm.n;if(!(T>0))continue;cand.push({sm,o,row,T,ratio:o[0]/T});}
+    if(!cand.length)return;
+    const med=a=>{const b=a.slice().sort((x,y)=>x-y);return b[Math.floor(b.length/2)];};
+    // 固定費：多數別墅 VF 原價＝價目表×晚數（比率 1）；比率 >1 的差額是固定費；比率 <1 的是價目表四捨五入造成，當成每晚折算係數
+    const ratios=cand.map(c=>c.ratio);let fee=0,coef=1;if(Math.min(...ratios)>=0.999){fee=med(cand.map(c=>c.o[0]-c.T));}else{coef=med(ratios.filter(r=>r<0.999).length?ratios.filter(r=>r<0.999):ratios);}
+    let orig=0,sameSeason=null;for(let i=0;i<nights;i++){const d=addDays(ciD,i);const row=vfRowOf(v,d);if(!row)return;const c=cand.find(c=>c.row===row);if(c){orig+=(c.o[0]-fee)/c.sm.n;if(!sameSeason)sameSeason=c;}else orig+=row[4+idx]*coef;}
+    orig=Math.round((orig+fee)*100)/100;if(Math.abs(orig-q.total)>Math.max(80,q.total*0.5))return;
+    let rate=0;const pc=promoCalc(v,q,ciD,nights);if(pc&&pc.best)rate=pc.best.r.pct;else if(!pc&&sameSeason&&sameSeason.o[2]>0&&sameSeason.o[1]!=null)rate=sameSeason.o[2];/* 頁面有看得懂的促銷規則就照規則算（規則會看入住日與提前天數）；只有規則看不懂（如 Special rate）才借用同季樣本的折扣 */
+    const disc=Math.round(orig*(100-rate))/100;if(!(disc>0))return;const base=sameSeason||cand.slice().sort((a,b)=>b.sm.x.at-a.sm.x.at)[0];
+    q.vf={total:disc,orig,rate,agent:null,all:null,at:base.sm.x.at,stored:true,est:'fee',atTxt:vfAtTxt(base.sm.x.at),how:t('vfEstFee',vfAtTxt(base.sm.x.at))};q.total=disc;q.per=disc/nights;q.est=false;q.missing=false;return;}
   const cfgs=[...new Set(smp.flatMap(sm=>Object.keys(sm.x.o).map(Number)))].sort((a,b)=>a-b);const br=cfgs.includes(q.br)?q.br:cfgs.find(b=>b>=minBr);if(br==null)return;const cand=smp.filter(sm=>sm.x.o[br]&&(sm.x.o[br][1]??sm.x.o[br][0])>0).map(sm=>({sm,d:Math.abs(sm.ciD-ciD)/864e5})).filter(c=>c.d<=20).sort((a,b)=>a.d-b.d||b.sm.x.at-a.sm.x.at);if(!cand.length)return;const c=cand[0];const o=c.sm.x.o[br];const per=(o[1]??o[0])/c.sm.n;const disc=Math.round(per*nights*100)/100;
     q.vf={total:disc,orig:Math.round(o[0]/c.sm.n*nights*100)/100,rate:o[2]||0,agent:null,all:null,at:c.sm.x.at,stored:true,est:'dyn',atTxt:vfAtTxt(c.sm.x.at),how:t('vfEstDyn',vfAtTxt(c.sm.x.at),fmt(c.sm.ciD))};q.br=br;q.total=disc;q.per=per;q.est=false;q.dynamic=false;q.missing=false;}
 const vfStored=(s,ci,co)=>{const x=VFS.by[s+'|'+vfIso(ci)+'|'+vfIso(co)];return x&&Date.now()-x.at<VFS_TTL?x:null;};
