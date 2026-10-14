@@ -4,7 +4,7 @@
 // POST /api/quotes  body: { k: <OUTO_QUOTE_TOKEN>, q: { "slug|YYYY-MM-DD|YYYY-MM-DD": { av, o, at } } }
 // 需要 Vercel 環境變數：OUTO_QUOTE_TOKEN（擴充功能上傳金鑰）、GH_DATA_TOKEN（可寫此 repo contents 的 fine-grained token）。
 const REPO = 'andrewnowing/outo-bali-villas', BRANCH = 'data', FILE = 'vfquotes.json';
-const TTL = 7 * 86400e3, MAX_IN = 300, MAX_BYTES = 1.5e6;
+const TTL = 7 * 86400e3, MAX_IN = 300, MAX_BYTES = 2.5e6;
 const KEY_RE = /^[a-z0-9-]{2,80}\|\d{4}-\d{2}-\d{2}\|\d{4}-\d{2}-\d{2}$/;
 
 function cors(res) {
