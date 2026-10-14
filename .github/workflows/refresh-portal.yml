@@ -12,7 +12,7 @@ jobs:
       - run: pip install -q beautifulsoup4
       - name: Start from the latest portalrates.js on the data branch
         run: |
-          if git fetch --depth=1 origin data:refs/remotes/origin/data; then
+          if git fetch --depth=1 origin +data:refs/remotes/origin/data; then
             git show refs/remotes/origin/data:portalrates.js > portalrates.js 2>/dev/null || true
           fi
       - name: Log in to the Distribution Portal and parse rate tables
@@ -29,7 +29,7 @@ jobs:
         run: |
           git config --global user.name "outo-bot"; git config --global user.email "andrew@outo.co"
           cp portalrates.js /tmp/portalrates.new.js
-          git fetch --depth=1 origin data:refs/remotes/origin/data || true
+          git fetch --depth=1 origin +data:refs/remotes/origin/data || true
           rm -rf /tmp/data-wt; git worktree prune; git worktree add --detach /tmp/data-wt refs/remotes/origin/data
           cp /tmp/portalrates.new.js /tmp/data-wt/portalrates.js
           cd /tmp/data-wt
