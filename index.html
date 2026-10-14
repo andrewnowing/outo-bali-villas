@@ -974,8 +974,8 @@ function vfqRequest(items,ci,co){if(PUB||SHARE||QUOTE)return;const n=$('vfqNote'
 const PROBE={id:Math.random().toString(36).slice(2),plan:null,sent:new Set(),busy:false,n:0,seq:0,wait:{}};
 function probePlan(){const today=drToday(),start=addDays(today,3),lim=addDays(today,365);const tasks=[];const grid=[];for(let m=0;m<13;m++){grid.push(new Date(Date.UTC(today.getUTCFullYear(),today.getUTCMonth()+m,10)));}
   for(const v of VILLAS){if(!v.s)continue;const pub=isPub(v);
-    if(v.r&&v.r.length){for(const r of v.r){const a=k2d(r[0]);const lo=a<start?start:a;if(lo>lim)continue;if(!(key(addDays(lo,1))<r[1]))continue;let d=grid.find(g=>g>=lo&&key(addDays(g,1))<r[1]);if(!d)d=lo;tasks.push({s:v.s,from:toInput(d),to:toInput(addDays(d,2)),pri:pub?0:2});}}
-    else{grid.forEach((d,i)=>{if(d<start||d>lim)return;tasks.push({s:v.s,from:toInput(d),to:toInput(addDays(d,2)),pri:(pub?1:3)+(i>=6?1:0)});});}}
+    if(v.r&&v.r.length){for(const r of v.r){const a=k2d(r[0]);const lo=a<start?start:a;if(lo>lim)continue;if(!(key(addDays(lo,1))<r[1]))continue;let d=grid.find(g=>g>=lo&&key(addDays(g,1))<r[1]);if(!d)d=lo;tasks.push({s:v.s,from:toInput(d),to:toInput(addDays(d,2)),pri:Math.max(0,Math.round((d-today)/2592e6))+(pub?0:20)});}}
+    else{grid.forEach((d,i)=>{if(d<start||d>lim)return;tasks.push({s:v.s,from:toInput(d),to:toInput(addDays(d,2)),pri:i+(pub?0:20)});});}}
   return tasks;}
 function probeStatus(left){const n=$('probeNote');if(!n)return;n.hidden=false;n.className='fresh';n.textContent=left===0?t('probeDone'):t('probeNote',PROBE.n,left);}
 async function probeTick(){if(PUB||SHARE||QUOTE||!HOSTED)return;if(!vfqExt()||document.documentElement.dataset.outoQuoteShare!=='1')return;if(PROBE.busy||vfqPending)return;
