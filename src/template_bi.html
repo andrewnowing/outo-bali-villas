@@ -319,6 +319,13 @@ button:disabled{opacity:.45;cursor:not-allowed;transform:none;box-shadow:none}
 .help ul{margin:0;padding-left:22px;font-size:14px;line-height:1.8;color:var(--ink2)}
 .help p{margin:0;font-size:14px;line-height:1.7;color:var(--ink2)}
 #concBody{display:grid;gap:6px}
+.concG{border:1px solid var(--line);border-radius:var(--r-md);padding:6px 12px}
+.concG summary{cursor:pointer;font-size:14px;font-weight:600;color:var(--ink)}
+.concG summary small{font-weight:400;color:var(--muted)}
+.concTbl{width:100%;border-collapse:collapse;font-size:13px;margin-top:6px}
+.concTbl th,.concTbl td{padding:4px 6px;border-top:1px solid var(--line);text-align:left}
+.concTbl .n{text-align:right;white-space:nowrap}
+.concSrc{font-size:12px;color:var(--muted);margin:0}
 .help .tip{font-size:13px;color:var(--ink2);background:var(--surface-warm);border:1px solid var(--line);border-radius:var(--r-md);padding:10px 14px;line-height:1.7}
 .histNote{margin:0;font-size:13px;color:var(--ink2)}
 .histTbl{width:100%;border-collapse:collapse;font-size:13px}
@@ -448,6 +455,7 @@ button:disabled{opacity:.45;cursor:not-allowed;transform:none;box-shadow:none}
 /*PHOTOS*/
 /*EXTRA*/
 /*ROOMS*/
+/*CONC*/
 // 以 Villa Finder 官網的各房床型（ROOMS）為準，覆寫 Twin 判定與房型篩選旗標
 (function(){if(typeof ROOMS==='undefined')return;for(const s in ROOMS){const c=ROOMS[s];const unk=c[5]>0;const f=x=>x>0?1:(unk?-1:0);
   if(typeof BEDS!=='undefined'){const b=BEDS[s]||[-1,-1,-1,-1];BEDS[s]=[f(c[1]+c[2]),f(c[0]+c[3]+c[4]),f(c[4]),b[3]];}
@@ -465,7 +473,7 @@ zh:{
   title:'Outo 峇里島別墅空房查詢',
   sub:'Villa Finder 同業房源 118 間 · 價格為對外售價（美金、含稅），不是 Outo 成本價',
   loading:'房況資料載入中', langGroup:'語言', helpBtn:'操作說明', histBtn:'房況更新歷史紀錄', concBtn:'Villa Finder 禮賓服務', concT:'Villa Finder 禮賓服務（可幫客人加購）', close:'關閉',
-  concHtml:`<p>Villa Finder 禮賓團隊可代為安排下列服務，費用另計。Tour、機場接送、包車由 Outo 自己安排，不列在這裡。</p><h4>特別安排</h4><ul><li>派對與活動</li><li>浪漫晚餐、漂浮早餐、床飾佈置</li><li>驚喜安排（生日、求婚、紀念日）</li><li>瑜伽課</li><li>其他需求都可以提出，禮賓團隊會找方案</li></ul><h4>入住前準備</h4><ul><li>代購食材與日用品</li><li>嬰兒椅、嬰兒床、推車</li><li>兒童安全防護（圍欄、防撞）</li></ul><h4>入住期間</h4><ul><li>私廚與 BBQ（含預先備餐）</li><li>別墅內按摩</li><li>Spa 與美容美髮</li><li>餐廳訂位</li><li>商務支援（列印、會議）</li><li>保母／托育</li></ul><h4>怎麼預訂</h4><ul><li>所有服務至少入住前 2 天提出，由 Outo CS 轉給 Villa Finder 禮賓團隊（服務時間 8:00–22:00，峇里島時間）</li><li>深夜緊急事項撥 Villa Finder 24 小時專線 +62-21-50890816</li><li>價格依別墅與項目而定，報價時先向 Villa Finder 確認</li><li>來源：<a href="https://www.villa-finder.com/en/concierge" target="_blank" rel="noopener">villa-finder.com/en/concierge</a>（2026/10/14 查）與 2026/10/14 會議</li></ul>`,
+  concHtml:`<p>Villa Finder 禮賓團隊可代為安排下列服務，價格依 Villa Finder 線上商店（shop.villa-finder.com）為準，幣別為印尼盾。Tour、機場接送、包車、景點門票由 Outo 自己安排，不列在這裡。</p><h4>怎麼預訂</h4><ul><li>至少入住前 2 天提出，由 Outo CS 轉給 Villa Finder 禮賓團隊（8:00–22:00 峇里島時間）；派對、浪漫晚餐、驚喜佈置、床飾、漂浮早餐等客製安排也走同一管道，價格另詢</li><li>深夜緊急事項撥 Villa Finder 24 小時專線 +62-21-50890816</li><li>標「起」的項目依時數、人數或品牌有不同價格，點名稱可看細項</li></ul>`, concSrc:(d)=>`價格來源：shop.villa-finder.com（${d} 查），可能變動，報價前再確認`, concPriceCol:'價格（IDR）',
   freshRates:x=>`・官網價格核對 ${x}`, freshPortal:x=>`・同業價格核對 ${x}`,
   helpT:'怎麼查房況、怎麼預訂', histT:'房況更新歷史紀錄', histNote:'兩種房源都每 5 分鐘更新一次：同業後台 118 間從 Villa Finder 的 iCal 行事曆同步，官網直售 1,019 間從 Villa Finder 公開頁面抓已訂日期。兩邊各自排程，同一輪的更新合併成一列，時間取較晚的那一個（台灣時間）。', hPortalCol:'同業後台 118 間', hPubCol:'官網直售 1,019 間', hCell:(f,c,e)=>`${f==null?'—':f+' 間'}${c==null?'':'・變動 '+c}${e?'・失敗 '+e:''}`, hNoRun:'—', freshBoth:(a,b)=>`房況更新：同業後台 ${a}｜官網直售 ${b}（每 5 分鐘自動同步）`, hSrcPortal:'同業後台', hSrcPub:'官網直售', freshPub:(d)=>`；官網直售房況 ${d}`, hTime:'更新時間', hFeeds:'同步間數', hChanged:'房況有變動', hErr:'失敗', histEmpty:'還沒有紀錄（下一次同步後會出現）', histNow:'目前頁面使用的版本', hUnk:'—',
   helpHtml:`<ol>
@@ -558,7 +566,7 @@ en:{
   title:'Outo Bali Villa Availability',
   sub:"118 Villa Finder partner listings · Prices are public selling prices (USD, tax included), not Outo's cost",
   loading:'Loading availability data', langGroup:'Language', helpBtn:'How to use', histBtn:'Availability update log', concBtn:'Villa Finder concierge', concT:'Villa Finder concierge (bookable add-ons)', close:'Close',
-  concHtml:`<p>The Villa Finder concierge team can arrange the services below at extra cost. Tours, airport transfers and chauffeured cars are arranged by Outo and are not listed here.</p><h4>Special requests</h4><ul><li>Parties & events</li><li>Romantic dinner, floating breakfast, bed decoration</li><li>Surprise occasions (birthday, proposal, anniversary)</li><li>Yoga sessions</li><li>Anything else: just ask</li></ul><h4>Before the stay</h4><ul><li>Grocery shopping</li><li>Baby chairs, cots, strollers</li><li>Baby / child proofing</li></ul><h4>During the stay</h4><ul><li>Personal chef & BBQ (incl. pre-prepared meals)</li><li>In-villa massage</li><li>Spa and salon services</li><li>Restaurant reservations</li><li>Business support services</li><li>Childcare services</li></ul><h4>How to book</h4><ul><li>Request at least 2 days before arrival; Outo CS passes it to the Villa Finder concierge team (8:00–22:00 Bali time)</li><li>Late-night emergencies: Villa Finder 24h line +62-21-50890816</li><li>Prices vary by villa and item; confirm with Villa Finder before quoting</li><li>Source: <a href="https://www.villa-finder.com/en/concierge" target="_blank" rel="noopener">villa-finder.com/en/concierge</a> (checked 2026-10-14) and the 2026-10-14 meeting</li></ul>`,
+  concHtml:`<p>The Villa Finder concierge team can arrange the services below; prices follow the Villa Finder online shop (shop.villa-finder.com), in Indonesian rupiah. Tours, airport transfers, chauffeured cars and attraction tickets are arranged by Outo and are not listed here.</p><h4>How to book</h4><ul><li>Request at least 2 days before arrival; Outo CS passes it to the Villa Finder concierge team (8:00–22:00 Bali time). Parties, romantic dinners, surprise set-ups, bed decoration and floating breakfast go through the same channel, priced on request</li><li>Late-night emergencies: Villa Finder 24h line +62-21-50890816</li><li>Items marked "from" vary by duration, headcount or brand; click the name for details</li></ul>`, concSrc:(d)=>`Prices from shop.villa-finder.com (checked ${d}); subject to change, confirm before quoting`, concPriceCol:'Price (IDR)',
   freshRates:x=>` · public-site prices checked ${x}`, freshPortal:x=>` · portal prices checked ${x}`,
   helpT:'How to search and book', histT:'Availability update log', histNote:'Both sources update every 5 minutes: the 118 partner-portal villas from Villa Finder iCal calendars, the 1,019 published-rate villas from Villa Finder public pages. The two schedules run independently; updates from the same cycle are merged into one row, shown at the later of the two times (Taiwan time).', hPortalCol:'Partner portal (118)', hPubCol:'Published rate (1,019)', hCell:(f,c,e)=>`${f==null?'—':f+' villas'}${c==null?'':' · changed '+c}${e?' · failed '+e:''}`, hNoRun:'—', freshBoth:(a,b)=>`Availability: partner portal ${a} | published rate ${b} (auto-sync every 5 min)`, hSrcPortal:'Partner portal', hSrcPub:'Published rate', freshPub:(d)=>`; published-rate villas ${d}`, hTime:'Updated at', hFeeds:'Feeds synced', hChanged:'Changed', hErr:'Failed', histEmpty:'No entries yet (they appear after the next sync)', histNow:'version this page is using', hUnk:'—',
   helpHtml:`<ol>
@@ -1129,7 +1137,8 @@ $('bClose').addEventListener('click',()=>{$('dlg').hidden=true;});$('waClose').a
 document.querySelectorAll('[data-close]').forEach(b=>b.addEventListener('click',()=>{$(b.dataset.close).hidden=true;}));
 ['helpDlg','histDlg'].forEach(id=>$(id).addEventListener('click',e=>{if(e.target.id===id)$(id).hidden=true;}));
 $('helpBtn').addEventListener('click',()=>{$('helpBody').innerHTML=t('helpHtml');$('helpDlg').hidden=false;});
-$('concBtn').addEventListener('click',()=>{$('concBody').innerHTML=t('concHtml');$('concDlg').hidden=false;});
+function concList(){if(typeof CONC==='undefined')return '';const rp=n=>'Rp '+Math.round(n).toLocaleString('en-US');const zh=LANG!=='en';return CONC.groups.map(g=>`<details class="concG"><summary>${esc(zh?g.zh:g.en)} <small>(${g.items.length})</small></summary><div class="tw"><table class="concTbl"><thead><tr><th>${esc(zh?'項目':'Item')}</th><th class="n">${esc(t('concPriceCol'))}</th></tr></thead><tbody>${g.items.map(i=>`<tr><td><a href="https://shop.villa-finder.com/products/${esc(i[1])}" target="_blank" rel="noopener">${esc(i[0])}</a></td><td class="n">${i[2]==null?'—':(i[3]>i[2]?rp(i[2])+(zh?' 起':' from'):rp(i[2]))}</td></tr>`).join('')}</tbody></table></div></details>`).join('')+`<p class="concSrc">${esc(t('concSrc',CONC.at))}</p>`;}
+$('concBtn').addEventListener('click',()=>{$('concBody').innerHTML=t('concHtml')+concList();$('concDlg').hidden=false;});
 let localHist=[];try{localHist=JSON.parse(localStorage.getItem('vf-hist')||'[]');}catch(e){}
 function noteUpdate(){try{if(!avail.updatedAt)return;if(!localHist.some(h=>h.t===avail.updatedAt)){localHist.unshift({t:avail.updatedAt,src:avail.src||'snap'});if(localHist.length>400)localHist.length=400;localStorage.setItem('vf-hist',JSON.stringify(localHist));}}catch(e){}}
 function renderHist(){const tb=$('histBody');const seen=new Set();const por=[];
