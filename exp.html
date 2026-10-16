@@ -706,7 +706,7 @@ function detHtml(x){
   const D=(window.EXPD||{})[x.id];if(!D)return window.EXPD?'<div class="hint">沒有更多資料</div>':'<div class="hint">載入中…</div>';
   // photo
   let ph='';
-  const gq=`https://www.google.com/search?tbm=isch&q=${encodeURIComponent((D.map||x.en)+' '+(['Bali','Phu Quoc','Ho Chi Minh','Chiang Mai','Bangkok','Da Nang'][x.d]))}`;
+  const gq=`https://www.google.com/search?tbm=isch&q=${encodeURIComponent((D.map||x.en)+' '+(['Bali','Phu Quoc','Ho Chi Minh','Chiang Mai','Bangkok','Da Nang','Hanoi'][x.d]))}`;
   if(D.ph){const [f,art,lic,demo]=D.ph;ph=`<div class="hint">${demo?'卡片照片為示意照，非該地點或業者現場。':''}照片：<a href="https://commons.wikimedia.org/wiki/${encodeURI(f.replace(/ /g,'_'))}" target="_blank" rel="noopener">${esc(art)}</a>，${esc(lic)}，Wikimedia Commons · <a href="${gq}" target="_blank" rel="noopener">更多 Google 圖片</a></div>`;}
   else if(D.phx){const [src,page,demo]=D.phx;ph=`<div class="hint">${demo?'卡片照片為示意照。':''}照片來源：${page?lk(src,page):esc(src)}，僅供內部參考 · <a href="${gq}" target="_blank" rel="noopener">更多 Google 圖片</a></div>`;}
   else ph=`<div class="hint"><a href="${gq}" target="_blank" rel="noopener">在 Google 圖片看照片</a></div>`;
@@ -785,7 +785,7 @@ function showTab(t){document.querySelector('.mapwrap').classList.toggle('show-pl
 
 function setMsg(h,err){$('msg').innerHTML=h;$('msg').classList.toggle('err',!!err);}
 // ---- 行程草稿（多天）: days[] each with ordered stops; nights[] lodging between days ----
-const CARDEF=[1500,1800,1800,2000,2600,2000];// 包車／日預設（台幣，推估，可改）：峇里島、富國島、胡志明、清邁清萊、曼谷周邊、中越
+const CARDEF=[1500,1800,1800,2000,2600,2000,2200];// 包車／日預設（台幣，推估，可改）：峇里島、富國島、胡志明、清邁清萊、曼谷周邊、中越
 const PKEY='exp-plans-v1',DKEY='exp-draft-v1',WD=['一','二','三','四','五','六','日'],USD_TWD=32;
 let STOPS=[];let adding=true;let LEGS=[];let dirty=false;let CUR=0;
 const newDay=()=>({start:'08:00',end:'20:00',stops:[]});
