@@ -3,7 +3,7 @@
 <title>Outo 體驗元件地圖</title>
 <link rel="icon" href="favicon.ico?v=5" sizes="any"><link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png?v=5"><link rel="apple-touch-icon" href="favicon.png?v=5">
 <script src="config.js"></script>
-<script src="exp_data.js?v=26"></script>
+<script src="exp_data.js?v=27"></script>
 <style>
 @font-face{font-family:"Fields Display";src:url("fonts/Fields-Display-Semi-Bold.woff2") format("woff2");font-weight:600;font-display:swap}
 @font-face{font-family:"Fields";src:url("fonts/Fields-Regular.woff2") format("woff2");font-weight:400;font-display:swap}
@@ -170,6 +170,7 @@ input{font:inherit;font-weight:500;color:var(--ink);background:var(--surface);bo
 .chip.warn{background:var(--clay-100);color:var(--clay-600)}
 .chip.rg{background:#FCE4EC;color:#880E4F;font-weight:600}
 .chip.nw{background:#E3F2FD;color:#0D47A1;font-weight:600}
+.chip.om{background:#E8F5E9;color:#1B5E20;font-weight:600} .chip.om1{background:#F1F8E9;color:#33691E} .chip.pt{background:#FFF8E1;color:#8D6E00;font-weight:600} .chip.nt{background:#FBE9E7;color:#BF360C;font-weight:600} .chip.cl{background:#B71C1C;color:#fff;font-weight:700} .chip.dm{background:var(--paper-200);color:var(--ink2);border:1px solid #C7BFB3}
 .rsb table{width:100%;border-collapse:collapse;font-size:13px;margin:6px 0}.rsb td,.rsb th{border-bottom:1px solid var(--line,#e6e1d6);padding:5px 6px;text-align:left;vertical-align:top}.rsb th{color:var(--muted);font-weight:500;width:9em}.rsb ol{margin:4px 0 0 1.2em;padding:0}
 .idesc{font-size:13.5px;color:var(--ink2);line-height:1.7}
 .imeta{font-size:12.5px;color:var(--muted)}
@@ -250,8 +251,8 @@ input{font:inherit;font-weight:500;color:var(--ink);background:var(--surface);bo
   .qrow{order:-1}
   .qrow .lbl{display:none}
   .qrow .q{flex-basis:100%;height:42px}
-  #fDest,#fReg,#fCat,#fSeg,#fOt,#fPri,#fOff,#fVr{flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none;-webkit-overflow-scrolling:touch;gap:6px;-webkit-mask-image:linear-gradient(90deg,#000 calc(100% - 28px),transparent);mask-image:linear-gradient(90deg,#000 calc(100% - 28px),transparent);padding-right:28px}
-  #fDest::-webkit-scrollbar,#fReg::-webkit-scrollbar,#fCat::-webkit-scrollbar,#fSeg::-webkit-scrollbar,#fPri::-webkit-scrollbar,#fOt::-webkit-scrollbar,#fOff::-webkit-scrollbar{display:none}
+  #fDest,#fReg,#fCat,#fSeg,#fOt,#fPri,#fOff,#fVr,#fOm,#fSt,#fDm{flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none;-webkit-overflow-scrolling:touch;gap:6px;-webkit-mask-image:linear-gradient(90deg,#000 calc(100% - 28px),transparent);mask-image:linear-gradient(90deg,#000 calc(100% - 28px),transparent);padding-right:28px}
+  #fDest::-webkit-scrollbar,#fReg::-webkit-scrollbar,#fCat::-webkit-scrollbar,#fSeg::-webkit-scrollbar,#fPri::-webkit-scrollbar,#fOt::-webkit-scrollbar,#fOff::-webkit-scrollbar,#fOm::-webkit-scrollbar,#fSt::-webkit-scrollbar,#fDm::-webkit-scrollbar{display:none}
   .filters .frow>button{flex:none;white-space:nowrap;height:32px;padding:0 11px}
   .filters .lbl{min-width:36px;flex:none;letter-spacing:.08em}
   .budget{margin-inline:16px;padding-inline:0}
@@ -308,7 +309,7 @@ input{font:inherit;font-weight:500;color:var(--ink);background:var(--surface);bo
   .ftog .car{transition:transform var(--dur) var(--ease)}
   .fopen .ftog .car{transform:rotate(180deg)}
   .fopen .ftog .hint{visibility:hidden}
-  .filters:not(.fopen) #fReg,.filters:not(.fopen) #fCat,.filters:not(.fopen) #fSeg,.filters:not(.fopen) #fOt,.filters:not(.fopen) #fPri,.filters:not(.fopen) #priHint,.filters:not(.fopen) #fOff,.filters:not(.fopen) #fVr,.filters:not(.fopen) #budgetBox{display:none}
+  .filters:not(.fopen) #fReg,.filters:not(.fopen) #fCat,.filters:not(.fopen) #fSeg,.filters:not(.fopen) #fOt,.filters:not(.fopen) #fPri,.filters:not(.fopen) #priHint,.filters:not(.fopen) #fOff,.filters:not(.fopen) #fVr,.filters:not(.fopen) #fOm,.filters:not(.fopen) #fSt,.filters:not(.fopen) #fDm,.filters:not(.fopen) #stHint,.filters:not(.fopen) #budgetBox{display:none}
   .budget{border-top:0;padding-top:0}
   .bhead{padding-top:2px}
 }
@@ -531,6 +532,10 @@ input{font:inherit;font-weight:500;color:var(--ink);background:var(--surface);bo
     <details class="hint bnote" id="priHint"><summary>P0／P1／P2 怎麼分</summary>P0：台灣家庭或伴侶客大多會想去、排 5 日行程時優先放進去的主菜，每個目的地大約 20–40 個。P1：加選，客人有興趣或行程有空檔才排，用來補半天或換口味。P2：小眾，特定客群（愛冒險、親子特殊需求、深度文化）才會要，或營運不穩、季節限定、交通不便。同一個體驗換業者不算另一個元件；等級是盤點時依客群需求判斷，不代表品質高低。</details>
     <div class="frow" id="fOff"><span class="lbl">通路</span></div>
     <div class="frow" id="fVr"><span class="lbl">方案</span></div>
+    <div class="frow" id="fOm"><span class="lbl">OMS 對應</span></div>
+    <div class="frow" id="fSt"><span class="lbl">標記</span></div>
+    <div class="frow" id="fDm"><span class="lbl">盤點決定</span></div>
+    <details class="hint bnote" id="stHint"><summary>OMS 對應、標記、盤點決定怎麼來</summary>OMS 對應：「OMS 已有」＝系統比對或產品同事確認 OMS 已有同一元件；「OMS 部分有」＝OMS 只有一部分（例如含在套裝門票或導覽裡）；北越是 2026-10-19 人工對照，其餘依三份盤點表「1 OMS重複比對」與「2 保留移除判斷」。<br>標記：「拼團」＝公開商品是共乘／固定班次；「原拼團・已改私人團」＝2026-10-09 規則改成私人團報價，參考價仍是拼團價；「不適合台灣客群」＝盤點時判定踩到三客群共同紅線（機車載客、單程車程超過 3.5 小時、純酒吧年齡限制、無電梯、無保險、無中文），北越依規則自動標記、待產品確認；「停業」＝業者停業、暫停或整修中。<br>盤點決定：產品同事在「2 保留移除判斷」填的保留／移除／降級為 P2；P2 元件與北越尚未盤點。</details>
     <div class="budget" id="budgetBox"><div class="bhead"><span class="lbl">預算（每人，台幣）</span><b class="bval num" id="bVal"></b></div>
       <div class="rng"><div class="track"><div class="fill" id="rngFill"></div></div><input type="range" id="bLo" min="0" max="16" step="1" value="0" aria-label="最低預算"><input type="range" id="bHi" min="0" max="16" step="1" value="16" aria-label="最高預算"></div>
       <div class="rlbl num"><span id="bMinL"></span><button type="button" class="rreset" id="bReset" hidden>重設</button><span id="bMaxL"></span></div>
@@ -616,8 +621,9 @@ function incDiff(v){const t=(v.l||'')+'；'+(v.df||'');const inc=[],exc=[],add=[
   return parts.join('　');}
 function glabel(x){if(x.pid&&!x.gnb)return 'Google 商家';if(x.ws)return '官網';if(x.so)return '社群官方帳號';if(x.pid)return 'Google 地點';return 'Google 地圖';}
 const CATCOL=['#2F8466','#3E6B8B','#A16A1B','#B85C3B','#E18C00','#7A5C99','#1B1A14','#C2185B','#5B6B7A'];
+const stChip=x=>(x.cl?'<span class="chip cl">停業</span>':'')+(x.om===2?'<span class="chip om">OMS 已有</span>':x.om===1?'<span class="chip om1">OMS 部分有</span>':'')+(x.pt===1?'<span class="chip pt">拼團</span>':x.pt===2?'<span class="chip pt">原拼團・已改私人團</span>':'')+(x.nt?'<span class="chip nt">不適合台灣客群</span>':'')+(x.dm&&x.dm!=='保留'?`<span class="chip dm">盤點：${esc(x.dm)}</span>`:'');
 const rgChip=x=>(x.nw?'<span class="chip nw">2026-10 新增</span>':'')+(x.rg?`<span class="chip">${x.ml==='L'?'日常午餐':'特別晚餐'}</span><span class="chip rg">推薦程度 ${esc(x.rg.replace(/^\d\s*/,''))}</span>${x.ck?'<span class="chip">已電話確認</span>':'<span class="chip warn">網路初篩・未電話確認</span>'}`:'');
-const S={dest:0,dests:new Set([0]),reg:new Set(),cat:new Set(),seg:new Set(),pri:new Set(),ot:new Set(),off:new Set(),vr:new Set(),q:'',limit:40,mode:'DRIVE'};const OPEN=new Set();
+const S={dest:0,dests:new Set([0]),reg:new Set(),cat:new Set(),seg:new Set(),pri:new Set(),ot:new Set(),off:new Set(),vr:new Set(),om:new Set(),st:new Set(),dm:new Set(),q:'',limit:40,mode:'DRIVE'};const OPEN=new Set();
 const BST=[0,100,200,300,500,750,1000,1500,2000,2500,3000,4000,5000,6000,8000,10000,15000];const bud={a:0,b:BST.length-1};
 const budOn=()=>bud.a>0||bud.b<BST.length-1;
 const twFmt=n=>'NT$'+Math.round(n).toLocaleString();
@@ -628,9 +634,9 @@ let origin=null,dest=null,by=null,req=0;
 const BYID={};X.items.forEach(x=>BYID[x.id]=x);
 
 const has=(set,v)=>!set.size||set.has(v);
-function match(x,skip){const q=S.q.trim().toLowerCase();return S.dests.has(x.d)&&(skip==='reg'||has(S.reg,x.d+':'+x.ri))&&(skip==='cat'||has(S.cat,x.c))&&(skip==='seg'||[...S.seg].every(i=>x.s&&x.s[i]===2))&&(skip==='pri'||has(S.pri,x.p))&&(skip==='ot'||has(S.ot,x.ot))&&(skip==='off'||has(S.off,x.off?1:0))&&(skip==='vr'||has(S.vr,x.vr?1:0))&&(skip==='bud'||!budOn()||(x.tw!==undefined&&x.tw>=BST[bud.a]&&(bud.b===BST.length-1||x.tw<=BST[bud.b])))&&(!q||[x.id,x.n,x.en,x.r,x.ty||''].join(' ').toLowerCase().includes(q));}
+function match(x,skip){const q=S.q.trim().toLowerCase();return S.dests.has(x.d)&&(skip==='reg'||has(S.reg,x.d+':'+x.ri))&&(skip==='cat'||has(S.cat,x.c))&&(skip==='seg'||[...S.seg].every(i=>x.s&&x.s[i]===2))&&(skip==='pri'||has(S.pri,x.p))&&(skip==='ot'||has(S.ot,x.ot))&&(skip==='off'||has(S.off,x.off?1:0))&&(skip==='vr'||has(S.vr,x.vr?1:0))&&(skip==='om'||has(S.om,x.om||0))&&(skip==='st'||!S.st.size||[...S.st].some(f=>f==='n'?!(x.pt||x.nt||x.cl):!!x[f]))&&(skip==='dm'||has(S.dm,x.dm||'未盤點'))&&(skip==='bud'||!budOn()||(x.tw!==undefined&&x.tw>=BST[bud.a]&&(bud.b===BST.length-1||x.tw<=BST[bud.b])))&&(!q||[x.id,x.n,x.en,x.r,x.ty||''].join(' ').toLowerCase().includes(q));}
 function rows(){return X.items.filter(x=>match(x));}
-function fCount(){const n=['reg','cat','seg','pri','ot','off','vr'].reduce((a,k)=>a+S[k].size,0)+((bud.a!==0||bud.b!==BST.length-1)?1:0);$('fCnt').textContent=n+' 個條件';$('fCnt').hidden=!n;}
+function fCount(){const n=['reg','cat','seg','pri','ot','off','vr','om','st','dm'].reduce((a,k)=>a+S[k].size,0)+((bud.a!==0||bud.b!==BST.length-1)?1:0);$('fCnt').textContent=n+' 個條件';$('fCnt').hidden=!n;}
 $('fTog').addEventListener('click',()=>{const f=document.querySelector('.filters');const o=!f.classList.contains('fopen');f.classList.toggle('fopen',o);$('fTog').setAttribute('aria-expanded',String(o));});
 function chips(){
   const all=X.items.filter(x=>S.dests.has(x.d));
@@ -646,6 +652,9 @@ function chips(){
   $('fPri').innerHTML='<span class="lbl">優先</span>'+allBtn('pri')+['P0','P1','P2'].map(p=>btn('pri',p,p,n('pri',x=>x.p===p),S.pri.has(p))).join('');
   $('fVr').innerHTML='<span class="lbl">方案</span>'+allBtn('vr')+btn('vr',1,'多種方案',n('vr',x=>!!x.vr),S.vr.has(1))+btn('vr',0,'單一方案',n('vr',x=>!x.vr),S.vr.has(0));
   $('fOff').innerHTML='<span class="lbl">通路</span>'+allBtn('off')+btn('off',0,'OTA 有上架',n('off',x=>!x.off),S.off.has(0))+btn('off',1,'只有官網／社群接單',n('off',x=>x.off),S.off.has(1));
+  $('fOm').innerHTML='<span class="lbl">OMS 對應</span>'+allBtn('om')+btn('om',2,'OMS 已有',n('om',x=>x.om===2),S.om.has(2))+btn('om',1,'OMS 部分有',n('om',x=>x.om===1),S.om.has(1))+btn('om',0,'OMS 沒有',n('om',x=>!x.om),S.om.has(0));
+  $('fSt').innerHTML='<span class="lbl">標記</span>'+allBtn('st')+btn('st','pt','拼團',n('st',x=>!!x.pt),S.st.has('pt'))+btn('st','nt','不適合台灣客群',n('st',x=>!!x.nt),S.st.has('nt'))+btn('st','cl','停業',n('st',x=>!!x.cl),S.st.has('cl'))+btn('st','n','沒有標記',n('st',x=>!(x.pt||x.nt||x.cl)),S.st.has('n'))+(S.st.size>1?'<span class="hint">任一標記符合</span>':'');
+  $('fDm').innerHTML='<span class="lbl">盤點決定</span>'+allBtn('dm')+['保留','移除','降級為 P2','未盤點'].map(v=>btn('dm',v,v,n('dm',x=>(x.dm||'未盤點')===v),S.dm.has(v))).join('');
   drawBud();fCount();
   $('legend').innerHTML=X.cats.map((c,i)=>`<span><span class="dot" style="background:${CATCOL[i]}"></span>${esc(c)}</span>`).join('');
   $('expList').innerHTML=all.map(x=>`<option value="${esc(x.id+' '+x.n)}">${esc(x.r)}</option>`).join('');
@@ -658,7 +667,7 @@ document.querySelector('.filters').addEventListener('click',e=>{const b=e.target
     if(!S.dests.has(S.dest)){if(!STOPS.length)S.dest=[...S.dests][0];}
     fillSettings();saveFilter();}
   else if(v==='')S[k].clear();
-  else{const val=(k==='pri'||k==='reg')?v:+v;S[k].has(val)?S[k].delete(val):S[k].add(val);}
+  else{const val=(k==='pri'||k==='reg'||k==='st'||k==='dm')?v:+v;S[k].has(val)?S[k].delete(val):S[k].add(val);}
   fitDest=true;S.limit=40;render();});
 $('q').addEventListener('input',e=>{S.q=e.target.value;S.limit=40;render();});
 function drawBud(){const n=BST.length-1;$('bLo').max=n;$('bHi').max=n;$('bLo').value=bud.a;$('bHi').value=bud.b;
@@ -679,7 +688,7 @@ function itemHtml(x){
   return `<article class="card item${origin&&origin.id===x.id?' on':''}" data-id="${esc(x.id)}">
   <div class="ithumb"><img loading="lazy" src="exp_img/${esc(x.id)}.jpg" alt="${esc(x.n)}" onerror="this.parentNode.classList.add('err')"></div>
   <div class="ibody"><div class="itop"><span class="iid">${esc(x.id)}</span><span class="inm">${esc(x.n)}</span><span class="ien">${esc(x.en)}</span>${x.gr||x.tw!==undefined?`<span class="iright">${x.gr?`<span class="irate" title="Google 評價"><span class="star">★</span>${x.gr}<small>${Number(x.gc||0).toLocaleString()} 則</small></span>`:''}${x.tw!==undefined?`<span class="iprice">${x.tw===0?'免費':'約 '+twFmt(x.tw)}</span>`:''}</span>`:''}</div>
-  <div class="chips"><span class="chip"><span class="dot" style="background:${CATCOL[x.c]}"></span>${esc(X.cats[x.c])}</span><span class="chip" title="OMS 元件類型">${esc(X.ots[x.ot])}</span>${x.vr?`<span class="chip" title="有多種方案，報價需分開">${x.vr.length} 種方案</span>`:''}<span class="chip">${esc(x.r)}</span><span class="chip ${x.p.toLowerCase()}">${x.p}</span>${x.tpl?'<span class="chip tpl">行程範本</span>':''}${x.off?'<span class="chip">只有官網／社群接單</span>':''}${x.lo?'<span class="chip warn">座標待確認</span>':''}${rgChip(x)}${distChip(x)}</div>
+  <div class="chips"><span class="chip"><span class="dot" style="background:${CATCOL[x.c]}"></span>${esc(X.cats[x.c])}</span><span class="chip" title="OMS 元件類型">${esc(X.ots[x.ot])}</span>${x.vr?`<span class="chip" title="有多種方案，報價需分開">${x.vr.length} 種方案</span>`:''}<span class="chip">${esc(x.r)}</span><span class="chip ${x.p.toLowerCase()}">${x.p}</span>${x.tpl?'<span class="chip tpl">行程範本</span>':''}${x.off?'<span class="chip">只有官網／社群接單</span>':''}${x.lo?'<span class="chip warn">座標待確認</span>':''}${stChip(x)}${rgChip(x)}${distChip(x)}</div>
   ${x.ds?`<div class="idesc">${esc(x.ds)}</div>`:''}
   ${x.hl&&x.hl.length?`<ul class="ihl">${x.hl.map(t=>`<li>${esc(t)}</li>`).join('')}</ul>`:''}
   ${x.s&&x.s.length?`<div class="iseg"><span class="lbl">適合客群</span>${x.s.map((v,i)=>`<span class="sg s${v}" title="${segTitle(x,v,i)}">${SEGN[i]}</span>`).join('')}</div>`:''}
@@ -688,7 +697,7 @@ function itemHtml(x){
   <div class="det" data-det="${esc(x.id)}"${OPEN.has(x.id)?'':' hidden'}>${OPEN.has(x.id)?detHtml(x):''}</div>
 </article>`;}
 let DLOAD=null;
-function loadDet(){if(window.EXPD)return Promise.resolve();if(!DLOAD)DLOAD=new Promise((ok,no)=>{const sc=document.createElement('script');sc.src='exp_detail.js?v=16';sc.onload=ok;sc.onerror=()=>{DLOAD=null;no();};document.head.appendChild(sc);});return DLOAD;}
+function loadDet(){if(window.EXPD)return Promise.resolve();if(!DLOAD)DLOAD=new Promise((ok,no)=>{const sc=document.createElement('script');sc.src='exp_detail.js?v=17';sc.onload=ok;sc.onerror=()=>{DLOAD=null;no();};document.head.appendChild(sc);});return DLOAD;}
 async function toggleDet(x,b){const box=document.querySelector(`.det[data-det="${x.id}"]`);if(!box)return;
   if(OPEN.has(x.id)){OPEN.delete(x.id);box.hidden=true;box.innerHTML='';b.textContent='展開詳情';b.setAttribute('aria-expanded','false');return;}
   OPEN.add(x.id);box.hidden=false;b.textContent='收合詳情';b.setAttribute('aria-expanded','true');
@@ -742,8 +751,10 @@ function detHtml(x){
   const vid=D.vid&&D.vid.length?`<ul>${D.vid.map(([t,u,m])=>`<li>${lk(t,u)} <span class="hint">${esc(m||'')}</span></li>`).join('')}</ul>`:'<span class="hint">—</span>';
   const vr=x.vr&&x.vr.length?`<div class="w vrw"><dt>方案／配套（${x.vr.length} 種）<span class="hint">依網路公開資料整理，供應商請分開報價；實際方案以供應商為準</span></dt><dd><div class="vrs">${x.vr.map((v,i)=>{const io=incDiff(v);return `<div class="vrc"><div class="vrh"><span class="vrn">方案 ${i+1}</span><b>${esc(v.l)}</b></div><div class="vrd">${esc(v.df)}</div>${io?`<div class="vri">${io}</div>`:''}<div class="vrp">參考價：${esc(v.pr||'未查到')}</div></div>`}).join('')}</div></dd></div>`:'';
   const parts=D.parts&&D.parts.length?`<div class="why"><b>行程範本</b>　這是多個單點組成的行程，報價與 OMS 建檔以單點元件為準：${D.parts.map(id=>{const y=X.items.find(z=>z.id===id);return y?`<a href="#" data-act="j" data-id="${esc(id)}">${esc(id)} ${esc(y.n)}</a>`:esc(id)}).join('、')}</div>`:'';
+  const stRows=[x.cl?['停業',D.cln||'業者已停業']:null,x.om?['OMS 對應',(x.om===2?'OMS 已有':'OMS 部分有')+(D.omn?'：'+D.omn:'')]:null,x.pt?['拼團',D.ptn||'']:null,x.nt?['不適合台灣客群',D.ntn||'']:null,x.dm?['盤點決定',x.dm+(D.dr?'：'+D.dr:'')]:null].filter(Boolean);
+  const stBox=stRows.length?`<div class="w"><dt>盤點狀態</dt><dd>${stRows.map(([a,b])=>`<div><b>${esc(a)}</b>${b?'　'+esc(b):''}</div>`).join('')}</dd></div>`:'';
   return `${parts}<div class="tx">${esc(D.desc||'')}</div>
-  <dl class="dg">
+  <dl class="dg">${stBox}
     <div class="w"><dt>價格行情與訂購平台</dt><dd>${x.tw!==undefined?`<div><b>${x.tw===0?'免費':'約 '+twFmt(x.tw)}</b>${x.tr&&x.tr[1]>x.tr[0]?`<span class="hint">（各方案換算約 ${twFmt(x.tr[0])}–${twFmt(x.tr[1])}）</span>`:''}</div>`:''}<div>${esc(D.price||'未查到')}</div><div class="plats">${plat.join('')}</div></dd></div>
     <div><dt>區域／地圖</dt><dd>${esc(D.area||x.r)} · <a href="${gurl(x,D)}" target="_blank" rel="noopener">${glabel(x)}${x.pid&&!x.gnb?'：'+esc(x.gn):x.op?'：'+esc(x.op):''}</a>${x.pid&&!x.gnb&&x.ws?` · <a href="${esc(x.ws)}" target="_blank" rel="noopener">官網</a>`:''}${(x.pid&&!x.gnb||x.ws)&&x.so?` · <a href="${esc(x.so)}" target="_blank" rel="noopener">社群</a>`:''}</dd></div>
     <div><dt>建議停留／體驗時間</dt><dd>${x.du?durM(x.du):'—'}${x.tm?`<span class="hint">（${esc(x.tm)}）</span>`:''}</dd></div>
