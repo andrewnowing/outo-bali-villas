@@ -212,7 +212,7 @@ details.v>summary::-webkit-details-marker{display:none}
 .feat dd .pay{font-size:11px;color:var(--sun-700);background:var(--sun-50);border-radius:999px;padding:1px 7px;margin-left:2px;white-space:nowrap}
 .price .dl{display:block;font-size:11.5px;color:var(--jade-700);margin-top:2px;letter-spacing:.02em;font-family:var(--body)}
 .c-time{background:var(--paper-200);color:var(--ink-700)}
-.c-bf{background:var(--jade-100);color:var(--jade-700)}.c-bf.no{background:var(--paper-200);color:var(--ink-700)}.c-bf.paid{background:var(--sun-50);color:var(--sun-700)}
+.c-bf{background:var(--jade-100);color:var(--jade-700)}.c-bf.inc{background:var(--jade-700);color:#fff;font-weight:700;border-color:var(--jade-700)}.fchip.bf[aria-pressed="true"]{background:var(--jade-700);border-color:var(--jade-700);color:#fff}.c-bf.no{background:var(--paper-200);color:var(--ink-700)}.c-bf.paid{background:var(--sun-50);color:var(--sun-700)}
 .promoTbl{width:100%;border-collapse:collapse;font-size:13.5px}
 .promoTbl th{font-family:var(--sans);font-weight:600;font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);text-align:left;padding:6px 10px;border-bottom:1px solid var(--line)}
 .promoTbl td{padding:8px 10px;border-bottom:1px solid var(--line-subtle);vertical-align:top}
@@ -395,6 +395,8 @@ button:disabled{opacity:.45;cursor:not-allowed;transform:none;box-shadow:none}
       <button type="button" class="fchip" data-bed="3" aria-pressed="false"><span data-t="chipBk">上下舖</span></button>
       <span class="chipsep" aria-hidden="true"></span>
       <button type="button" class="fchip soft" id="bedUnk" aria-pressed="false"><span data-t="chipUnk">含床型未確認</span></button>
+      <span class="chipsep" aria-hidden="true"></span>
+      <button type="button" class="fchip bf" id="bfOnly" aria-pressed="false"><span data-t="chipBf">🍳 含早餐</span></button>
     </div></div>
     <div class="f budget" id="budgetBox"><span><span data-t="budget">每晚預算（官網直售價）</span><b class="bval" id="bVal"></b></span>
       <div class="rng" id="rng"><div class="track"><div class="fill" id="rngFill"></div></div><input type="range" id="bLo" min="0" max="100" step="1" value="0" aria-label="min budget"><input type="range" id="bHi" min="0" max="100" step="1" value="100" aria-label="max budget"></div>
@@ -508,7 +510,7 @@ zh:{
   ci:'入住日', co:'退房日', dr:'入住日 → 退房日', drPickCi:'點選入住日', drPickCo:'再點選退房日', drClr:'清除', drOk:'完成', drNights:n=>n+' 晚', wd:['日','一','二','三','四','五','六'], ym:(y,m)=>y+' 年 '+m+' 月', guN:n=>n+' 人', guMax:'20 人以上', br:'至少幾房', br1:'1 房', br2:'2 房', br3:'3 房', br4:'4 房', br5:'5 房', br6:'6 房以上',
   gu:'入住人數', any:'不限', area:'區域', areaAll:'全部區域', srcL:'價格類型', srcAll:'全部', srcPortal:'有同業優惠價', srcPub:'只有官網直售價', lblPromo:'促銷價', chipPortal:'同業優惠', chipPub:'官網直售', srcPortalT:'Villa Finder 同業後台房源：有同業優惠價與促銷，房況每 5 分鐘同步', srcPubT:'Villa Finder 公開網站房源：官網直售價，同業佣金 10%；房況每 5 分鐘從公開頁面更新，價格以 Villa Finder 頁面為準', vfRateT:'Villa Finder 住客評分（滿分 5）', lblEst:'同業價（估算）', dlCom:(c)=>`扣佣金 ${c}%`, estNoComShort:'佣金率未知，同業價請洽 Villa Finder', estNote:(c)=>`同業價＝官網價扣 ${c}% 佣金，依 Villa Finder 同業帳號看到的佣金率計算；下訂時以 Villa Finder 回覆為準`, estNoCom:'這間在同業帳號下看不到佣金率，同業價請向 Villa Finder 確認', liveChk:'向 Villa Finder 即時確認…', liveOk:(p)=>`Villa Finder 即時確認：有空房，這段日期官網總價 ${p}`, liveAgent:(p,c)=>`；同業估 ${p}（扣佣金 ${c}%）`, liveBusy:'Villa Finder 即時確認：這段日期沒有空房', liveReq:'Villa Finder 即時確認：需向屋主確認（on request）', liveErr:'即時確認失敗，請到 Villa Finder 頁面查看', pubPolSrc:'政策文字取自 Villa Finder 公開頁面（英文原文）',
   btnOms:'複製 OMS 回填資料', btnOmsDone:'已複製（JSON）',
-  bed:'房型（可複選，全部都要有）', chipTw:'雙床房', chipDb:'雙人房', chipQd:'四人房', chipBk:'上下舖', chipUnk:'含床型未確認',
+  bed:'房型（可複選，全部都要有）', chipBf:'🍳 含早餐', chipTw:'雙床房', chipDb:'雙人房', chipQd:'四人房', chipBk:'上下舖', chipUnk:'含床型未確認',
   dt:'開車到市區', dt10:'10 分鐘內', dt15:'15 分鐘內', dt20:'20 分鐘內', dt30:'30 分鐘內',
   sort:'排序', sortPrice:'總價低到高', sortPriceDesc:'總價高到低', sortDist:'離市區最近', sortRate:'Google 評分高到低', rateT:'Google 評價（點開看評論）', rateN:(n)=>`${n} 則`, rateNoN:'評論數未顯示', rateNone:'Google 無評價', sortName:'名稱', onlyFree:'只看有空房', mapT:'地圖', mapN:(n,m)=>`此區顯示 ${n} 間`, mapFoot:'圖釘只顯示目前篩選結果；點圖釘跳到該筆。滾輪或 ＋－ 可放大到 3 倍並拖曳，更細的範圍請切換上方區域。', mapGo:'看這筆', reg_all:'全島', reg_south:'南部', reg_seminyak:'水明漾一帶', reg_canggu:'倉古一帶', reg_ubud:'烏布', reg_bukit:'烏魯瓦圖／賓金', reg_east:'坎迪達薩', reg_north:'羅威那', qL:'搜尋別墅名稱', qPh:'例：Chands、Omah Bumbak、Lange', qHit:(n)=>`名稱符合 ${n} 間（其他條件照常套用）`, qMiss:'沒有名稱符合的別墅，請檢查拼法或清除搜尋',
   recPre:'訂房紀錄（', recPost:'）', recSent:'寄出時間', recVilla:'別墅', recBr:'房數', recGu:'人數', recLead:'主要旅客', recRef:'Outo 訂單', recStatus:'狀態',
@@ -601,7 +603,7 @@ en:{
   ci:'Check-in', co:'Check-out', dr:'Check-in → Check-out', drPickCi:'Pick check-in date', drPickCo:'Now pick check-out date', drClr:'Clear', drOk:'Done', drNights:n=>n+(n===1?' night':' nights'), wd:['Su','Mo','Tu','We','Th','Fr','Sa'], ym:(y,m)=>['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'][m-1]+' '+y, guN:n=>n+(n===1?' guest':' guests'), guMax:'20+ guests', br:'Min. bedrooms', br1:'1 BR', br2:'2 BR', br3:'3 BR', br4:'4 BR', br5:'5 BR', br6:'6+ BR',
   gu:'Guests', any:'Any', area:'Area', areaAll:'All areas', srcL:'Price type', srcAll:'All', srcPortal:'Partner rate available', srcPub:'Published rate only', lblPromo:'Promo rate', chipPortal:'Partner rate', chipPub:'Published rate', srcPortalT:'Villa Finder partner portal listing: partner rates and promotions, availability synced every 5 min', srcPubT:'Villa Finder public website listing: published rate, 10% agent commission; availability re-read from the public page every 5 minutes, price as shown on the Villa Finder page', vfRateT:'Villa Finder guest rating (out of 5)', lblEst:'Partner rate (est.)', dlCom:(c)=>`minus ${c}% commission`, estNoComShort:'Commission unknown; ask Villa Finder', estNote:(c)=>`Partner rate = published rate minus ${c}% commission as shown to the Outo agent account; Villa Finder confirmation prevails`, estNoCom:'Commission not visible for this villa; ask Villa Finder for the partner rate', liveChk:'Checking live with Villa Finder…', liveOk:(p)=>`Villa Finder live check: available, published total ${p}`, liveAgent:(p,c)=>`; partner est. ${p} (minus ${c}% commission)`, liveBusy:'Villa Finder live check: not available for these dates', liveReq:'Villa Finder live check: on request', liveErr:'Live check failed; see the Villa Finder page', pubPolSrc:'Policy text from the Villa Finder public page (English)',
   btnOms:'Copy OMS payload', btnOmsDone:'Copied (JSON)',
-  bed:'Room types (multi-select, villa must have all)', chipTw:'Twin room', chipDb:'Double room', chipQd:'Quad room (sleeps 4)', chipBk:'Bunk beds', chipUnk:'Include unconfirmed',
+  bed:'Room types (multi-select, villa must have all)', chipBf:'🍳 Breakfast included', chipTw:'Twin room', chipDb:'Double room', chipQd:'Quad room (sleeps 4)', chipBk:'Bunk beds', chipUnk:'Include unconfirmed',
   dt:'Drive to town', dt10:'Within 10 min', dt15:'Within 15 min', dt20:'Within 20 min', dt30:'Within 30 min',
   sort:'Sort by', sortPrice:'Total price: low to high', sortPriceDesc:'Total price: high to low', sortDist:'Closest to town', sortRate:'Google rating: high to low', rateT:'Google rating (open reviews)', rateN:(n)=>`${n} review${n===1?'':'s'}`, rateNoN:'review count not shown', rateNone:'No Google reviews', sortName:'Name', onlyFree:'Available only', mapT:'Map', mapN:(n,m)=>`${n} in this view`, mapFoot:'Pins show the current filter results only; click a pin to jump to the listing. Scroll or use ＋/－ to zoom up to 3× and drag to pan; switch regions above for finer detail.', mapGo:'Jump to listing', reg_all:'Whole island', reg_south:'South Bali', reg_seminyak:'Seminyak area', reg_canggu:'Canggu area', reg_ubud:'Ubud', reg_bukit:'Uluwatu / Bingin', reg_east:'Candidasa', reg_north:'Lovina', qL:'Search by villa name', qPh:'e.g. Chands, Omah Bumbak, Lange', qHit:(n)=>`${n} villa name match${n===1?'':'es'} (other filters still apply)`, qMiss:'No villa name matches — check the spelling or clear the search',
   recPre:'Booking log (', recPost:')', recSent:'Sent', recVilla:'Villa', recBr:'Bedrooms', recGu:'Guests', recLead:'Lead guest', recRef:'Outo booking', recStatus:'Status',
@@ -819,7 +821,7 @@ function polOf(s){return (typeof POL!=='undefined'&&POL[s])||(typeof PUB_POL!=='
 function bfOf(s){return (typeof BF!=='undefined'&&BF[s])||(typeof PUB_BF!=='undefined'&&PUB_BF[s])||null;}
 const L2=pair=>LANG==='en'?pair[1]:pair[0];
 function timeChip(v){const p=polOf(v.s);if(!p||!p.ci)return '';return `<span class="chip c-time">${esc(t('chTime',p.ci,p.co||'—'))}</span>`;}
-function bfChip(v){const b=bfOf(v.s);if(!b)return '';const code=b[0];const cls=code==='inc'||code==='floatinc'?'':code==='first'?' paid':code==='none'?' no':' paid';let txt=t('bf_'+code);if(code==='paid'&&b[1])txt=b[1].replace(/^早餐/,'早餐另付').replace(/^Breakfast/,'Breakfast extra');return `<span class="chip c-bf${cls}" title="${esc(b[1]||'')}">${esc(txt)}</span>`;}
+function bfChip(v){const b=bfOf(v.s);if(!b)return '';const code=b[0];const cls=code==='inc'||code==='floatinc'?' inc':code==='first'?' paid':code==='none'?' no':' paid';let txt=(code==='inc'||code==='floatinc'?'🍳 ':'')+t('bf_'+code);if(code==='paid'&&b[1])txt=b[1].replace(/^早餐/,'早餐另付').replace(/^Breakfast/,'Breakfast extra');return `<span class="chip c-bf${cls}" title="${esc(b[1]||'')}">${esc(txt)}</span>`;}
 function shareUrl(s){return location.origin+location.pathname.replace(/index\.html$/,'')+'?share='+encodeURIComponent(s);}
 function quoteUrl(s){return location.origin+location.pathname.replace(/index\.html$/,'')+'?quote='+encodeURIComponent(s)+'&ci='+$('ci').value+'&co='+$('co').value+'&br='+$('br').value;}
 function state(){const ciD=fromInput($('ci').value),coD=fromInput($('co').value);return {ciD,coD,nights:Math.round((coD-ciD)/864e5),ci:key(ciD),co:key(coD)};}
@@ -1006,9 +1008,10 @@ function render(){
   $('qClr').hidden=!qRaw;
   if(qn){const nm=VILLAS.filter(qOk).length;$('qHint').textContent=nm?t('qHit',nm):t('qMiss');}else $('qHint').textContent='';
   const bedSel=[...document.querySelectorAll('.fchip[data-bed][aria-pressed="true"]')].map(b=>+b.dataset.bed);const bedUnk=$('bedUnk').getAttribute('aria-pressed')==='true';
+  const bfOnly=$('bfOnly')&&$('bfOnly').getAttribute('aria-pressed')==='true';const bfOk=v=>{if(!bfOnly)return true;const b=bfOf(v.s);return !!b&&(b[0]==='inc'||b[0]==='floatinc');};
   const twOk=v=>{if(!bedSel.length)return true;const f=(typeof BEDS!=='undefined'&&BEDS[v.s])||[-1,-1,-1,-1];return bedSel.every(i=>f[i]===1||(bedUnk&&f[i]===-1));};
   const dtOk=v=>{if(!dt)return true;const r=(typeof ROUTE!=='undefined')&&ROUTE[v.s];return r&&r[0]<=dt;};
-  let items=(SHARE?VILLAS.filter(v=>v.s===SHARE):VILLAS.filter(v=>qOk(v)&&twOk(v)&&dtOk(v)&&(!srcF||(srcF==='pub')===isPub(v))&&(!area||v.a===area)&&(!gu||!v.x||!v.x.g||v.x.g>=gu))).map(v=>{
+  let items=(SHARE?VILLAS.filter(v=>v.s===SHARE):VILLAS.filter(v=>qOk(v)&&bfOk(v)&&twOk(v)&&dtOk(v)&&(!srcF||(srcF==='pub')===isPub(v))&&(!area||v.a===area)&&(!gu||!v.x||!v.x.g||v.x.g>=gu))).map(v=>{
     const q=quote(v,ciD,nights,minBr); if(!q) return null;
     vfqApply(v,q,ci,co,nights,minBr);
     const cf=hasAv(v)?conflicts(v,ci,co):[];
@@ -1075,7 +1078,7 @@ function row(x,ciD,coD,nights){
   if(free===true) chips.push(`<span class="chip c-ok st">${t('chAvail')}</span>`);
   else if(free===false) chips.push(`<span class="chip c-busy st">${t('chBooked')}</span>`);
   else chips.push(`<span class="chip c-warn st">${t('chNoData')}</span>`);
-  chips.push(`<span class="chip c-src${isPub(v)?' pub':''}" title="${esc(t(isPub(v)?'srcPubT':'srcPortalT'))}">${t(isPub(v)?'chipPub':'chipPortal')}</span>`,timeChip(v),bfChip(v));
+  chips.push(bfChip(v),`<span class="chip c-src${isPub(v)?' pub':''}" title="${esc(t(isPub(v)?'srcPubT':'srcPortalT'))}">${t(isPub(v)?'chipPub':'chipPortal')}</span>`,timeChip(v));
   if(longBlock(v)) chips.push(`<span class="chip c-bad">${t('chLong')}</span>`);
   if(q.dynamic) chips.push(`<span class="chip c-warn">${t(q.est?'chDynPub':'chDyn')}</span>`);
   if(q.missing) chips.push(`<span class="chip c-warn">${t('chMissing')}</span>`);
@@ -1315,6 +1318,9 @@ refreshPortalRates();setInterval(refreshPortalRates,300000);
 function applyRates(j){if(!j||!j.by||!j.updatedAt||j.updatedAt===PUBRATES_AT)return false;let n=0;for(const v of VILLAS){if(v.src!=='pub')continue;const L=j.by[v.s];if(!L)continue;if(L.r&&L.r.length){v.r=L.r;if(L.b&&L.b.length)v.b=L.b;v.dyn=false;}else if(L.dp!=null){v.dyn=true;v.dp=L.dp;v.dpd=L.dpd;}if(typeof L.p==='string')v.p=L.p;const h=j.dph&&j.dph[v.s];v.dph=(h&&h[0]!==h[1])?h:null;n++;}PUBRATES_AT=j.updatedAt;return n>0;}
 async function refreshRates(){if(!HOSTED)return;try{const r=await fetch(PUBRATES_URL+'?t='+Math.floor(Date.now()/60000),{cache:'no-store'});if(!r.ok)return;const txt=await r.text();const m=txt.match(/^const PUBRATES=(\{[\s\S]*\});\s*$/);if(!m)return;const j=JSON.parse(m[1]);if(j.updatedAt&&Date.now()-new Date(j.updatedAt).getTime()>90*60e3)watchReport('rates_in_page','官網價格最後核對 '+j.updatedAt);if(applyRates(j)){showFresh();render();}}catch(e){}}
 refreshRates();setInterval(refreshRates,120000);
+const PUBBF_URL='https://raw.githubusercontent.com/andrewnowing/outo-bali-villas/data/pubbf.js';let PUBBF_AT='';
+async function refreshBf(){if(!HOSTED)return;try{const r=await fetch(PUBBF_URL+'?t='+Math.floor(Date.now()/300000),{cache:'no-store'});if(!r.ok)return;const txt=await r.text();const m=txt.match(/^const PUB_BF=(\{[\s\S]*\});\s*$/);if(!m)return;const j=JSON.parse(m[1]);if(!j||!j.by||j.updatedAt===PUBBF_AT)return;PUBBF_AT=j.updatedAt;globalThis.PUB_BF=j.by;render();}catch(e){}}
+refreshBf();setInterval(refreshBf,300000);
 refreshVfs();setInterval(refreshVfs,300000);setTimeout(probeTick,20000);setInterval(probeTick,180000);
 async function refreshPubav(){if(!HOSTED||typeof PUBAV==='undefined')return;try{const r=await fetch(PUBAV_URL+'?t='+Math.floor(Date.now()/60000),{cache:'no-store'});if(!r.ok)return;const txt=await r.text();const m=txt.match(/^const PUBAV=(\{[\s\S]*\});\s*$/);if(!m)return;const j=JSON.parse(m[1]);if(j&&j.updatedAt&&Date.now()-new Date(j.updatedAt).getTime()>30*60e3)watchReport('stale_in_page','官網房況最後更新 '+j.updatedAt);if(j&&j.by&&j.updatedAt&&new Date(j.updatedAt)>new Date(PUBAV.updatedAt)){PUBAV.by=j.by;PUBAV.updatedAt=j.updatedAt;PUBAV.ok=j.ok;PUBAV.err=j.err;PUBAV.history=j.history;showFresh();render();if(!$('histDlg').hidden)renderHist();}}catch(e){}}
 refreshPubav();setInterval(refreshPubav,120000);
