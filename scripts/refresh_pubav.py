@@ -6,7 +6,7 @@ Runs every 4 hours on GitHub Actions. 10 parallel workers with a short pause eac
 """
 import json, re, sys, time, datetime, html, os, urllib.request, urllib.error
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
-import pubrates
+import pubrates, pubbf
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 src = open(os.path.join(ROOT, 'pub.js'), encoding='utf-8').read()
@@ -14,6 +14,7 @@ villas = json.loads(re.search(r'const PUB_VILLAS=(\[.*?\]);\n', src, re.S).group
 static_by = {v['s']: v for v in villas}
 # live prices (rates table / default price / promotion) parsed from the same pages -> pubrates.js
 rates = {}; rate_stat = {'ok': 0, 'norates': 0, 'badrate': 0, 'diff': 0}
+bf = {}  # breakfast status per villa -> pubbf.js
 old_rates = {}
 try:
     o = open(os.path.join(ROOT, 'pubrates.js'), encoding='utf-8').read()
@@ -80,9 +81,12 @@ def work(v):
         try: unav = json.loads(html.unescape(m.group(1)))
         except Exception: unav = []
     live, st = pubrates.parse(body)
+    try: bfv = pubbf.parse(body)
+    except Exception: bfv = None
     with lock:
         by[v['s']] = to_ranges(unav); ok += 1
         rate_stat[st] += 1
+        if bfv: bf[v['s']] = bfv
         if st == 'ok' or live['dp'] is not None:
             if st != 'ok': live['r'] = []; live['b'] = []
             rates[v['s']] = live
@@ -107,6 +111,11 @@ changed = sum(1 for k, v in by.items() if old.get(k) != v)
 hist = ([{'t': now, 'feeds': ok, 'errors': err, 'changed': changed, 'noattr': noattr, 'rates': rate_stat['ok'], 'norates': rate_stat['norates'], 'pricediff': rate_stat['diff']}] + hist)[:120]
 out = {'updatedAt': now, 'by': by, 'ok': ok, 'err': err, 'history': hist}
 open(os.path.join(ROOT, 'pubav.js'), 'w', encoding='utf-8').write('const PUBAV=' + json.dumps(out, separators=(',', ':')) + ';\n')
+# breakfast: write pubbf.js (same shape as BF in src/extra_bi.js); keep the previous file if too few pages parsed
+if len(bf) >= len(villas) * 0.7:
+    open(os.path.join(ROOT, 'pubbf.js'), 'w', encoding='utf-8').write('const PUB_BF=' + json.dumps({'updatedAt': now, 'by': bf}, separators=(',', ':'), ensure_ascii=False) + ';\n')
+    import collections
+    print('breakfast:', dict(collections.Counter(x[0] for x in bf.values())), flush=True)
 # prices: write pubrates.js (the workflow commits it only when it changed)
 if rate_stat['norates'] + rate_stat['badrate'] > len(villas) * 0.5 and old_rates:
     print(f"rates table missing on {rate_stat['norates']} pages; keeping previous pubrates.js", file=sys.stderr)
