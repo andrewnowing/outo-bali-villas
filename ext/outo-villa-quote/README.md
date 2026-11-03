@@ -4,12 +4,16 @@
 
 ## 安裝（約 2 分鐘）
 
-1. 把 `outo-villa-quote-1.1.1.zip` 解壓縮，放在不會刪掉的地方（例如「文件」資料夾）。解壓後會有一個 `outo-villa-quote` 資料夾。
+1. 把 `outo-villa-quote-1.2.0.zip` 解壓縮，放在不會刪掉的地方（例如「文件」資料夾）。解壓後會有一個 `outo-villa-quote` 資料夾。
 2. Chrome 網址列輸入 `chrome://extensions`，右上角打開「開發人員模式」。
-3. 按「載入未封裝項目」，選剛才的 `outo-villa-quote` 資料夾。列表會出現「Outo Villa 報價 1.1.1」。
+3. 按「載入未封裝項目」，選剛才的 `outo-villa-quote` 資料夾。列表會出現「Outo Villa 報價 1.2.0」。
 4. 在這張卡片按「詳細資料」→ 往下找「擴充功能選項」→ 貼上 Andrew 給你的共享金鑰 → 儲存。
 5. 用同一個 Chrome 登入 Villa Finder 官網（www.villa-finder.com）一次，之後保持登入。
 6. 打開查詢頁 https://outo-bali-villas.vercel.app ，輸入日期後，右上角會出現「正在向 Villa Finder 取得 N 間即時報價…」，幾十秒後變成「VF 即時報價 N 間」，卡片價格標「VF 即時報價」就成功了。
+
+## 為什麼會多一個 Villa Finder 分頁
+
+1.2.0 起，擴充功能查價時會用一個 villa-finder.com 的分頁（已開著某間別墅的頁面就借用，沒有就自己開一個釘選、不會切換過去的別墅頁分頁）。這是因為 Villa Finder 從 2026-10-21 起只接受從自家別墅頁面發出的報價請求，擴充功能直接查會被擋（403）。那個分頁不要關；關了下次查價會再自動開。
 
 ## 畫面上的標籤是什麼意思
 
@@ -29,6 +33,8 @@
 ## 常見問題
 
 - 卡片一直停在「正在取得…」：確認 Villa Finder 有登入、擴充功能沒被停用；重新整理頁面。
+- 右上角顯示「Villa Finder 拒絕查價（403）」：代表 VF 又改了規則，請告訴 Andrew；或你是 1.1.x 舊版，請更新到 1.2.0。
+- 右上角顯示「找不到可用的 Villa Finder 分頁」：手動開一次任何一間別墅的 Villa Finder 頁面再重新整理查詢頁。
 - 報價顯示「VF 顯示不可訂」：Villa Finder 的報價 API 回報這組日期不可訂，和房況日曆不一定同步，以 VF 為準。
 - 更新版本：Andrew 會給新的 zip，解壓縮覆蓋原本的資料夾後，到 `chrome://extensions` 按該卡片的 ↻。金鑰不用重貼。
 - 擴充功能只對 villa-finder.com 和查詢頁有權限，不會讀其他網站。
