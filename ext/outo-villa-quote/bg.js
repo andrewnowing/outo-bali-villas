@@ -13,7 +13,17 @@ const HELPER_URL = VF_ORIGIN + '/en/bali/villa-ananda';
 // 別墅頁網址長這樣：/en/<區域>/<slug>；首頁與區域列表頁（/en/bali）查價會被擋，不能借用
 const VILLA_PAGE_RE = /^https:\/\/www\.villa-finder\.com\/en\/[^\/?#]+\/[^\/?#]+/;
 const SHARE_URL = 'https://outo-bali-villas.vercel.app/api/quotes';
-const CONC = 3, GAP = 120, BATCH = 60;
+// 1.2.1 起：Villa Finder 也加了頻率限制。2026-11-03 實測：每 5 秒一筆，第 13 筆回 429、Retry-After 3600 秒，
+// 跟速度快慢無關，大約是「每小時 12 筆」。所以一次只查一筆、每筆間隔 GAP 毫秒、每個請求最多 MAX_PER_REQ 間，
+// 每小時最多 HOURLY_BUDGET 筆（滾動一小時，留 2 筆餘裕）；收到 429 就記下 Retry-After，封鎖期間不再打 VF。
+const CONC = 1, GAP = 5000, BATCH = 10, MAX_PER_REQ = 10, HOURLY_BUDGET = 10;
+
+// 429 封鎖與每小時用量都存在 storage.local，service worker 睡著再醒也不會忘
+async function getRate() {
+  try { const s = await chrome.storage.local.get(['vfCoolUntil', 'vfHits']); return { until: +s.vfCoolUntil || 0, hits: Array.isArray(s.vfHits) ? s.vfHits : [] }; }
+  catch { return { until: 0, hits: [] }; }
+}
+async function setRate(r) { try { await chrome.storage.local.set({ vfCoolUntil: r.until, vfHits: r.hits }); } catch {} }
 
 let helperTabId = null, helperPromise = null;
 
@@ -51,11 +61,13 @@ chrome.tabs.onRemoved.addListener(id => { if (id === helperTabId) helperTabId = 
 // 在 VF 分頁的頁面環境裡執行：同源 fetch 報價 API。這個函式會被序列化注入，不能引用外面的變數。
 function fetchInPage(slugs, from, to, conc, gap) {
   const blocked = /been blocked|Attention Required/i.test(document.title + ' ' + (document.body && document.body.innerText.slice(0, 400)));
-  if (blocked) { const out = {}; for (const s of slugs) out[s] = { err: 'cf-blocked' }; return Promise.resolve(out); }
+  if (blocked) { const out = {}; for (const s of slugs) out[s] = { err: 'cf-blocked' }; return Promise.resolve({ res: out, ra: null }); }
+  let ra = null; // 收到 429 時的 Retry-After（秒）
   async function one(slug) {
     const u = `/en/api/offer/${encodeURIComponent(slug)}.json?from=${from}&to=${to}&currency=usd`;
     try {
       const r = await fetch(u, { credentials: 'include', headers: { 'Accept': 'application/json' } });
+      if (r.status === 429) { ra = +(r.headers.get('retry-after') || 3600) || 3600; return { err: 'http429' }; }
       if (r.status !== 200) return { err: 'http' + r.status };
       const j = await r.json();
       const o = {};
@@ -68,42 +80,61 @@ function fetchInPage(slugs, from, to, conc, gap) {
   }
   const out = {}; let i = 0;
   async function worker() {
-    while (i < slugs.length) { const s = slugs[i++]; out[s] = await one(s); await new Promise(r => setTimeout(r, gap)); }
+    while (i < slugs.length) {
+      const s = slugs[i++];
+      if (ra != null) { out[s] = { err: 'http429' }; continue; } // 已被限流：剩下的不要再打
+      out[s] = await one(s);
+      if (ra == null && i < slugs.length) await new Promise(r => setTimeout(r, gap));
+    }
   }
-  return Promise.all(Array.from({ length: conc }, worker)).then(() => out);
+  return Promise.all(Array.from({ length: conc }, worker)).then(() => ({ res: out, ra }));
 }
 
 async function quoteAll(slugs, from, to) {
   const out = {};
+  const rate = await getRate(); const now = Date.now();
+  rate.hits = rate.hits.filter(t => now - t < 3600e3);
+  if (rate.until > now) { for (const s of slugs) out[s] = { err: 'http429' }; return { res: out, cool: rate.until }; }
+  const room = Math.max(0, HOURLY_BUDGET - rate.hits.length);
+  const todo = slugs.slice(0, Math.min(MAX_PER_REQ, room));
+  for (const s of slugs.slice(todo.length)) out[s] = { err: 'budget' };
+  if (!todo.length) return { res: out, cool: 0, budget: true };
   let tabId;
   try { tabId = await getHelperTab(); }
-  catch (e) { for (const s of slugs) out[s] = { err: 'helper:' + (e && e.message || e) }; return out; }
-  for (let i = 0; i < slugs.length; i += BATCH) {
-    const part = slugs.slice(i, i + BATCH);
+  catch (e) { for (const s of todo) out[s] = { err: 'helper:' + (e && e.message || e) }; return { res: out, cool: 0 }; }
+  let cool = 0;
+  async function run(part) {
+    const r = await chrome.scripting.executeScript({ target: { tabId }, world: 'MAIN', func: fetchInPage, args: [part, from, to, CONC, GAP] });
+    const v = r && r[0] && r[0].result || { res: {}, ra: null };
+    return v;
+  }
+  for (let i = 0; i < todo.length && !cool; i += BATCH) {
+    const part = todo.slice(i, i + BATCH);
     try {
-      const r = await chrome.scripting.executeScript({ target: { tabId }, world: 'MAIN', func: fetchInPage, args: [part, from, to, CONC, GAP] });
-      let res = r && r[0] && r[0].result || {};
+      let v = await run(part);
       // 借用的分頁若不在別墅頁（例如使用者剛跳到搜尋頁），會整批 403：改開自己的別墅頁分頁重試一次
-      if (part.length && part.every(s => res[s] && res[s].err === 'http403')) {
+      if (part.length && part.every(s => v.res[s] && v.res[s].err === 'http403')) {
         helperTabId = null;
         const own = await chrome.tabs.create({ url: HELPER_URL, active: false, pinned: true });
         await tabReady(own.id, 25e3); helperTabId = tabId = own.id;
-        const r2 = await chrome.scripting.executeScript({ target: { tabId }, world: 'MAIN', func: fetchInPage, args: [part, from, to, CONC, GAP] });
-        res = r2 && r2[0] && r2[0].result || res;
+        v = await run(part);
       }
-      for (const s of part) out[s] = res[s] || { err: 'no-result' };
+      for (const s of part) { out[s] = v.res[s] || { err: 'no-result' }; if (out[s].o) rate.hits.push(Date.now()); }
+      if (v.ra != null) { cool = Date.now() + v.ra * 1000; }
     } catch (e) {
       // 分頁可能被關掉或正在跳轉：重新取得分頁再試一次
       helperTabId = null;
       try {
         tabId = await getHelperTab();
-        const r = await chrome.scripting.executeScript({ target: { tabId }, world: 'MAIN', func: fetchInPage, args: [part, from, to, CONC, GAP] });
-        const res = r && r[0] && r[0].result || {};
-        for (const s of part) out[s] = res[s] || { err: 'no-result' };
+        const v = await run(part);
+        for (const s of part) { out[s] = v.res[s] || { err: 'no-result' }; if (out[s].o) rate.hits.push(Date.now()); }
+        if (v.ra != null) { cool = Date.now() + v.ra * 1000; }
       } catch (e2) { for (const s of part) out[s] = { err: 'inject:' + (e2 && e2.message || e2) }; }
     }
   }
-  return out;
+  if (cool) { rate.until = cool; for (const s of todo) if (!out[s]) out[s] = { err: 'http429' }; }
+  await setRate(rate);
+  return { res: out, cool };
 }
 
 async function getToken() {
@@ -131,9 +162,9 @@ chrome.runtime.onMessage.addListener((msg, sender, send) => {
   if (msg.type !== 'OUTO_QUOTE') return;
   (async () => {
     const jobs = (msg.slugs || []).slice(0, 200);
-    const out = await quoteAll(jobs, msg.from, msg.to);
-    const shared = await share(msg.from, msg.to, out);
-    send({ ok: true, from: msg.from, to: msg.to, res: out, shared });
+    const q = await quoteAll(jobs, msg.from, msg.to);
+    const shared = await share(msg.from, msg.to, q.res);
+    send({ ok: true, from: msg.from, to: msg.to, res: q.res, shared, cool: q.cool || 0, budget: !!q.budget });
   })();
   return true;
 });
