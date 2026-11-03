@@ -10,6 +10,6 @@ window.addEventListener('message', (e) => {
   if (e.source !== window || !e.data || e.data.type !== 'OUTO_QUOTE_REQ') return;
   const { id, slugs, from, to } = e.data;
   chrome.runtime.sendMessage({ type: 'OUTO_QUOTE', slugs, from, to }, (resp) => {
-    window.postMessage({ type: 'OUTO_QUOTE_RES', id, from, to, res: (resp && resp.res) || {}, shared: resp && resp.shared || null, err: chrome.runtime.lastError ? String(chrome.runtime.lastError.message) : null }, '*');
+    window.postMessage({ type: 'OUTO_QUOTE_RES', id, from, to, res: (resp && resp.res) || {}, shared: resp && resp.shared || null, cool: resp && resp.cool || 0, budget: !!(resp && resp.budget), err: chrome.runtime.lastError ? String(chrome.runtime.lastError.message) : null }, '*');
   });
 });
