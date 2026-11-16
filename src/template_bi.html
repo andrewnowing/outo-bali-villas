@@ -1165,8 +1165,7 @@ function fillBody(b,x,ciD,coD,nights){
   ${promoSec}
   ${polSec}${rulesSec}
   <div class="secNotes"><p class="sec">${t('secNotes')}</p><ul class="notes">${notes.map(([c,x])=>`<li class="${c}">${esc(x)}</li>`).join('')}</ul></div>
-  <div class="actions"><a class="btnlink" href="${vfReq(v,ciD,coD)}" target="_blank" rel="noopener">${t('btnVf')}</a><button type="button" class="book ghost">${t('btnEmail')}</button><button type="button" class="bookwa ghost">${t('btnWa')}</button><button type="button" class="prenote ghost">${t('btnPre')}</button><button type="button" class="oms ghost">${t('btnOms')}</button><p class="acthint">${t('actHint')}</p></div>`;
-  b.querySelector('.oms').addEventListener('click',(ev)=>{const j=omsPayload(x,ciD,coD,nights);navigator.clipboard.writeText(JSON.stringify(j,null,2)).then(()=>{ev.target.textContent=t('btnOmsDone');setTimeout(()=>ev.target.textContent=t('btnOms'),2000);});});
+  <div class="actions"><a class="btnlink" href="${vfReq(v,ciD,coD)}" target="_blank" rel="noopener">${t('btnVf')}</a><button type="button" class="book ghost">${t('btnEmail')}</button><button type="button" class="bookwa ghost">${t('btnWa')}</button><button type="button" class="prenote ghost">${t('btnPre')}</button><p class="acthint">${t('actHint')}</p></div>`;
   b.querySelector('.book').addEventListener('click',()=>openBooking(x,ciD,coD,nights,'email'));
   b.querySelector('.bookwa').addEventListener('click',()=>openBooking(x,ciD,coD,nights,'wa'));
   b.querySelector('.prenote').addEventListener('click',(ev)=>{const txt=preNoteText(v);const done=()=>{ev.target.textContent=t('btnPreDone');setTimeout(()=>ev.target.textContent=t('btnPre'),3500);};navigator.clipboard.writeText(txt).then(done,()=>{const ta=document.createElement('textarea');ta.value=txt;document.body.appendChild(ta);ta.select();try{document.execCommand('copy');done();}catch(e){}ta.remove();});});
