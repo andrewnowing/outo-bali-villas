@@ -1103,7 +1103,8 @@ function row(x,ciD,coD,nights){
   // 內部頁卡片只顯示一個「對客報價」＋能不能直接報＋同業優惠比例；成本與價格來源放在展開後的注意事項（2026-11）
   const sellRow=(amt,per)=>`<span class="tot"><i>${t('lblSell')}</i>${amt}</span>`+(per?`<span class="per">${per}</span>`:'');
   const qsRow=(ok,at)=>`<span class="qs ${ok?'ok':'chk'}" title="${esc(t(ok?'qsOkT':'qsChkT'))}">${esc(ok?t('qsOk',at):t('qsChk'))}</span>`;
-  const pctRow=p=>p>0&&p<100?`<span class="dl">${esc(t('agentPct',p))}</span>`:'';
+  // 官網直售的別墅沒有同業優惠價，只有佣金：標「同業佣金 N%」，不標「同業優惠」（2026-11）
+  const pctRow=p=>p>0&&p<100?`<span class="dl">${esc(t(isPub(v)?'comPubNight':'agentPct',p))}</span>`:'';
   if(PUB&&q.vf){const w=q.vf.orig>q.vf.total?`<span class="was"><i>${t('lblPub')}</i><b>${money(q.vf.orig)}</b></span>`:'';price=`${w}<span class="tot"><i>${t(q.vf.est==='dyn'?'lblVfD':q.vf.est?'lblVfE':q.vf.stored?'lblVfS':'lblVf')}</i>${money(q.total)}</span><span class="per">${t('vfPer',money(q.per),q.br)}</span>${!PUB&&q.vf.agent?`<span class="dl">${esc(t('vfAgent',money(q.vf.agent)))}</span>`:''}`;}
   else if(q.vf){const fresh=!q.vf.est&&(!q.vf.stored||Date.now()-q.vf.at<=VFQ_FRESH);const pct=q.vf.agent&&q.vf.agent<q.total?Math.round((1-q.vf.agent/q.total)*100):isPub(v)?(v.com||10):(q.pct0||0);price=sellRow(money(q.total),t('vfPer',money(q.per),q.br))+qsRow(fresh,q.vf.atTxt)+pctRow(pct);}
   else if(PUB){price=q.missing?`<span class="per">${t(isPub(v)?'priceCheckPub':'priceCheck')}</span>`:q.est?`<span class="tot">${t('dynQuote')}</span><span class="per">${v.dph?t('dynRange',money(v.dph[0]),money(v.dph[1])):t('estDynPub')}</span>`:q.dynamic?`<span class="tot">${moneyRng(q.lo,q.hi)}</span><span class="per">${t('priceRange',q.br)}</span>`:`<span class="tot"><i>${t(PUBLIC?'lblPrice':'lblPub')}</i>${money(q.total)}</span><span class="per">${t('priceAvg',money(q.per),q.br)}</span>${QUOTE?`<span class="per">${esc(t('quoteDates',fmt(ciD),fmt(coD),nights))}</span>`:''}`;}
